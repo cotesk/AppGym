@@ -1,0 +1,104 @@
+<h1 style="margin: 20px 0 40px; text-align: center;">Consulta tu estado de membresía</h1>
+
+<form [formGroup]="formularioUsuario" class="form-container">
+
+  <!-- Contenedor para los campos -->
+  <div class="form-grid">
+    <!-- Campo Cédula -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Cédula</mat-label>
+      <input matInput autocomplete="off" formControlName="cedula" pattern="[0-9]*" maxlength="12">
+      <mat-icon matSuffix>face</mat-icon>
+      <mat-error *ngIf="formularioUsuario.get('cedula')?.hasError('pattern')">
+        Solo se permiten números.
+      </mat-error>
+      <mat-error *ngIf="formularioUsuario.get('cedula')?.hasError('maxlength')">
+        La longitud debe ser de 10 dígitos.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Nombre del Cliente -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Nombre Cliente</mat-label>
+      <input matInput autocomplete="off" [value]="clienteSeleccionado" disabled />
+      <mat-icon matSuffix>account_circle</mat-icon>
+    </mat-form-field>
+
+    <!-- Nombre de la membresía -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Nombre de la membresía</mat-label>
+      <input matInput autocomplete="off" [value]="nombreMembresiaSeleccionado" disabled />
+      <mat-icon matSuffix>card_membership</mat-icon>
+    </mat-form-field>
+
+    <!-- Estado de Membresía -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Estado de tu Membresía</mat-label>
+      <input matInput autocomplete="off" [value]="estadoMembresiaSeleccionado" disabled />
+      <mat-icon matSuffix>{{ estadoMembresiaSeleccionado ? 'check_circle' : 'hourglass_empty' }}</mat-icon>
+    </mat-form-field>
+
+    <!-- Fecha de vencimiento -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Fecha de vencimiento (Día/Mes/Año)</mat-label>
+      <input matInput autocomplete="off" [value]="fechaVencimientoSeleccionado" disabled />
+      <mat-icon matSuffix>event</mat-icon>
+    </mat-form-field>
+
+    <!-- Precio de la membresía -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Precio de la membresía</mat-label>
+      <input matInput autocomplete="off" [value]="precioMembresiaSeleccionado" disabled />
+      <mat-icon matSuffix>attach_money</mat-icon>
+    </mat-form-field>
+
+    <!-- Nombre del Entrenador -->
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Nombre del Entrenador</mat-label>
+      <input matInput autocomplete="off" [value]="NombreEntrenadorSeleccionado" disabled />
+      <mat-icon matSuffix>fitness_center</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <!-- Funcional -->
+  <!-- <div class="imagenes-container">
+    <div class="imagen">
+      <img [src]="imagenSeleccionadaCliente" *ngIf="imagenSeleccionadaCliente" alt="Imagen Producto" (click)="verImagen(imagenSeleccionadaCliente)" />
+    </div>
+    <div class="imagen">
+      <img [src]="imagenSeleccionada" *ngIf="imagenSeleccionada" alt="Imagen Cliente" (click)="verImagen(imagenSeleccionada)" />
+    </div>
+  </div> -->
+
+  <div class="imagenes-container">
+    <div class="imagen">
+      <div class="overlay" (click)="verImagen(imagenSeleccionadaCliente)">
+        <span>Clientes</span>
+      </div>
+      <img
+        [src]="imagenSeleccionadaCliente"
+        *ngIf="imagenSeleccionadaCliente"
+        alt="Imagen Cliente"
+
+      />
+    </div>
+    <div class="imagen" *ngIf="mostrarImagenEntrenador">
+      <div class="overlay" (click)="verImagen(imagenSeleccionada)">
+        <span>Entrenador</span>
+      </div>
+      <img
+        [src]="imagenSeleccionada"
+        *ngIf="imagenSeleccionada"
+        alt="Imagen Entrenador"
+      />
+    </div>
+
+  </div>
+
+
+  <!-- Botón Buscar -->
+  <button mat-raised-button class="agregar" [disabled]="!formularioUsuario.valid" (click)="BuscarUsuario()">
+    <mat-icon>search</mat-icon> Buscar
+  </button>
+
+</form>

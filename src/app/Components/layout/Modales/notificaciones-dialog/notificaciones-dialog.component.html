@@ -1,0 +1,23 @@
+<div class="notificaciones-container">
+  <h2>Notificaciones</h2>
+  <ul class="notificaciones-lista">
+    <li *ngFor="let fecha of fechasDePagina()" class="notificacion-item">
+      <div>
+        <strong class="usuario">{{ fecha.nombreUsuario }}</strong>
+        <span class="membresia">({{ fecha.nombreMembresia }})</span>
+      </div>
+      <div class="fecha-vencimiento">Vence: {{ fecha.fechaVencimiento }}</div>
+    </li>
+  </ul>
+  <div class="paginacion">
+    <button
+      *ngFor="let pagina of paginas()"
+      (click)="cambiarPagina(pagina)"
+      class="btn-pagina"
+      [ngClass]="{ 'pagina-actual': pagina === paginaActual, 'pagina-normal': pagina !== paginaActual }"
+    >
+      {{ pagina }}
+    </button>
+  </div>
+  <button class="btn-cerrar" (click)="cerrarDialog(true)">Cerrar</button>
+</div>

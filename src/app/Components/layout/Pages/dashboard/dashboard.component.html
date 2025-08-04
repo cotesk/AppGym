@@ -1,0 +1,242 @@
+<h1 style="margin:20px 0px 0px 40px ; text-align: center;">Informacion - resumen último mes</h1>
+<div class="Ventas">
+
+  <!-- <button mat-raised-button class="minimalist-Ventas" (click)="configurarVentaObjetiva()">
+    <mat-icon>emoji_events</mat-icon>
+    Configurar Meta De Venta
+  </button> -->
+
+
+</div>
+
+<mat-card style="margin: 5px 5px 5px 5px">
+
+
+  <mat-card-content class="dashboard-card-content">
+    <mat-grid-list [cols]="isMobile ? 1 : 3" rowHeight="100px" gutterSize="16px">
+
+
+      <mat-grid-tile>
+
+
+        <mat-card class="card-info">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon color="accent">payments</mat-icon>
+            </div>
+            <mat-card-title>Total de Ingresos</mat-card-title>
+            <mat-card-subtitle style="text-align: center;">{{ formatearNumero(totalIngresos) }} $</mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+
+      </mat-grid-tile>
+
+
+      <mat-grid-tile>
+        <mat-card class="card-info">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon color="warn">fitness_center</mat-icon>
+            </div>
+            <mat-card-title>Total de Entrenadores</mat-card-title>
+            <mat-card-subtitle style="text-align: center;">{{totalEntrenadores}}</mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+      </mat-grid-tile>
+
+
+
+
+      <mat-grid-tile>
+        <mat-card class="card-info">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon color="primary">people</mat-icon>
+            </div>
+            <mat-card-title>Total de Usuarios </mat-card-title>
+            <mat-card-subtitle style="text-align: center;">{{totalUsuarios}}</mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <mat-card class="card-info">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon color="warn2">people</mat-icon>
+            </div>
+            <mat-card-title>Total de Clientes </mat-card-title>
+            <mat-card-subtitle style="text-align: center;">{{totalCliente}}</mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+      </mat-grid-tile>
+
+
+
+
+      <mat-grid-tile>
+
+        <mat-card class="card-info">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon color="primary2">person</mat-icon>
+            </div>
+            <mat-card-title>Responsable de la Caja</mat-card-title>
+            <mat-card-subtitle style="text-align: center;">{{NombreCaja}}</mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+
+        <mat-card class="card-info">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon color="accent2">point_of_sale</mat-icon>
+            </div>
+            <mat-card-title>Saldo en Caja</mat-card-title>
+            <mat-card-subtitle style="text-align: center;">{{formatearNumero(TotalCaja)}} $</mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <mat-card class="card-info">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon color="warn2">emoji_events</mat-icon>
+            </div>
+            <mat-card-subtitle>
+              <button mat-raised-button class="minimalist-Ventas" (click)="configurarVentaObjetiva()">
+                {{ isMobile ? 'Configurar Metas' : 'Configurar Meta De Pagos' }}
+              </button>
+            </mat-card-subtitle>
+          </mat-card-header>
+        </mat-card>
+      </mat-grid-tile>
+
+
+
+    </mat-grid-list>
+
+    <mat-card class="sales-card">
+      <mat-card-content>
+        <div class="chart-container">
+          <div class="chart chart-left">
+            <h3>Pago del Mes</h3>
+            <canvas id="myChart"></canvas>
+          </div>
+          <div class="chart chart-right">
+            <h3>Pago por Meses</h3>
+            <canvas id="myChartDoce"></canvas>
+          </div>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <br>
+
+
+    <div class="clientes-mas-asistencias-container">
+      <h2 class="titulo-clientes-mas-asistencias">Los 3 Clientes con Más Asistencias</h2>
+
+      <div *ngIf="clientesConMasAsistencias.length > 0" class="clientes-mas-asistencias-lista">
+        <div *ngFor="let cliente of clientesConMasAsistencias; let i = index" class="cliente-mas-asistencia"
+          [ngClass]="{ 'cliente-destacado-1': i === 0, 'cliente-destacado-2': i === 1, 'cliente-destacado-3': i === 2 }"
+          (mouseenter)="onMouseEnter(cliente, i + 1)" (mouseleave)="onMouseLeave(cliente)">
+
+          <!-- Foto del cliente (si existe) -->
+          <img *ngIf="cliente.imagenData" [src]="'data:image/png;base64,' + cliente.imagenData" alt="Imagen del cliente"
+            width="150" height="150" style="object-fit: contain;"
+            (click)="abrirDialogImagen('data:image/png;base64,' + cliente.imagenData)">
+
+          <!-- Nombre del cliente -->
+          <p class="nombre-cliente">
+            {{ cliente.nombre.length > 40 ? cliente.nombre.slice(0, 40) + '...' : cliente.nombre }}
+          </p>
+
+          <!-- Número de asistencias -->
+          <p class="asistencias-cliente">Asistencias: {{ cliente.totalAsistencias }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="clientesConMasAsistencias.length === 0" class="sin-clientes-mas-asistencias">
+        <p>No hay clientes con más asistencias para mostrar.</p>
+      </div>
+    </div>
+
+    <br>
+
+    <mat-card class="clientes-mas-asistencias-card">
+      <mat-card-header style="display: flex; justify-content: center; align-items: center;">
+        <mat-card-title>Clientes con Más Asistencias</mat-card-title>
+      </mat-card-header>
+
+
+      <mat-form-field appearance="fill" class="futuristic-search-field">
+        <input matInput [(ngModel)]="filtro" (ngModelChange)="onFiltroChange()" placeholder="Ingrese el nombre del cliente">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+
+      <mat-card-content>
+        <div class="table-container">
+          <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <!-- Columna para la imagen del cliente -->
+            <ng-container matColumnDef="imagen">
+              <mat-header-cell *matHeaderCellDef style="background-color: #3f4448; color: white; text-align: center;">
+                Imagen
+              </mat-header-cell>
+              <mat-cell *matCellDef="let cliente" style="text-align: center;">
+                <img *ngIf="cliente.imagenData" [src]="'data:image/png;base64,' + cliente.imagenData"
+                  alt="Imagen del cliente" width="120" height="120" style="object-fit: contain;"
+                  (click)="abrirDialogImagen('data:image/png;base64,' + cliente.imagenData)">
+              </mat-cell>
+            </ng-container>
+
+            <!-- Columna para el nombre del cliente -->
+            <ng-container matColumnDef="nombre">
+              <mat-header-cell *matHeaderCellDef style="background-color: #3f4448; color: white; text-align: center;">
+                Nombre
+              </mat-header-cell>
+              <mat-cell *matCellDef="let cliente" style="text-align: center;">
+                {{cliente.nombre}}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Columna para el número de asistencias -->
+            <ng-container matColumnDef="asistencias">
+              <mat-header-cell *matHeaderCellDef style="background-color: #3f4448; color: white; text-align: center;">
+                Asistencias
+              </mat-header-cell>
+              <mat-cell *matCellDef="let cliente" style="text-align: center;">
+                {{cliente.totalAsistencias}}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Definir las filas y columnas -->
+            <mat-header-row *matHeaderRowDef="clientesColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: clientesColumns;"></mat-row>
+          </mat-table>
+        </div>
+        <mat-paginator [length]="totalClientesConMasAsistencias.length" [pageSize]="3" [pageSizeOptions]="[3, 5, 10]"
+          aria-label="Seleccionar página de clientes con más asistencias" style="text-align: center;">
+        </mat-paginator>
+
+      </mat-card-content>
+    </mat-card>
+
+
+    <br>
+
+  </mat-card-content>
+
+
+</mat-card>
+<footer class="footer">
+  <p>Copyright &copy; 2024 - Hecho con orgullo en Colombia. Todos los derechos reservados.</p>
+</footer>

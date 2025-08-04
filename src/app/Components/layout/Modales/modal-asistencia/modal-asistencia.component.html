@@ -1,0 +1,82 @@
+<h2 mat-dialog-title style="text-align: center;">{{tituloAccion}} Asistencia </h2>
+
+<!-- <div mat-dialog-title style="text-align: center;">
+  <h1>Employee Form</h1>
+</div> -->
+<form [formGroup]="formularioAsistencia">
+  <div mat-dialog-content class="content">
+
+
+
+
+
+      <!-- <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Nombre Usuario</mat-label>
+        <mat-select
+        asp-for="idUsuario"
+        formControlName="idUsuario"
+        (selectionChange)="obtenerImag($event)">
+          <mat-option *ngFor="let item of listaUsuario" [value]="item.idUsuario">
+            {{item.nombreCompleto}}
+          </mat-option>
+        </mat-select>
+
+      </mat-form-field> -->
+
+
+
+      <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Clientes</mat-label>
+        <input matInput type="text" placeholder="Buscar..." aria-label="Number" [matAutocomplete]="auto"
+          formControlName="usuario" (focus)="mostrarListaClientes()">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="obtenerImag($event)"
+          [displayWith]="mostrarUsuario">
+          <mat-option *ngFor="let option of listaClientesFiltrada" [value]="option.idUsuario">
+            <!-- {{option.nombre }} -->
+            {{ option.nombreCompleto!.length > 30 ? option.nombreCompleto!.slice(0, 30) + '...' : option.nombreCompleto }}
+            <hr *ngIf="!lastItem(option, listaClientesFiltrada)" class="separator">
+          </mat-option>
+
+        </mat-autocomplete>
+
+        <button mat-icon-button matSuffix aria-label="Buscar" class="futuristic-search-button">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+
+
+
+      <!-- Información de Usuario Seleccionado -->
+      <div class="user-info">
+        <p class="user-text">Usuario: <span class="highlight">{{ nombreUsuario || 'N/A' }}</span></p>
+        <p class="user-text">Rol: <span class="highlight">{{ rolUsuario || 'N/A' }}</span></p>
+      </div>
+
+      <!-- Imagen de Usuario Seleccionado -->
+      <div class="image-preview" *ngIf="imagenSeleccionada">
+        <img [src]="imagenSeleccionada" alt="Imagen del producto" class="preview-image"
+          (click)="verImagen(imagenSeleccionada)">
+      </div>
+
+
+
+
+
+  </div>
+
+  <mat-dialog-actions class="dialog-actions">
+    <span class="spacer"></span> <!-- Este elemento ocupa el espacio izquierdo -->
+
+
+    <button mat-raised-button class="agregar" [disabled]="formularioAsistencia.invalid"
+      (click)="guardarEditar_Producto()">
+      <mat-icon>save</mat-icon> {{botonAccion}}
+    </button>
+
+    <button mat-raised-button mat-dialog-close color="warn">
+      <mat-icon>close</mat-icon> Volver
+    </button>
+
+  </mat-dialog-actions>
+
+</form>

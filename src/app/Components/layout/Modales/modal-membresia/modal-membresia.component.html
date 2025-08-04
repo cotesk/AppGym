@@ -1,0 +1,117 @@
+<h2 mat-dialog-title style="text-align: center;">{{tituloAccion}} Membresia </h2>
+
+<!-- <div mat-dialog-title style="text-align: center;">
+  <h1>Employee Form</h1>
+</div> -->
+<form [formGroup]="formularioMembresia">
+  <div mat-dialog-content class="content">
+
+
+
+
+
+    <div class="row">
+      <!-- <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;"> -->
+      <mat-form-field appearance="fill">
+        <mat-label>Nombre</mat-label>
+        <input matInput autocomplete="off" formControlName="nombre">
+        <mat-icon matSuffix class="fas fa-box"></mat-icon>
+        <!-- <mat-error *ngIf="formularioMembresia.get('nombre')?.hasError('letrasSinNumerosValidator')">
+          No se permiten números en el nombre.
+        </mat-error> -->
+        <mat-error *ngIf="formularioMembresia.get('nombre')?.hasError('maxlength')">
+          El nombre no puede exceder los 300 caracteres..
+        </mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="fill">
+        <mat-label>Estado</mat-label>
+        <mat-select  formControlName="esActivo">
+          <mat-option value="1">
+            <mat-icon class="icon-green">check_circle</mat-icon>
+            Activo
+          </mat-option>
+          <mat-option value="0">
+            <mat-icon class="icon-red">highlight_off</mat-icon>
+            No Activo
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Estado</mat-label>
+        <input matInput autocomplete="off" formControlName="activo" >
+        <mat-icon matSuffix>fit_screen</mat-icon>
+      </mat-form-field> -->
+
+
+    </div>
+
+
+
+
+
+    <div class="row">
+      <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Precio</mat-label>
+        <input matInput autocomplete="off" maxlength="15" formControlName="precioTexto"
+          (input)="formatearNumero($event, 'precioTexto')">
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error *ngIf="formularioMembresia.get('precioTexto')?.hasError('maxlength')">
+          El precio no puede exceder los 10 digitos.
+        </mat-error>
+      </mat-form-field>
+
+
+
+      <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Duración en Días</mat-label>
+        <input
+          matInput
+          autocomplete="off"
+          formControlName="duracionDias"
+          type="number"
+          min="1"
+          max="365"
+          maxlength="3">
+        <mat-icon matSuffix>storage</mat-icon>
+        <mat-error *ngIf="formularioMembresia.get('duracionDias')?.hasError('required')">Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="formularioMembresia.get('duracionDias')?.hasError('min')">El valor mínimo es 1</mat-error>
+        <mat-error *ngIf="formularioMembresia.get('duracionDias')?.hasError('max')">El valor máximo es 365</mat-error>
+        <mat-error *ngIf="formularioMembresia.get('duracionDias')?.hasError('pattern')">Debe ser un número válido</mat-error>
+      </mat-form-field>
+
+
+
+    </div>
+
+    <div class="row">
+
+      <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Descripcion</mat-label>
+        <textarea matInput autocomplete="off" formControlName="descripcion" rows="3"></textarea>
+        <mat-icon matSuffix>fit_screen</mat-icon>
+      </mat-form-field>
+
+
+
+    </div>
+  </div>
+
+  <mat-dialog-actions class="dialog-actions">
+    <span class="spacer"></span> <!-- Este elemento ocupa el espacio izquierdo -->
+
+
+    <button mat-raised-button class="agregar" [disabled]="formularioMembresia.invalid"
+      (click)="guardarEditar_Producto()">
+      <mat-icon>save</mat-icon> {{botonAccion}}
+    </button>
+
+    <button mat-raised-button mat-dialog-close color="warn">
+      <mat-icon>close</mat-icon> Volver
+    </button>
+
+  </mat-dialog-actions>
+
+</form>

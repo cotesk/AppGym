@@ -1,0 +1,124 @@
+/* Estilo base */
+.notificaciones-container {
+  font-family: Arial, sans-serif;
+  max-width: 100%;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  font-size: 1.25em;
+  margin-bottom: 1em;
+}
+
+.notificaciones-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notificacion-item {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.usuario {
+  font-weight: bold;
+  color: #222;
+}
+
+.membresia {
+  font-style: italic;
+  color: #666;
+}
+
+.fecha-vencimiento {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.paginacion {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 8px;
+}
+
+.btn-pagina {
+  padding: 8px 12px;
+  font-size: 0.9em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Estilo para la página actual */
+.paginacion .btn-pagina.pagina-actual {
+  background: #109a0b; /* Rojo */
+  color: white;
+}
+
+.paginacion .btn-pagina.pagina-actual:hover {
+  background: #14730a; /* Rojo más oscuro */
+}
+
+/* Estilo para las páginas no seleccionadas */
+.paginacion .btn-pagina.pagina-normal {
+  background: #007bff; /* Azul */
+  color: white;
+}
+
+.paginacion .btn-pagina.pagina-normal:hover {
+  background: #0056b3; /* Azul más oscuro */
+}
+
+.btn-cerrar {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-cerrar:hover {
+  background: #d32f2f;
+}
+
+/* Adaptaciones para vista móvil */
+@media (max-width: 768px) {
+  .notificaciones-container {
+    padding: 12px;
+  }
+
+  h2 {
+    font-size: 1.1em;
+  }
+
+  .notificacion-item {
+    padding: 10px;
+  }
+
+  .btn-pagina {
+    padding: 6px 10px;
+    font-size: 0.85em;
+  }
+
+  .btn-cerrar {
+    padding: 10px;
+    font-size: 0.9em;
+  }
+}

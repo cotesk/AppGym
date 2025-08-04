@@ -1,1 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+@import '~@angular/material/theming';
+ @import '@angular/material/prebuilt-themes/indigo-pink.css';
+ @import 'ngx-extended-pdf-viewer/ngx-extended-pdf-viewer.css';
+ @import '~ngx-extended-pdf-viewer/ngx-extended-pdf-viewer.css';
+ @import 'styles/custom-theme.scss';

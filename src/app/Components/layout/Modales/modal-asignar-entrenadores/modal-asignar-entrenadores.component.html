@@ -1,0 +1,90 @@
+<h2 mat-dialog-title style="text-align: center;">{{tituloAccion}} Asignacion </h2>
+
+<!-- <div mat-dialog-title style="text-align: center;">
+  <h1>Employee Form</h1>
+</div> -->
+<form [formGroup]="formularioAsignar">
+  <div mat-dialog-content class="content">
+
+
+
+
+
+    <div class="row">
+
+      <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Nombre Cliente</mat-label>
+        <mat-select asp-for="clienteId" formControlName="clienteId"
+         (selectionChange)="obtenerImag($event)">
+
+          <mat-option *ngFor="let item of listaCliente" [value]="item.idUsuario">
+            {{item.nombreCompleto}}
+          </mat-option>
+
+        </mat-select>
+
+      </mat-form-field>
+
+
+
+      <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Nombre Entrenador</mat-label>
+        <mat-select
+          asp-for="entrenadorId"
+          formControlName="entrenadorId"
+          (selectionChange)="obtenerImagEntrenador($event)">
+          <mat-option *ngFor="let item of listaEntrenador" [value]="item.idUsuario">
+            {{item.nombreCompleto}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+
+    </div>
+
+
+    <div class="row">
+
+  <!-- Información de Usuario Seleccionado -->
+  <!-- <div class="user-info">
+    <p class="user-text">Usuario: <span class="highlight">{{ nombreUsuario || 'N/A' }}</span></p>
+    <p class="user-text">Rol: <span class="highlight">{{ rolUsuario || 'N/A' }}</span></p>
+  </div> -->
+
+  <div class="image-preview" *ngIf="imagenSeleccionada">
+    <img [src]="imagenSeleccionada" alt="Imagen del producto" class="preview-image"
+      (click)="verImagen(imagenSeleccionada)">
+  </div>
+
+  <div class="image-preview" *ngIf="imagenSeleccionadaEntrenador">
+    <img [src]="imagenSeleccionadaEntrenador" alt="Imagen del producto" class="preview-image"
+      (click)="verImagen(imagenSeleccionadaEntrenador)">
+  </div>
+
+
+
+
+    </div>
+
+
+
+
+  </div>
+
+  <mat-dialog-actions class="dialog-actions">
+    <span class="spacer"></span> <!-- Este elemento ocupa el espacio izquierdo -->
+
+
+    <button mat-raised-button class="agregar" [disabled]="formularioAsignar.invalid"
+      (click)="guardarEditar_Producto()">
+      <mat-icon>save</mat-icon> {{botonAccion}}
+    </button>
+
+    <button mat-raised-button mat-dialog-close color="warn">
+      <mat-icon>close</mat-icon> Volver
+    </button>
+
+  </mat-dialog-actions>
+
+</form>

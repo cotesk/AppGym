@@ -1,0 +1,172 @@
+mat-form-field{
+
+  width: 100%;
+  margin: 10px 10px;
+
+  }
+
+  form{
+     width: 520px;
+  }
+
+
+/* Añade este estilo para alinear el icono más abajo */
+.custom-upload-container mat-icon {
+  margin-top: 5px; /* Ajusta el margen superior a tu preferencia */
+}
+button[color="warn"]:hover {
+  background-color: #9e3434; /* Cambia el color al pasar el ratón sobre el botón */
+}
+button.agregar {
+  background-color: #3351aa; /* Fondo del botón Cancelar */
+  color: #fff; /* Color del texto del botón Cancelar */
+}
+button.agregar:hover {
+  background-color:  rgb(79, 96, 113); /* Cambia el color de fondo al pasar el ratón sobre el botón */
+}
+button.agregar[disabled] {
+  background-color: #ccc; /* Fondo del botón en gris cuando está deshabilitado */
+  color: #666; /* Color del texto en gris cuando está deshabilitado */
+}
+
+button.agregar[disabled]:hover {
+  background-color: #ccc; /* Mantener el color de fondo en gris al pasar el ratón sobre el botón deshabilitado */
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dialog-actions button:first-child {
+  margin-right: auto; /* Mueve el botón "Guardar" al centro */
+}
+
+.icon-blue { color: #007bff; }
+.icon-orange { color: #fd7e14; }
+.icon-purple { color: #6f42c1; }
+.icon-yellow { color: #ffc107; }
+.icon-black { color: #343a40; }
+.icon-green {
+  color: rgb(0, 152, 0);
+}
+
+.icon-red {
+  color: red;
+}
+
+.suffix-container {
+  display: flex;
+  align-items: center;
+}
+
+button mat-icon.icon-black {
+  margin: auto;
+  display: block;
+}
+
+.suffix-container mat-icon {
+  margin-left: 0px; /* Opcional: agregar un poco de espacio entre el botón y el icono */
+}
+.suffix-container {
+  display: flex;
+  align-items: center;
+}
+
+.suffix-container .mat-icon-button {
+  margin-right: 4px; /* Ajusta este valor según sea necesario */
+}
+.content {
+  padding-top: 10px;
+  /* height: 450px; */
+}
+.row {
+  display: flex;
+  gap: 10px;
+
+  mat-form-field {
+    width: 50%;
+  }
+}
+
+/*Este es para color en lo mensaje de error  */
+.mat-error-custom {
+  color: white; /* Color del texto */
+  background-color: #f44336; /* Rojo, el color de fondo */
+  border-radius: 4px; /* Bordes redondeados */
+  padding: 2px; /* Espaciado interno */
+  margin-top: 1px; /* Margen superior */
+}
+
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Ancho completo del contenedor */
+  height: 300px; /* Altura ajustable según tu diseño */
+  border: 1px solid #ccc;
+  margin: 1em 0; /* Margen para separación */
+  overflow: hidden; /* Ocultar contenido que sobresalga */
+  border-radius: 8px; /* Bordes redondeados (opcional) */
+  background-color: #f5f5f5; /* Color de fondo */
+}
+
+.preview-image {
+  max-width: 100%; /* Ajuste horizontal */
+  max-height: 100%; /* Ajuste vertical */
+  object-fit: cover; /* Rellena el contenedor manteniendo las proporciones */
+  cursor: pointer; /* Cambia el cursor al pasar sobre la imagen */
+  border-radius: 8px; /* Alineado con el contenedor */
+}
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.user-text {
+  color: #555;
+}
+
+.highlight {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .row mat-form-field {
+    width: 90%;
+  }
+
+  .dialog-actions {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+
+  .dialog-actions button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  form {
+    width: 300px !important;
+    /* height: 300px; */
+  }
+
+
+
+}

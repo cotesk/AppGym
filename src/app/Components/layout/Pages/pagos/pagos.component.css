@@ -1,0 +1,122 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.details-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.form-field {
+  width: 100%;
+}
+.form-field2 {
+  width: 30%;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+.separator {
+  border: none;
+  border-top: 1px solid red; /* Color rojo */
+  margin: 5px 0; /* Espaciado opcional */
+}
+.observacion-imagen-container {
+  display: flex;
+  justify-content: space-between; /* Espacio entre los elementos */
+  align-items: flex-start; /* Alinea al inicio vertical */
+  gap: 20px; /* Espaciado entre observaciones e imagen */
+  margin-top: 20px; /* Espaciado superior opcional */
+}
+
+.observacion-field {
+  flex: 2; /* La observación ocupa más espacio */
+}
+
+.image-container {
+  flex: 1; /* La imagen ocupa menos espacio */
+  display: flex;
+  justify-content: center; /* Centra la imagen horizontalmente */
+  align-items: center; /* Centra la imagen verticalmente */
+}
+
+.image-container img {
+  max-width: 100%; /* Ajusta el tamaño de la imagen */
+  height: auto;
+  cursor: pointer; /* Hace clic en la imagen */
+  border-radius: 8px; /* Opcional: redondea bordes */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Opcional: agrega sombra */
+}
+
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Espaciado opcional superior */
+}
+
+button.agregar2 {
+  display: flex;
+  justify-content: center;
+  width: 20%;
+  background-color: #3351aa; /* Fondo del botón */
+  color: #fff; /* Color del texto */
+  padding: 10px;
+  font-size: 1rem;
+  text-align: center;
+}
+button.agregar2:hover {
+  background-color:  rgb(79, 96, 113); /* Cambia el color de fondo al pasar el ratón sobre el botón */
+}
+button.agregar2[disabled] {
+  background-color: #ccc; /* Fondo del botón en gris cuando está deshabilitado */
+  color: #666; /* Color del texto en gris cuando está deshabilitado */
+}
+
+button.agregar2[disabled]:hover {
+  background-color: #ccc; /* Mantener el color de fondo en gris al pasar el ratón sobre el botón deshabilitado */
+}
+
+
+@media (max-width: 768px) {
+
+
+  .form-field2 {
+    width: 50%;
+  }
+  button.agregar2 {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    background-color: #3351aa; /* Fondo del botón */
+    color: #fff; /* Color del texto */
+    padding: 10px;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+}
