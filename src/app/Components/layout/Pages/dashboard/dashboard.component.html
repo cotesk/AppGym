@@ -149,8 +149,8 @@
           (mouseenter)="onMouseEnter(cliente, i + 1)" (mouseleave)="onMouseLeave(cliente)">
 
           <!-- Foto del cliente (si existe) -->
-          <img *ngIf="cliente.imagenData" [src]="'data:image/png;base64,' + cliente.imagenData" alt="Imagen del cliente"
-            width="150" height="150" style="object-fit: contain;"
+          <img *ngIf="cliente.imagenData" class="img-hover-zoom" [src]="'data:image/png;base64,' + cliente.imagenData"
+            alt="Imagen del cliente" width="100" height="100" style="object-fit: contain;"
             (click)="abrirDialogImagen('data:image/png;base64,' + cliente.imagenData)">
 
           <!-- Nombre del cliente -->
@@ -177,57 +177,52 @@
 
 
       <mat-form-field appearance="fill" class="futuristic-search-field">
-        <input matInput [(ngModel)]="filtro" (ngModelChange)="onFiltroChange()" placeholder="Ingrese el nombre del cliente">
+        <input matInput [(ngModel)]="filtro" (ngModelChange)="onFiltroChange()"
+          placeholder="Ingrese el nombre del cliente">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
 
-      <mat-card-content>
-        <div class="table-container">
-          <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Producto</th>
 
-            <!-- Columna para la imagen del cliente -->
-            <ng-container matColumnDef="imagen">
-              <mat-header-cell *matHeaderCellDef style="background-color: #3f4448; color: white; text-align: center;">
-                Imagen
-              </mat-header-cell>
-              <mat-cell *matCellDef="let cliente" style="text-align: center;">
-                <img *ngIf="cliente.imagenData" [src]="'data:image/png;base64,' + cliente.imagenData"
-                  alt="Imagen del cliente" width="120" height="120" style="object-fit: contain;"
-                  (click)="abrirDialogImagen('data:image/png;base64,' + cliente.imagenData)">
-              </mat-cell>
-            </ng-container>
+              <th>Cantidad Vendida</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let producto of productosPaginados">
+              <td>
 
-            <!-- Columna para el nombre del cliente -->
-            <ng-container matColumnDef="nombre">
-              <mat-header-cell *matHeaderCellDef style="background-color: #3f4448; color: white; text-align: center;">
-                Nombre
-              </mat-header-cell>
-              <mat-cell *matCellDef="let cliente" style="text-align: center;">
-                {{cliente.nombre}}
-              </mat-cell>
-            </ng-container>
+                <img *ngIf="producto.imagenData" class="img-hover-zoom"
+                  [src]="'data:image/png;base64,' + producto.imagenData" alt="Imagen del producto" width="80"
+                  height="80" style="object-fit: contain;"
+                  (click)="abrirDialogImagen('data:image/png;base64,' + producto.imagenData)">
+              </td>
+              <td>{{ producto.nombre.length > 40 ? producto.nombre.slice(0, 40) + '...' : producto.nombre }}</td>
 
-            <!-- Columna para el número de asistencias -->
-            <ng-container matColumnDef="asistencias">
-              <mat-header-cell *matHeaderCellDef style="background-color: #3f4448; color: white; text-align: center;">
-                Asistencias
-              </mat-header-cell>
-              <mat-cell *matCellDef="let cliente" style="text-align: center;">
-                {{cliente.totalAsistencias}}
-              </mat-cell>
-            </ng-container>
+              <td>{{ producto.totalAsistencias }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-            <!-- Definir las filas y columnas -->
-            <mat-header-row *matHeaderRowDef="clientesColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: clientesColumns;"></mat-row>
-          </mat-table>
-        </div>
-        <mat-paginator [length]="totalClientesConMasAsistencias.length" [pageSize]="3" [pageSizeOptions]="[3, 5, 10]"
-          aria-label="Seleccionar página de clientes con más asistencias" style="text-align: center;">
-        </mat-paginator>
+      <div class="paginacion">
+        <button mat-raised-button (click)="paginaAnterior()" class="ver" [disabled]="paginaActual === 1">
+          <mat-icon>navigate_before</mat-icon> Anterior
+        </button>
+        <span>Página {{ paginaActual }} de {{ numeroDePaginas }}</span>
+        <button mat-raised-button (click)="siguientePagina()" color="accent"
+          [disabled]="paginaActual === numeroDePaginas">
+          Siguiente <mat-icon>navigate_next</mat-icon>
+        </button>
+      </div>
+      <br>
 
-      </mat-card-content>
+
     </mat-card>
 
 
@@ -238,5 +233,5 @@
 
 </mat-card>
 <footer class="footer">
-  <p>Copyright &copy; 2024 - Hecho con orgullo en Colombia. Todos los derechos reservados.</p>
+  <p>Copyright &copy; 2025 - Hecho con orgullo en Colombia. Todos los derechos reservados.</p>
 </footer>

@@ -2,18 +2,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 25px;
   max-width: 900px;
   margin: auto;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .form-title {
   font-size: 2rem;
   margin-bottom: 20px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2c3e50;
+}
+
+mat-form-field {
+  background: #fafafa;
+  border-radius: 8px;
 }
 
 .form-content {
@@ -25,98 +34,171 @@
 
 .details-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
 }
 
 .form-field {
   width: 100%;
 }
+
 .form-field2 {
-  width: 30%;
+  width: 40%;
 }
 
-.full-width {
-  grid-column: span 2;
-}
 .separator {
   border: none;
-  border-top: 1px solid red; /* Color rojo */
-  margin: 5px 0; /* Espaciado opcional */
+  border-top: 1px solid #ddd;
+  margin: 5px 0;
 }
+
 .observacion-imagen-container {
   display: flex;
-  justify-content: space-between; /* Espacio entre los elementos */
-  align-items: flex-start; /* Alinea al inicio vertical */
-  gap: 20px; /* Espaciado entre observaciones e imagen */
-  margin-top: 20px; /* Espaciado superior opcional */
+  gap: 20px;
+  margin-top: 20px;
+  align-items: stretch;
 }
 
 .observacion-field {
-  flex: 2; /* La observación ocupa más espacio */
+  flex: 2;
 }
 
 .image-container {
-  flex: 1; /* La imagen ocupa menos espacio */
+  flex: 1;
+  position: relative;
   display: flex;
-  justify-content: center; /* Centra la imagen horizontalmente */
-  align-items: center; /* Centra la imagen verticalmente */
+  justify-content: center;
+  align-items: center;
 }
 
 .image-container img {
-  max-width: 100%; /* Ajusta el tamaño de la imagen */
+  max-width: 100%;
   height: auto;
-  cursor: pointer; /* Hace clic en la imagen */
-  border-radius: 8px; /* Opcional: redondea bordes */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Opcional: agrega sombra */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.image-container .overlay {
+  position: absolute;
+  bottom: 0; /* Se pega a la parte inferior */
+  left: 0;
+  width: 100%; /* Ocupa todo el ancho de la imagen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  color: white;
+  padding: 8px 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.image-container:hover .overlay {
+  opacity: 1;
+}
+
+.image-container mat-icon {
+  font-size: 18px;
 }
 
 
 .button-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin-top: 20px; /* Espaciado opcional superior */
+  margin-top: 20px;
 }
 
 button.agregar2 {
   display: flex;
-  justify-content: center;
-  width: 20%;
-  background-color: #3351aa; /* Fondo del botón */
-  color: #fff; /* Color del texto */
-  padding: 10px;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background-color: #3351aa;
+  color: #fff;
   font-size: 1rem;
-  text-align: center;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
+
 button.agregar2:hover {
-  background-color:  rgb(79, 96, 113); /* Cambia el color de fondo al pasar el ratón sobre el botón */
+  background-color: #2a417e;
+  transform: translateY(-2px);
 }
+
 button.agregar2[disabled] {
-  background-color: #ccc; /* Fondo del botón en gris cuando está deshabilitado */
-  color: #666; /* Color del texto en gris cuando está deshabilitado */
+  background-color: #ccc;
+  color: #666;
 }
 
-button.agregar2[disabled]:hover {
-  background-color: #ccc; /* Mantener el color de fondo en gris al pasar el ratón sobre el botón deshabilitado */
+
+/* Colores para íconos */
+mat-icon.icon-title {
+  color: #4caf50; /* Verde */
 }
 
+mat-icon.icon-search {
+  color: #2196f3; /* Azul */
+}
+
+mat-icon.icon-client {
+  color: #9c27b0; /* Morado */
+}
+
+mat-icon.icon-membership {
+  color: #ff9800; /* Naranja */
+}
+
+mat-icon.icon-status {
+  color: #135f69; /* Celeste */
+}
+
+mat-icon.icon-price {
+  color: #4caf50; /* Rojo */
+}
+
+mat-icon.icon-payment {
+  color: #3f51b5; /* Azul oscuro */
+}
+
+mat-icon.icon-observation {
+  color: #795548; /* Café */
+}
+
+mat-icon.icon-overlay {
+  color: white; /* Para el overlay de imagen */
+}
 
 @media (max-width: 768px) {
-
-
   .form-field2 {
-    width: 50%;
+    width: 100%;
+  }
+  .observacion-imagen-container {
+    flex-direction: column;
   }
   button.agregar2 {
-    display: flex;
-    justify-content: center;
-    width: 50%;
-    background-color: #3351aa; /* Fondo del botón */
-    color: #fff; /* Color del texto */
-    padding: 10px;
-    font-size: 1rem;
-    text-align: center;
+    width: 100%;
+  }
+   .image-container img {
+    max-width: 150px; /* Limita ancho */
+    max-height: 150px; /* Limita alto */
+    object-fit: cover; /* Mantiene proporción */
   }
 
+  .image-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .overlay {
+    font-size: 0.85rem;
+    padding: 6px 0;
+  }
+
+  .overlay mat-icon {
+    font-size: 16px;
+  }
 }

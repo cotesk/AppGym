@@ -4,31 +4,15 @@
   <h1>Employee Form</h1>
 </div> -->
 <form [formGroup]="formularioAsistencia">
-  <div mat-dialog-content class="content">
+  <div mat-dialog-content>
 
-
-
-
-
-      <!-- <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
-        <mat-label>Nombre Usuario</mat-label>
-        <mat-select
-        asp-for="idUsuario"
-        formControlName="idUsuario"
-        (selectionChange)="obtenerImag($event)">
-          <mat-option *ngFor="let item of listaUsuario" [value]="item.idUsuario">
-            {{item.nombreCompleto}}
-          </mat-option>
-        </mat-select>
-
-      </mat-form-field> -->
 
 
 
       <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
         <mat-label>Clientes</mat-label>
         <input matInput type="text" placeholder="Buscar..." aria-label="Number" [matAutocomplete]="auto"
-          formControlName="usuario" (focus)="mostrarListaClientes()">
+          formControlName="usuario" (click)="mostrarListaClientes()">
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="obtenerImag($event)"
           [displayWith]="mostrarUsuario">
           <mat-option *ngFor="let option of listaClientesFiltrada" [value]="option.idUsuario">

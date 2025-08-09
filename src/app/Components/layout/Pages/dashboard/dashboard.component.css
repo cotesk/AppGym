@@ -11,7 +11,16 @@
   box-sizing: border-box;
 }
 
+.img-hover-zoom {
 
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.img-hover-zoom:hover {
+  transform: scale(1.2);
+  z-index: 10;
+}
 
 .mat-icon {
 
@@ -57,12 +66,12 @@ mat-card {
 
 
 /* Agrega estilos CSS para un diseño minimalista */
-.productos-mas-vendidos-container {
+.clientes-mas-asistencias-container {
   margin: 20px 40px;
   text-align: center;
 }
 
-.titulo-clientes-mas-asistencias {
+.titulo-clientes-mas-asistencia {
   margin: 0 0 20px;
   font-size: 1.5em;
   text-align: center;
@@ -79,7 +88,7 @@ mat-card {
   /* background-color: #522b41; */
   /* background-color: #474569; */
   /* background-color: #3f4448; */
-  background: linear-gradient(to top, #433e3e 35%, #ffffff 35%);
+  background: linear-gradient(to top, #433e3e 39%, #ffffff 35%);
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -99,7 +108,7 @@ mat-card {
 
 .sin-productos-mas-vendidos {
   margin: 20px 0;
-  color: #efe9e9;
+  color: #2c3e50;
 }
 
 /* Agrega estilos CSS para el botón "Ver Más" y la tabla oculta */
@@ -201,6 +210,7 @@ button.ver[disabled]:hover {
 
 /* Agrega estilos CSS para la tabla */
 table {
+    border-radius: 6px;
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
@@ -215,28 +225,30 @@ td {
 }
 
 th {
+    border-radius: 6px;
   /* background-color: #522b41; */
   /* background-color: #474569; */
-  background-color: #3f4448;
+  /* background-color: #3f4448; */
+  background-color: #2c3e50;
   color: #fff;
 }
 
-.cliente-mas-asistencia:hover {
+.cliente-mas-vendido:hover {
   transform: scale(1.1);
 }
 
 /* Agrega estilos para destacar los productos más vendidos */
-.producto-destacado-1 {
+.cliente-destacado-1 {
   border: 5px solid #FFD700;
   /* Borde dorado para el primer producto */
 }
 
-.producto-destacado-2 {
+.cliente-destacado-2 {
   border: 5px solid #C0C0C0;
   /* Borde plateado para el segundo producto */
 }
 
-.producto-destacado-3 {
+.cliente-destacado-3 {
   border: 5px solid #cd7f32;
   /* Borde bronceado para el tercer producto */
 }
@@ -311,7 +323,8 @@ button.minimalist-Ventas:hover {
 }
 
 .sales-card {
-  background-color: #f4f6f9;
+  margin-left: -10px;
+  background-color: #f0e8e8;
   margin-top: 15px;
   padding: 20px;
   border-radius: 8px;
@@ -321,6 +334,7 @@ button.minimalist-Ventas:hover {
 }
 
 .chart-container {
+
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
@@ -446,20 +460,21 @@ canvas {
   /* Tamaño de fuente */
 }
 
+/* Estilos para el icono de búsqueda */
 .futuristic-search-button {
-  background-color: transparent; /* Fondo transparente */
-  color: #434546 !important; /* Color del icono */
-  border: none; /* Borde transparente */
+  background-color: transparent;
+  /* Fondo transparente */
+  color: #434546 !important;
+  /* Color del icono */
+  border: none;
+  /* Borde transparente */
   cursor: pointer;
-  display: flex;
-  align-items: center; /* Centra verticalmente */
-  justify-content: center; /* Centra horizontalmente */
 }
 
 .futuristic-search-button:hover {
-  color: #ffffff; /* Cambia el color al pasar el cursor */
+  color: #ffffff;
+  /* Cambia el color al pasar el cursor */
 }
-
 
 /* Estilos para el campo de entrada cuando está enfocado */
 .futuristic-search-field:focus-within {
@@ -482,13 +497,15 @@ canvas {
 }
 
 .footer {
+  position: relative;
   text-align: center;
   font-size: 14px;
   color: white;
-  background-color: #555;
+  background-color: #2c3e50;
   padding: 10px;
-  margin: 20px -30px 110px;
-  width: 100%;
+  left: -20px;
+  /* Salir del contenedor principal */
+  width: calc(100% + 15px);
 }
 
 .product-container {
@@ -501,49 +518,38 @@ canvas {
 }
 
 .table-container {
-  max-width: 100%; /* Limita el ancho del contenedor */
+   border-radius: 6px;
+  width: 100%; /* Limita el ancho del contenedor */
   overflow-x: auto; /* Permite el scroll horizontal si es necesario */
   padding: 10px; /* Espaciado interno opcional */
   box-sizing: border-box; /* Asegura que el padding esté incluido en el ancho total */
+
 }
 
 
-/* Agrega estilos para destacar los productos más vendidos */
-.cliente-destacado-1 {
-  border: 5px solid #FFD700;
-  /* Borde dorado para el primer producto */
-}
-
-.cliente-destacado-2 {
-  border: 5px solid #C0C0C0;
-  /* Borde plateado para el segundo producto */
-}
-
-.cliente-destacado-3 {
-  border: 5px solid #cd7f32;
-  /* Borde bronceado para el tercer producto */
-}
-
-
-::ng-deep .mat-mdc-paginator-icon {
-
-  fill: #2196f3 !important;
-}
-
-::ng-deep .mat-mdc-icon-button[disabled] .mat-mdc-paginator-icon {
-  fill: rgb(169, 169, 169)!important;
-}
-/* para que no se salgan las tabla del mat-card en vista movil */
-.table-container {
-  overflow-x: auto; /* Permite el desplazamiento horizontal */
-  -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en dispositivos táctiles */
-}
 
 /* Ajustes generales para pantallas pequeñas */
 @media (max-width: 768px) {
 
 
-  .cliente-mas-asistencia {
+
+  .table-container {
+    width: 145%; /* Asegura que la tabla ocupe el 100% del contenedor principal */
+    margin-left: -60px; /* Desplaza la tabla hacia la izquierda */
+    overflow-x: auto; /* Agrega desplazamiento horizontal si es necesario */
+  }
+
+  .table-container table {
+    font-size: 14px; /* Tamaño de texto más pequeño para pantallas móviles */
+  }
+
+  .table-container td img {
+    width: 80px; /* Tamaño más pequeño para las imágenes en móvil */
+    height: 80px;
+  }
+
+
+  .producto-mas-vendido {
     /* background-color: #522b41; */
     /* background-color: #474569; */
     /* background-color: #3f4448; */
@@ -571,11 +577,13 @@ canvas {
   .ver-mas-container,
   .tabla-productos {
     max-width: 100%; /* Asegura que no exceda el ancho de la pantalla */
-    padding: 0 10px; /* Espaciado interno */
+    padding: 0 0px; /* Espaciado interno */
     box-sizing: border-box; /* Incluye padding en el cálculo del ancho total */
   }
 
-  .clientes-mas-asistencias-lista {
+
+
+  .productos-mas-vendidos-lista {
     display: flex;
     flex-wrap: wrap; /* Permite que los elementos se envuelvan en filas adicionales */
     justify-content: center;
@@ -608,7 +616,7 @@ canvas {
     margin-bottom: 5px;
   }
 
-  .titulo-clientes-mas-asistencias {
+  .titulo-productos-mas-vendidos {
     font-size: 1.2em;
   }
 
@@ -646,14 +654,17 @@ canvas {
 
 
   .footer {
+
+    font-size: 10px;
     position: relative;
-    left: 0px;
+    left: -20px;
     /* Salir del contenedor principal */
-    width: calc(100% + 40px);
+    width: calc(97% + 31px);
     /* Hacerlo más largo que el mat-card */
-    background-color: #333;
+    background-color: #2c3e50;
     /* Cambiar color si es necesario */
   }
+
 
 
   .table {
@@ -669,14 +680,18 @@ canvas {
   }
 
   .chart-container {
+    margin-left: -35px; /* Desplaza la tabla hacia la izquierda */
     grid-template-columns: 1fr;
     gap: 15px;
   }
 
   .chart {
     flex: 1 1 calc(50% - 16px); /* 50% de ancho para dos columnas en pantallas grandes */
-    min-width: 265px;
+    min-width: 308px;
   }
 
+  .sales-card {
+    width: 107% !important ;
+  }
 
 }

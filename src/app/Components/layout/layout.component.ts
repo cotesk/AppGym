@@ -61,7 +61,7 @@ export class LayoutComponent implements OnInit {
   applyHoverClass = false;
   selectedColor: string = '';
   private readonly CLAVE_SECRETA = '9P#5a^6s@Lb!DfG2@17#Co-Tes#07';
-   claveSecreta: string | null = null;
+  claveSecreta: string | null = null;
   error: string | null = null;
 
 
@@ -603,6 +603,7 @@ export class LayoutComponent implements OnInit {
       case 'toolbar-white':
         return 'icon-black';
       case 'toolbar-red':
+         return 'icon-white';
       case 'toolbar-green':
         return 'icon-white';
       case 'toolbar-morado':
@@ -621,6 +622,7 @@ export class LayoutComponent implements OnInit {
       case 'toolbar-white':
         return 'text-black';
       case 'toolbar-red':
+         return 'text-white';
       case 'toolbar-green':
         return 'text-white';
       case 'toolbar-morado':
@@ -638,6 +640,7 @@ export class LayoutComponent implements OnInit {
       case 'toolbar-white':
         return 'text-white';
       case 'toolbar-red':
+        return 'text-white';
       case 'toolbar-green':
         return 'text-white';
       case 'toolbar-morado':
@@ -655,6 +658,7 @@ export class LayoutComponent implements OnInit {
       case 'toolbar-white':
         return 'icon-white';
       case 'toolbar-red':
+        return 'icon-white';
       case 'toolbar-green':
         return 'icon-white';
       case 'toolbar-morado':

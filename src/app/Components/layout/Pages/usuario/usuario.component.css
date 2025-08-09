@@ -3,10 +3,18 @@ table {
 }
 
 .circular-image {
-  width: 100px;
-  height: 100px;
+  width: 55px;
+  height: 55px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
   border-radius: 50%;
   overflow: hidden;
+}
+
+
+.circular-image:hover {
+  transform: scale(1.2);
+  z-index: 10;
 }
 
 .usuario-no-activo {
@@ -49,9 +57,11 @@ button.agregar {
 button.agregar:hover {
   background-color: rgb(79, 96, 113);
 }
+
 .icon-naraja {
   color: rgb(217, 125, 33);
 }
+
 .minimalist-SELECT {
   position: absolute;
   /* top: -65px;
@@ -148,8 +158,9 @@ button.pasar:hover {
 } */
 
 button.pasar:hover {
-  background-color:  rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
 }
+
 .pasar {
   color: #2196f3;
   /* Color de los iconos */
@@ -190,49 +201,68 @@ button.pasar:hover {
 }
 
 .footer {
+  position: relative;
   text-align: center;
   font-size: 14px;
   color: white;
-  background-color: #555;
+  background-color: #2c3e50;
   padding: 10px;
-  margin:20px -15px 110px;
-  width: 100%;
+  left: -20px;
+  /* Salir del contenedor principal */
+  width: calc(100% + 20px);
 }
 
 /* para que no se salgan las tabla del mat-card en vista movil */
 .table-container {
-  overflow-x: auto; /* Permite el desplazamiento horizontal */
-  -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en dispositivos táctiles */
+  border-radius: 6px;
+  overflow-x: auto;
+  /* Permite el desplazamiento horizontal */
+  -webkit-overflow-scrolling: touch;
+  /* Mejora el desplazamiento en dispositivos táctiles */
 }
 
 @media (max-width: 768px) {
   .footer {
+
+    font-size: 10px;
     position: relative;
-    left: 0px; /* Salir del contenedor principal */
-    width: calc(100% + 40px); /* Hacerlo más largo que el mat-card */
-    background-color: #333; /* Cambiar color si es necesario */
+    left: -20px;
+    /* Salir del contenedor principal */
+    width: calc(97% + 31px);
+    /* Hacerlo más largo que el mat-card */
+    background-color: #2c3e50;
+    /* Cambiar color si es necesario */
   }
+
   mat-card {
     margin: 10px;
-    width: calc(100% - 20px); /* Ajusta el ancho del mat-card */
+    width: calc(100% - 20px);
+    /* Ajusta el ancho del mat-card */
     font-size: larger;
 
   }
 
   /* Estilos adicionales para la tabla en dispositivos móviles */
   .table-container {
-    margin: 0 -15px; /* Ajusta el margen para que el contenedor se alinee bien */
+    margin: 0 -15px;
+    /* Ajusta el margen para que el contenedor se alinee bien */
   }
+
   .futuristic-search-field {
     width: 90%;
   }
 
   .minimalist-SELECT {
-    top: -65px; /* Mantiene la posición, ajusta según sea necesario */
-    left: 0; /* Asegúrate de que esté alineado al contenedor */
-    width: calc(100% - 20px); /* Ajusta el ancho para que ocupe todo el espacio disponible */
-    padding: 10px; /* Ajusta el padding si es necesario */
-    margin: 0 auto; /* Centra el botón en el contenedor */
+    top: -65px;
+    /* Mantiene la posición, ajusta según sea necesario */
+    left: 0;
+    /* Asegúrate de que esté alineado al contenedor */
+    width: calc(100% - 20px);
+    /* Ajusta el ancho para que ocupe todo el espacio disponible */
+    padding: 10px;
+    /* Ajusta el padding si es necesario */
+    margin: 0 auto;
+    /* Centra el botón en el contenedor */
   }
 
 }

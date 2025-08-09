@@ -27,7 +27,7 @@
   text-align: center;
   font-size: 14px;
   color: white;
-  background-color: #555;
+  background-color: #2c3e50;
   padding: 10px;
   padding: 10px;
   margin: 20px -15px 110px;
@@ -204,7 +204,7 @@ button[color="primary"]:hover {
   text-align: center;
   font-size: 14px;
   color: white;
-  background-color: #555;
+  background-color: #2c3e50;
   padding: 10px;
   margin: 20px -15px 110px;
   width: 100%;
@@ -255,16 +255,31 @@ button[color="primary"]:hover {
   }
 
   .footer {
+
+    font-size: 10px;
     position: relative;
-    left: -20px;
+    left: -5px;
     /* Salir del contenedor principal */
-    width: calc(100% + 40px);
+    width: calc(97% + 31px);
     /* Hacerlo más largo que el mat-card */
-    background-color: #333;
+    background-color: #2c3e50;
     /* Cambiar color si es necesario */
-    margin-top: auto;
-    /* Empuja el footer al final del contenedor */
   }
+
+
+  .minimalist-footer {
+    position: relative;
+    top: 550px;
+    text-align: center;
+    font-size: 10px;
+    color: white;
+    background-color: #2c3e50;
+    padding: 10px;
+
+    left: -5px;
+    width: calc(97% + 31px);
+  }
+
 
   .h2 {
     text-align: center;

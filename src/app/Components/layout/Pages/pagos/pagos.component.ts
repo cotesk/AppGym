@@ -55,7 +55,7 @@ export class PagosComponent {
 
     this.formularioPago = this.fb.group({
       usuario: ['', Validators.required],
-      observaciones: ['', Validators.required],
+      observaciones: ['',],
 
     });
     const storedImageData = localStorage.getItem('imagenSeleccionada');
@@ -138,7 +138,7 @@ export class PagosComponent {
 
     this.formularioPago = this.fb.group({
       usuario: ['', Validators.required],
-      observaciones: ['', Validators.required],
+      observaciones: ['',],
 
     });
 
@@ -341,7 +341,7 @@ export class PagosComponent {
     // Actualizar el valor del campo de búsqueda por código con el código del producto seleccionado
     this.formularioPago.get('usuario')?.setValue(selectedProduct.nombreCompleto);
 
-
+    console.log("Datos recibidos:",  this.idUsuarioSeleccionado);
 
     this._membresiaServicio.getMembresiaByUsuario(selectedProduct.idUsuario!).subscribe({
 
@@ -516,6 +516,12 @@ export class PagosComponent {
             Tipo = "anual";
           }
 
+          let obser = this.formularioPago.value.observaciones;
+
+          if (obser == "" || obser == null) {
+            obser = "Sin ninguna novedad"
+          }
+
           const _pago: Pagos = {
 
             pagoId: 0,
@@ -526,7 +532,7 @@ export class PagosComponent {
             tipoPago: Tipo,
             fechaPago: "string",
 
-            observaciones: this.formularioPago.value.observaciones,
+            observaciones: obser,
 
 
             // imageData: this.imageData,

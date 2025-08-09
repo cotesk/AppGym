@@ -192,13 +192,15 @@ button.pasar:hover {
 
 
 .footer {
+  position: relative;
   text-align: center;
   font-size: 14px;
   color: white;
-  background-color: #555;
+  background-color: #2c3e50;
   padding: 10px;
-  margin:20px -15px 110px;
-  width: 100%;
+  left: -20px;
+  /* Salir del contenedor principal */
+  width: calc(100% + 16px);
 }
 /* para que no se salgan las tabla del mat-card en vista movil */
 .table-container {
@@ -224,10 +226,14 @@ button.pasar:hover {
 
 @media (max-width: 768px) {
   .footer {
+   font-size: 10px;
     position: relative;
-    left: 0px; /* Salir del contenedor principal */
-    width: calc(100% + 40px); /* Hacerlo más largo que el mat-card */
-    background-color: #333; /* Cambiar color si es necesario */
+    left: -20px;
+    /* Salir del contenedor principal */
+    width: calc(97% + 27px);
+    /* Hacerlo más largo que el mat-card */
+    background-color: #2c3e50;
+    /* Cambiar color si es necesario */
   }
   mat-card {
     margin: 10px;

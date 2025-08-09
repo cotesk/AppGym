@@ -1,82 +1,94 @@
 <div class="form-container">
-  <h1 class="form-title">Registrar Pago</h1>
+  <h1 class="form-title">
+    <mat-icon>payments</mat-icon> Registrar Pago
+  </h1>
 
   <form class="form-content" [formGroup]="formularioPago">
     <!-- Selección de cliente -->
     <div class="button-container">
-    <mat-form-field class="form-field2 full-width">
-      <mat-label>Clientes</mat-label>
-      <input matInput type="text" placeholder="Buscar..." aria-label="Number" [matAutocomplete]="auto"
-        formControlName="usuario" (focus)="mostrarListaClientes()">
-      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="productoParaVenta($event)"
-        [displayWith]="mostrarUsuario">
-        <mat-option *ngFor="let option of listaClientesFiltrada" [value]="option">
-          <!-- {{option.nombre }} -->
-          {{ option.nombreCompleto!.length > 30 ? option.nombreCompleto!.slice(0, 30) + '...' : option.nombreCompleto }}
-          <hr *ngIf="!lastItem(option, listaClientesFiltrada)" class="separator">
-        </mat-option>
-      </mat-autocomplete>
-      <button mat-icon-button matSuffix aria-label="Buscar" class="futuristic-search-button">
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
+      <mat-form-field class="form-field2 full-width" appearance="fill">
+        <mat-label>Clientes</mat-label>
+        <mat-icon class="icon-search" matPrefix>person_search</mat-icon>
+        <input matInput type="text" placeholder="Buscar cliente..." aria-label="Buscar" [matAutocomplete]="auto"
+          formControlName="usuario" (focus)="mostrarListaClientes()">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="productoParaVenta($event)"
+          [displayWith]="mostrarUsuario">
+          <mat-option *ngFor="let option of listaClientesFiltrada" [value]="option">
+            {{ option.nombreCompleto!.length > 30 ? option.nombreCompleto!.slice(0, 30) + '...' : option.nombreCompleto }}
+            <hr *ngIf="!lastItem(option, listaClientesFiltrada)" class="separator">
+          </mat-option>
+        </mat-autocomplete>
+        <button mat-icon-button matSuffix aria-label="Buscar" class="futuristic-search-button">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
     <!-- Detalles del cliente -->
     <div class="details-container">
       <mat-form-field appearance="fill" class="form-field">
         <mat-label>Nombre Cliente</mat-label>
+        <mat-icon class="icon-client" matPrefix>person</mat-icon>
         <input matInput [value]="clienteSeleccionado" disabled />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="form-field">
         <mat-label>Nombre de la membresía</mat-label>
+        <mat-icon class="icon-membership" matPrefix>card_membership</mat-icon>
         <input matInput [value]="nombreMembresiaSeleccionado" disabled />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="form-field">
         <mat-label>Estado de Membresía</mat-label>
+        <mat-icon class="icon-price" matPrefix>verified_user</mat-icon>
         <input matInput [value]="estadoMembresiaSeleccionado" disabled />
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="form-field">
         <mat-label>Precio de la Membresía</mat-label>
+        <mat-icon class="icon-price" matPrefix>attach_money</mat-icon>
         <input matInput [value]="precioMembresiaSeleccionado" disabled />
       </mat-form-field>
 
-      <mat-form-field class="form-field">
+      <mat-form-field appearance="fill" class="form-field">
         <mat-label>Tipo de pago</mat-label>
+        <mat-icon class="icon-status" matPrefix>credit_card</mat-icon>
         <mat-select [(value)]="tipodePagoPorDefecto">
           <mat-option value="Efectivo">
-            <mat-icon>attach_money</mat-icon> Efectivo
+            <mat-icon  class="icon-price">attach_money</mat-icon> Efectivo
           </mat-option>
           <mat-option value="Transferencia">
-            <mat-icon>account_balance</mat-icon> Transferencia
+            <mat-icon class="icon-payment">account_balance</mat-icon> Transferencia
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
+    <!-- Observación e imagen -->
     <div class="observacion-imagen-container">
-      <!-- Observaciones -->
-
       <mat-form-field appearance="fill" class="form-field observacion-field">
-        <mat-label>Alguna Observacion</mat-label>
-        <textarea matInput autocomplete="off" formControlName="observaciones" rows="6" placeholder="Escribe aquí tu mensaje..." style="resize: none; width: 100%;"></textarea>
+        <mat-label>Alguna Observación</mat-label>
+        <mat-icon class="icon-observation" matPrefix>note_alt</mat-icon>
+        <textarea matInput autocomplete="off" formControlName="observaciones" rows="6" placeholder="Escribe aquí tu mensaje..."
+          style="resize: none; width: 100%;"></textarea>
       </mat-form-field>
 
       <!-- Imagen -->
       <div class="image-container" *ngIf="imagenSeleccionada">
-        <img [src]="imagenSeleccionada" alt="Imagen del cliente" class="image" (click)="verImagen(imagenSeleccionada)" />
+        <img [src]="imagenSeleccionada" alt="Imagen del cliente" class="image"
+          (click)="verImagen(imagenSeleccionada)" />
+        <div class="overlay">
+          <mat-icon >person</mat-icon>
+          <span>Cliente</span>
+        </div>
       </div>
     </div>
-
 
     <!-- Botón de registro -->
     <div class="button-container">
       <button mat-raised-button class="agregar2" [disabled]="!formularioPago.valid" (click)="registrar()">
-        <mat-icon>done</mat-icon> Registrar Pago
+        <mat-icon>done_all</mat-icon> Registrar Pago
       </button>
     </div>
-
   </form>
 </div>

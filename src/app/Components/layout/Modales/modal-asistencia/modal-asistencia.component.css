@@ -1,14 +1,70 @@
-mat-form-field{
-
+/* Estilo general del mat-dialog */
+::ng-deep .mat-dialog-container {
+  padding: 16px !important;
+  max-width: 100% !important;
   width: 100%;
-  margin: 10px 10px;
+  box-sizing: border-box;
+}
 
-  }
+/* Título centrado y más pequeño en móvil */
+h2[mat-dialog-title] {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
 
-  form{
-     width: 520px;
-  }
+/* Campos de formulario */
+.full-width {
+  width: 100% !important;
+}
 
+/* Información del usuario */
+.user-info {
+  margin-top: 10px;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.user-text {
+  margin: 4px 0;
+}
+
+.highlight {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Imagen de usuario */
+.image-preview {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 180px;
+  border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Botones de acción */
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.highlight {
+  color: #d32f2f;
+  font-weight: bold;
+}
 
 /* Añade este estilo para alinear el icono más abajo */
 .custom-upload-container mat-icon {
@@ -42,134 +98,18 @@ button.agregar[disabled]:hover {
   margin-right: auto; /* Mueve el botón "Guardar" al centro */
 }
 
-.icon-blue { color: #007bff; }
-.icon-orange { color: #fd7e14; }
-.icon-purple { color: #6f42c1; }
-.icon-yellow { color: #ffc107; }
-.icon-black { color: #343a40; }
-.icon-green {
-  color: rgb(0, 152, 0);
-}
-
-.icon-red {
-  color: red;
-}
-
-.suffix-container {
-  display: flex;
-  align-items: center;
-}
-
-button mat-icon.icon-black {
-  margin: auto;
-  display: block;
-}
-
-.suffix-container mat-icon {
-  margin-left: 0px; /* Opcional: agregar un poco de espacio entre el botón y el icono */
-}
-.suffix-container {
-  display: flex;
-  align-items: center;
-}
-
-.suffix-container .mat-icon-button {
-  margin-right: 4px; /* Ajusta este valor según sea necesario */
-}
-.content {
-  padding-top: 10px;
-  /* height: 450px; */
-}
-.row {
-  display: flex;
-  gap: 10px;
-
-  mat-form-field {
-    width: 50%;
-  }
-}
-
-/*Este es para color en lo mensaje de error  */
-.mat-error-custom {
-  color: white; /* Color del texto */
-  background-color: #f44336; /* Rojo, el color de fondo */
-  border-radius: 4px; /* Bordes redondeados */
-  padding: 2px; /* Espaciado interno */
-  margin-top: 1px; /* Margen superior */
-}
-.image-preview {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%; /* Ancho completo del contenedor */
-  height: 300px; /* Altura ajustable según tu diseño */
-  border: 1px solid #ccc;
-  margin: 1em 0; /* Margen para separación */
-  overflow: hidden; /* Ocultar contenido que sobresalga */
-  border-radius: 8px; /* Bordes redondeados (opcional) */
-  background-color: #f5f5f5; /* Color de fondo */
-}
-
-.preview-image {
-  max-width: 100%; /* Ajuste horizontal */
-  max-height: 100%; /* Ajuste vertical */
-  object-fit: cover; /* Rellena el contenedor manteniendo las proporciones */
-  cursor: pointer; /* Cambia el cursor al pasar sobre la imagen */
-  border-radius: 8px; /* Alineado con el contenedor */
-}
-.user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  max-width: 400px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-}
-
-.user-text {
-  color: #555;
-}
-
-.highlight {
-  color: #d32f2f;
-  font-weight: bold;
-}
-
-.separator {
-  border: none;
-  border-top: 1px solid red; /* Color rojo */
-  margin: 5px 0; /* Espaciado opcional */
-}
-
-@media (max-width: 768px) {
-
-  .row {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+/* Estilos responsivos para móviles */
+@media (max-width: 480px) {
+  h2[mat-dialog-title] {
+    font-size: 1.1em;
   }
 
-  .row mat-form-field {
-    width: 90%;
+  .mat-dialog-actions button {
+    flex: 1 1 100%;
+    margin-top: 8px;
   }
 
-  .dialog-actions {
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
+  .preview-image {
+    max-height: 140px;
   }
-
-  .dialog-actions button {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  form {
-    width: 300px !important;
-    /* height: 300px; */
-  }
-
-
-
 }

@@ -12,7 +12,11 @@
 
     <div class="row">
 
-      <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+
+
+  
+
+      <!-- <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
         <mat-label>Nombre Cliente</mat-label>
         <mat-select asp-for="clienteId" formControlName="clienteId"
          (selectionChange)="obtenerImag($event)">
@@ -23,11 +27,32 @@
 
         </mat-select>
 
+      </mat-form-field> -->
+
+
+       <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+        <mat-label>Nombre Cliente</mat-label>
+        <input matInput type="text" placeholder="Buscar..." aria-label="Number" [matAutocomplete]="auto"
+          formControlName="clienteId" (click)="mostrarListaClientes()">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="obtenerImag($event)"
+          [displayWith]="mostrarUsuario">
+          <mat-option *ngFor="let option of listaCliente" [value]="option.idUsuario">
+            <!-- {{option.nombre }} -->
+            {{ option.nombreCompleto!.length > 30 ? option.nombreCompleto!.slice(0, 30) + '...' : option.nombreCompleto }}
+            <hr *ngIf="!lastItem(option, listaCliente)" class="separator">
+          </mat-option>
+
+        </mat-autocomplete>
+
+        <button mat-icon-button matSuffix aria-label="Buscar" class="futuristic-search-button">
+          <mat-icon>search</mat-icon>
+        </button>
       </mat-form-field>
 
 
 
-      <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
+
+       <mat-form-field class="full-width" appearance="fill" style="width: 100%; margin-bottom: 1em;">
         <mat-label>Nombre Entrenador</mat-label>
         <mat-select
           asp-for="entrenadorId"
@@ -38,6 +63,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+
 
 
 
@@ -52,15 +78,19 @@
     <p class="user-text">Rol: <span class="highlight">{{ rolUsuario || 'N/A' }}</span></p>
   </div> -->
 
-  <div class="image-preview" *ngIf="imagenSeleccionada">
-    <img [src]="imagenSeleccionada" alt="Imagen del producto" class="preview-image"
-      (click)="verImagen(imagenSeleccionada)">
+<div class="image-preview" *ngIf="imagenSeleccionada">
+  <div class="image-container">
+    <img [src]="imagenSeleccionada" class="preview-image" (click)="verImagen(imagenSeleccionada)">
+    <div class="overlay">Cliente</div>
   </div>
+</div>
 
-  <div class="image-preview" *ngIf="imagenSeleccionadaEntrenador">
-    <img [src]="imagenSeleccionadaEntrenador" alt="Imagen del producto" class="preview-image"
-      (click)="verImagen(imagenSeleccionadaEntrenador)">
+<div class="image-preview" *ngIf="imagenSeleccionadaEntrenador">
+  <div class="image-container">
+    <img [src]="imagenSeleccionadaEntrenador" class="preview-image" (click)="verImagen(imagenSeleccionadaEntrenador)">
+    <div class="overlay">Entrenador</div>
   </div>
+</div>
 
 
 

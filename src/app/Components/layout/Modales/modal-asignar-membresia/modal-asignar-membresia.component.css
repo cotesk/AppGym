@@ -103,8 +103,8 @@ button mat-icon.icon-black {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Ancho completo del contenedor */
-  height: 300px; /* Altura ajustable según tu diseño */
+  width: 99%; /* Ancho completo del contenedor */
+  height: 200px; /* Altura ajustable según tu diseño */
   border: 1px solid #ccc;
   margin: 1em 0; /* Margen para separación */
   overflow: hidden; /* Ocultar contenido que sobresalga */

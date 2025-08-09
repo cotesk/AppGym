@@ -166,7 +166,7 @@
 }
 
 .ng-container-white {
-  background-color: #f4eeee; /* Fondo blanco */
+  background-color: #ffffff; /* Fondo blanco */
   color: black !important;
 }
 
@@ -195,31 +195,31 @@
 }
 
 .panel-red {
-  background-color: #f44336;
+  background-color: #c72c2c;
 }
 
 .panel-green {
-  background-color: #4caf50;
+  background-color: #126b12;
 }
 
 .panel-morado {
-  background-color: #9c27b0;
+  background-color: #522b41;
 }
 
 .panel-black {
-  background-color: #000000;
+  background-color: #242222;
 }
 
 .panel-azul {
-  background-color: #2196f3;
+  background-color: #365594;
 }
 
 .icon-black {
-  color: #000000;
+  color: #000000!important;
 }
 
 .icon-white {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .text-black {
@@ -229,15 +229,26 @@
 .text-white {
   color: #ffffff;
 }
-
-
-.text-black {
-  color: black ;
+::ng-deep .panel-red .mat-expansion-indicator::after {
+  color: #ffffff !important; /* Rojo */
 }
 
-.text-white {
-  color: white ;
+::ng-deep .panel-black .mat-expansion-indicator::after {
+  color: #ffffff !important; /* Azul */
 }
+::ng-deep .panel-morado .mat-expansion-indicator::after {
+  color: #ffffff !important; /* Azul */
+}
+::ng-deep .panel-azul .mat-expansion-indicator::after {
+  color: #ffffff !important; /* Azul */
+}
+::ng-deep .panel-green .mat-expansion-indicator::after {
+  color: #ffffff !important; /* Azul */
+}
+::ng-deep .panel-white .mat-expansion-indicator::after {
+  color: #000000 !important; /* Azul */
+}
+
 
 .icon-black {
   color: black !important;
@@ -246,6 +257,7 @@
 .icon-white {
   color: white !important;
 }
+
 
 
 .menu-item {
@@ -355,6 +367,12 @@
   font-size: 16px; */
   padding: 16px; /* Ajusta el padding según el diseño que prefieras */
   box-sizing: border-box;
+    /* background-image: url('/assets/Images/fondo.jpeg');  */
+  background-size: cover;         /* para que cubra todo el div */
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 20px;                  /* espacio interno para no pegarse al borde */
+  border-radius: 12px;            /* opcional: esquinas redondeadas */
 }
 mat-sidenav-container {
   /* height: calc(100svh - 65px); */
@@ -483,12 +501,50 @@ mat-sidenav-content {
 .content {
   height: 90vh;
 }
+.menu-item-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-hover-animado {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  border-radius: 6px;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+/* Hover */
+.menu-hover-animado:hover {
+  transform: translateX(5px) scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* background-color: rgba(255, 255, 255, 0.06); */
+  cursor: pointer;
+}
+.icono-animado {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.menu-hover-animado:hover .icono-animado {
+  transform: rotate(15deg) scale(1.1);
+}
+
 
 
 @media (max-width: 768px) {
   /* .content {
     height: 10vh;
   } */
+    .menu-hover-animado:active .icono-animado {
+    transform: rotate(15deg) scale(1.1);
+  }
+
+ .menu-hover-animado:active {
+    transform: translateX(5px) scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* background-color: rgba(255, 255, 255, 0.06); */
+  }
 
   .custom-menu {
     width: 2em;

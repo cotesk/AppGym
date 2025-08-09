@@ -30,7 +30,7 @@ export class ModalAsignarEntrenadoresComponent {
   listaCliente: Usuario[] = [];
   imagenSeleccionada: string | null = null;
   imagenSeleccionadaEntrenador: string | null = null;
-
+  listaClientesFiltrada: Usuario[] = [];
   urlApi: string = environment.endpoint;
   // membresiaSeleccionado!: Membresia | null;
 
@@ -153,7 +153,7 @@ export class ModalAsignarEntrenadoresComponent {
           const lista = data.value as Usuario[];
           this.listaCliente = lista;
 
-
+            console.log(this.listaCliente);
 
         }
       },
@@ -207,6 +207,21 @@ export class ModalAsignarEntrenadoresComponent {
   }
 
 
+
+
+  mostrarListaClientes(): void {
+    this.listaClientesFiltrada = this.listaCliente;
+  }
+
+  mostrarUsuario(usuario: Usuario): string {
+
+    return usuario.nombreCompleto!;
+
+  } lastItem(item: any, list: any[]): boolean {
+    return item === list[list.length - 1];
+  }
+
+
   ngOnInit(): void {
     if (this.datosMembresia != null) {
 
@@ -216,56 +231,56 @@ export class ModalAsignarEntrenadoresComponent {
 
       });
 
-  // Primero cargamos la lista de usuarios
-  this._usuarioServicio.listaUsuario().subscribe({
-    next: (data) => {
-      if (data.status) {
-        // Filtrar los usuarios según las condiciones
-        const lista = data.value as Usuario[];
+      // Primero cargamos la lista de usuarios
+      this._usuarioServicio.listaUsuario().subscribe({
+        next: (data) => {
+          if (data.status) {
+            // Filtrar los usuarios según las condiciones
+            const lista = data.value as Usuario[];
 
-        this.listaEntrenador = lista
-          .filter(p => p.esActivo == 1 && p.rolDescripcion !== "Administrador" && p.rolDescripcion !== "Clientes")
-          .sort((a, b) => a.nombreCompleto!.localeCompare(b.nombreCompleto!)); // Ordenar por nombre
+            this.listaEntrenador = lista
+              .filter(p => p.esActivo == 1 && p.rolDescripcion !== "Administrador" && p.rolDescripcion !== "Clientes")
+              .sort((a, b) => a.nombreCompleto!.localeCompare(b.nombreCompleto!)); // Ordenar por nombre
 
-        // Ahora buscamos el usuario con la idUsuario de datosMembresia
-        if (this.datosMembresia.entrenadorId) {
-          const usuario = this.listaEntrenador.find(item => item.idUsuario === this.datosMembresia.entrenadorId);
-          this.nombreUsuario = usuario?.nombreCompleto!;
-          this.rolUsuario = usuario?.rolDescripcion!;
-          this.cargarImagenEntrenador(this.datosMembresia.entrenadorId); // Cargar imagen después
-        }
-      }
-    },
-    error: (error) => {
-      console.error('Error al cargar la lista de usuarios:', error);
-    }
-  });
-
-
-    // Primero cargamos la lista de usuarios
-    this._usuarioServicio.listaClientes().subscribe({
-      next: (data) => {
-        if (data.status) {
-          // Filtrar los usuarios según las condiciones
-          const lista = data.value as Usuario[];
-
-          this.listaCliente = lista
-            .filter(p => p.esActivo == 1 )
-            .sort((a, b) => a.nombreCompleto!.localeCompare(b.nombreCompleto!)); // Ordenar por nombre
-
-          // Ahora buscamos el usuario con la idUsuario de datosMembresia
-          if (this.datosMembresia.clienteId) {
-            const usuario = this.listaCliente.find(item => item.idUsuario === this.datosMembresia.clienteId);
-            this.nombreUsuario = usuario?.nombreCompleto!;
-            this.rolUsuario = usuario?.rolDescripcion!;
-            this.cargarImagenProducto(this.datosMembresia.clienteId); // Cargar imagen después
+            // Ahora buscamos el usuario con la idUsuario de datosMembresia
+            if (this.datosMembresia.entrenadorId) {
+              const usuario = this.listaEntrenador.find(item => item.idUsuario === this.datosMembresia.entrenadorId);
+              this.nombreUsuario = usuario?.nombreCompleto!;
+              this.rolUsuario = usuario?.rolDescripcion!;
+              this.cargarImagenEntrenador(this.datosMembresia.entrenadorId); // Cargar imagen después
+            }
           }
+        },
+        error: (error) => {
+          console.error('Error al cargar la lista de usuarios:', error);
         }
-      },
-      error: (error) => {
-        console.error('Error al cargar la lista de usuarios:', error);
-      }
-    });
+      });
+
+
+      // Primero cargamos la lista de usuarios
+      this._usuarioServicio.listaClientes().subscribe({
+        next: (data) => {
+          if (data.status) {
+            // Filtrar los usuarios según las condiciones
+            const lista = data.value as Usuario[];
+
+            this.listaCliente = lista
+              .filter(p => p.esActivo == 1)
+              .sort((a, b) => a.nombreCompleto!.localeCompare(b.nombreCompleto!)); // Ordenar por nombre
+
+            // Ahora buscamos el usuario con la idUsuario de datosMembresia
+            if (this.datosMembresia.clienteId) {
+              const usuario = this.listaCliente.find(item => item.idUsuario === this.datosMembresia.clienteId);
+              this.nombreUsuario = usuario?.nombreCompleto!;
+              this.rolUsuario = usuario?.rolDescripcion!;
+              this.cargarImagenProducto(this.datosMembresia.clienteId); // Cargar imagen después
+            }
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar la lista de usuarios:', error);
+        }
+      });
 
 
 
@@ -418,6 +433,7 @@ export class ModalAsignarEntrenadoresComponent {
 
 
   private cargarImagenProducto(idUsuario: number) {
+     console.log(idUsuario);
     this._usuarioServicio.obtenerImagenUsuario(idUsuario).subscribe(
       (response: any) => {
         if (response && response.imageData) {
@@ -460,8 +476,8 @@ export class ModalAsignarEntrenadoresComponent {
   obtenerImag(event: any) {
 
     // Obtener el ID seleccionado
-    const idMembresiaSeleccionada = event.value;
-
+    const idMembresiaSeleccionada = event.option.value;
+   console.log(idMembresiaSeleccionada);
     // Buscar la membresía completa en la lista
     const membresiaSeleccionada = this.listaCliente.find(item => item.idUsuario === idMembresiaSeleccionada);
 
@@ -516,7 +532,7 @@ export class ModalAsignarEntrenadoresComponent {
     if (this.datosMembresia == null) {
       this._entrenadorServicio.asignarEntrenadorACliente(_membresia).subscribe({
         next: (data) => {
-          if (data.mensaje=="Entrenador asignado exitosamente") {
+          if (data.mensaje == "Entrenador asignado exitosamente") {
             Swal.fire({
               icon: 'success',
               title: 'Entrenador Registrado',
@@ -524,28 +540,28 @@ export class ModalAsignarEntrenadoresComponent {
             });
             // this._utilidadServicio.mostrarAlerta("El producto fue registrado", "Exito");
             this.modalActual.close("true");
-          }  else {
-              Swal.fire({
-                icon: 'error',
-                title: 'ERROR',
-                text: `No se pudo guardar la membresia`,
-              });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'ERROR',
+              text: `No se pudo guardar la membresia`,
+            });
 
-            }
+          }
 
-            // this._utilidadServicio.mostrarAlerta("Ya existe un producto con ese mismo nombre", "Error");
+          // this._utilidadServicio.mostrarAlerta("Ya existe un producto con ese mismo nombre", "Error");
 
         },
         error: (error) => {
 
-          if(error.error.mensaje=="El cliente ya tiene un entrenador asignado."){
+          if (error.error.mensaje == "El cliente ya tiene un entrenador asignado.") {
             Swal.fire({
               icon: 'error',
               title: 'ERROR',
               text: `El cliente ya tiene un entrenador asignado.`,
             });
             return
-          }else{
+          } else {
             let idUsuario: number = 0;
 
 
@@ -595,9 +611,9 @@ export class ModalAsignarEntrenadoresComponent {
 
       });
     } else {
-      this._entrenadorServicio.editarAsignacion(this.datosMembresia.asignacionId,_membresia).subscribe({
+      this._entrenadorServicio.editarAsignacion(this.datosMembresia.asignacionId, _membresia).subscribe({
         next: (data) => {
-          if (data.mensaje=="Asignación actualizada exitosamente.") {
+          if (data.mensaje == "Asignación actualizada exitosamente.") {
             Swal.fire({
               icon: 'success',
               title: 'Asignacion Editada',
@@ -607,85 +623,85 @@ export class ModalAsignarEntrenadoresComponent {
             this.modalActual.close("true");
           }
 
-            else {
-              Swal.fire({
-                icon: 'error',
-                title: 'ERROR',
-                text: `No se pudo editar el producto`,
-              });
+          else {
+            Swal.fire({
+              icon: 'error',
+              title: 'ERROR',
+              text: `No se pudo editar el producto`,
+            });
 
-            }
+          }
 
-            // this._utilidadServicio.mostrarAlerta("Ya existe un producto con ese mismo nombre", "Error");
+          // this._utilidadServicio.mostrarAlerta("Ya existe un producto con ese mismo nombre", "Error");
 
         },
         error: (e) => {
 
-          if(e.error.mensaje=="El cliente ya está asignado a otro entrenador."){
+          if (e.error.mensaje == "El cliente ya está asignado a otro entrenador.") {
             Swal.fire({
               icon: 'error',
               title: 'ERROR',
               text: `El cliente ya está asignado a otro entrenador.`,
             });
             return
-          }else
-           if(e.error.mensaje=="Ya existe una asignación con este cliente y entrenador."){
-            Swal.fire({
-              icon: 'error',
-              title: 'ERROR',
-              text: `Ya existe una asignación con este cliente y entrenador.`,
-            });
-            return
-          }
-          else if(e.error.mensaje=="Asignación no encontrada."){
-            Swal.fire({
-              icon: 'error',
-              title: 'ERROR',
-              text: `Asignación no encontrada.`,
-            });
-
-            return
-          }
-          else{
-            let idUsuario: number = 0;
-
-
-            // Obtener el idUsuario del localStorage
-            const usuarioString = localStorage.getItem('usuario');
-            const bytes = CryptoJS.AES.decrypt(usuarioString!, this.CLAVE_SECRETA);
-            const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
-            if (datosDesencriptados !== null) {
-              const usuario = JSON.parse(datosDesencriptados);
-              idUsuario = usuario.idUsuario; // Obtener el idUsuario del objeto usuario
-
-              this._usuarioServicio.obtenerUsuarioPorId(idUsuario).subscribe(
-                (usuario: any) => {
-
-                  console.log('Usuario obtenido:', usuario);
-                  let refreshToken = usuario.refreshToken
-
-                  // Manejar la renovación del token
-                  this._usuarioServicio.renovarToken(refreshToken).subscribe(
-                    (response: any) => {
-                      console.log('Token actualizado:', response.token);
-                      // Guardar el nuevo token de acceso en el almacenamiento local
-                      localStorage.setItem('authToken', response.token);
-                      this.guardarEditar_Producto();
-                    },
-                    (error: any) => {
-                      console.error('Error al actualizar el token:', error);
-                    }
-                  );
-
-
-
-                },
-                (error: any) => {
-                  console.error('Error al obtener el usuario:', error);
-                }
-              );
+          } else
+            if (e.error.mensaje == "Ya existe una asignación con este cliente y entrenador.") {
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: `Ya existe una asignación con este cliente y entrenador.`,
+              });
+              return
             }
-          }
+            else if (e.error.mensaje == "Asignación no encontrada.") {
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: `Asignación no encontrada.`,
+              });
+
+              return
+            }
+            else {
+              let idUsuario: number = 0;
+
+
+              // Obtener el idUsuario del localStorage
+              const usuarioString = localStorage.getItem('usuario');
+              const bytes = CryptoJS.AES.decrypt(usuarioString!, this.CLAVE_SECRETA);
+              const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
+              if (datosDesencriptados !== null) {
+                const usuario = JSON.parse(datosDesencriptados);
+                idUsuario = usuario.idUsuario; // Obtener el idUsuario del objeto usuario
+
+                this._usuarioServicio.obtenerUsuarioPorId(idUsuario).subscribe(
+                  (usuario: any) => {
+
+                    console.log('Usuario obtenido:', usuario);
+                    let refreshToken = usuario.refreshToken
+
+                    // Manejar la renovación del token
+                    this._usuarioServicio.renovarToken(refreshToken).subscribe(
+                      (response: any) => {
+                        console.log('Token actualizado:', response.token);
+                        // Guardar el nuevo token de acceso en el almacenamiento local
+                        localStorage.setItem('authToken', response.token);
+                        this.guardarEditar_Producto();
+                      },
+                      (error: any) => {
+                        console.error('Error al actualizar el token:', error);
+                      }
+                    );
+
+
+
+                  },
+                  (error: any) => {
+                    console.error('Error al obtener el usuario:', error);
+                  }
+                );
+              }
+            }
 
         }
 

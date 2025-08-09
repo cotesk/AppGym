@@ -63,7 +63,7 @@ export class DashBoardComponent implements OnInit {
   totalCliente: string = "0";
   clientesConMasAsistencias: any[] = []; //me contiene el top 3
   totalClientesConMasAsistencias: any[] = []; //me contiene todas las asistencia
-  filtro = '';
+
   // Columnas de la tabla de clientes
   clientesColumns: string[] = ['imagen', 'nombre', 'asistencias'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -76,9 +76,12 @@ export class DashBoardComponent implements OnInit {
   private readonly CLAVE_SECRETA = '9P#5a^6s@Lb!DfG2@17#Co-Tes#07';
   totalEgresos: string = "0";
   myChart: Chart | undefined;
-
-
+  productosPorPagina = 5;
+  paginaActual = 1;
+  filtro = '';
   isMobile: boolean = false;
+
+
   constructor(
     private _dashboardServicio: DashBoardService,
     public dialog: MatDialog,
@@ -541,6 +544,44 @@ export class DashBoardComponent implements OnInit {
       }
     });
 
+  }
+
+  get productosPaginados() {
+    const productosFiltrados = this.productosFiltrados();
+    const inicio = (this.paginaActual - 1) * this.productosPorPagina;
+    const fin = inicio + this.productosPorPagina;
+    return productosFiltrados.slice(inicio, fin);
+  }
+
+  
+  productosFiltrados() {
+    const filtroLower = this.filtro.toLowerCase();
+    return this.totalClientesConMasAsistencias.filter(producto =>
+      producto.nombre.toLowerCase().includes(filtroLower)
+    
+    );
+  }
+
+    siguientePagina() {
+    if (this.paginaActual * this.productosPorPagina < this.productosFiltrados().length) {
+      this.paginaActual++;
+    }
+  }
+
+  paginaAnterior() {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+    }
+  }
+
+  cambiarPagina(pagina: number) {
+    if (pagina >= 1 && pagina <= this.numeroDePaginas) {
+      this.paginaActual = pagina;
+    }
+  }
+
+  get numeroDePaginas() {
+    return Math.ceil(this.productosFiltrados().length / this.productosPorPagina);
   }
 
   Caja() {

@@ -536,6 +536,7 @@ export class ModalAsignarMembresiaComponent {
 
 
   private cargarImagenProducto(idUsuario: number) {
+      console.log(idUsuario);
     this._usuarioServicio.obtenerImagenUsuario(idUsuario).subscribe(
       (response: any) => {
         if (response && response.imageData) {
