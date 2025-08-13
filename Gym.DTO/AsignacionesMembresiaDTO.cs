@@ -18,6 +18,7 @@ namespace Gym.DTO
   
         public string? NombreUsuario { get; set; }
 
+        public string? TelefonoUsuario { get; set; }
         public string? NombreMembresia { get; set; }
 
         public string? FechaVencimiento { get; set; }

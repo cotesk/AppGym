@@ -428,6 +428,7 @@ namespace Gym.API.Controllers
                     IdUsuario = a.IdUsuario,
                     NombreUsuario = a.IdUsuarioNavigation != null ? a.IdUsuarioNavigation.NombreCompleto : null,
                     IdMembresia = a.IdMembresia,
+                    TelefonoUsuario = a.IdUsuarioNavigation != null ? a.IdUsuarioNavigation.Telefono : null,
                     NombreMembresia = a.IdMembresiaNavigation != null ? a.IdMembresiaNavigation.Nombre : null,
                     FechaVencimiento = a.FechaVencimiento.HasValue ? a.FechaVencimiento.Value.ToString("dd/MM/yyyy hh:mm tt") : null,
                     Estado = a.Estado
