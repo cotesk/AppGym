@@ -23,5 +23,7 @@ namespace Gym.DTO
 
         public string? TipoPago { get; set; }
 
+        public string? ImagenUrl { get; set; }
+
     }
 }

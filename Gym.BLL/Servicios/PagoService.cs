@@ -284,7 +284,8 @@ namespace Gym.BLL.Servicios
                 IdUsuario = pago.IdUsuario,
                 FechaPago = pago.FechaPago,
                 Monto = pago.Monto,
-                TipoPago = pago.TipoPago
+                TipoPago = pago.TipoPago,
+
             };
             _context.HistorialPagos.Add(historialPago);
             await _context.SaveChangesAsync();
@@ -373,7 +374,8 @@ namespace Gym.BLL.Servicios
                 NombreUsuario = hp.IdUsuarioNavigation?.NombreCompleto, // Extraer el nombre del usuario relacionado
                 FechaPago = hp.FechaPago?.ToString("dd/MM/yyyy hh:mm tt") ?? "Fecha no disponible",
                 MontoTexto = hp.Monto.ToString(), // Convertir el monto a formato de texto
-                TipoPago = hp.TipoPago
+                TipoPago = hp.TipoPago,
+                ImagenUrl = hp.IdUsuarioNavigation != null ? hp.IdUsuarioNavigation.ImagenUrl : null,
 
             }).ToList();
         }

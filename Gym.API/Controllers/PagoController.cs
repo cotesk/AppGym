@@ -267,6 +267,8 @@ namespace Gym.API.Controllers
                     PagoId = u.PagoId,
                     MontoTexto = u.Monto.ToString(),
                     NombreUsuario = u.IdUsuarioNavigation.NombreCompleto,
+                    ImagenUrl = u.IdUsuarioNavigation != null ? u.IdUsuarioNavigation.ImagenUrl : null,
+
                     FechaPago = ((DateTime)u.FechaPago).ToString("dd/MM/yyyy hh:mm tt", CultureInfo.InvariantCulture),
                     TipoPago = u.TipoPago,
                 });

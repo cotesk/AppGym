@@ -25,6 +25,6 @@ namespace Gym.DTO
 
         public string? Observaciones { get; set; }
 
-
+      
     }
 }

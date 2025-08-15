@@ -66,7 +66,7 @@ namespace Gym.API.Controllers
 
 
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         [Route("Guardar")]
         public async Task<IActionResult> Guardar([FromBody] MembresiaDTO membresia)
@@ -101,7 +101,7 @@ namespace Gym.API.Controllers
 
 
         }
-        //[Authorize]
+        [Authorize]
         [HttpPut]
         [Route("Editar")]
         public async Task<IActionResult> Editar([FromBody] MembresiaDTO categoria)
@@ -128,7 +128,7 @@ namespace Gym.API.Controllers
 
 
         }
-        //[Authorize]
+        [Authorize]
         [HttpDelete]
         [Route("Eliminar/{id:int}")]
         public async Task<IActionResult> Eliminar(int id)
@@ -154,7 +154,7 @@ namespace Gym.API.Controllers
         }
 
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         [Route("Asignar")]
         public async Task<IActionResult> Asignar([FromBody] AsignacionesMembresiaDTO asignacion)
@@ -208,7 +208,7 @@ namespace Gym.API.Controllers
                         NombreUsuario = a.IdUsuarioNavigation != null ? a.IdUsuarioNavigation.NombreCompleto : null, // Nombre del usuario
                         IdMembresia = a.IdMembresia,
                         NombreMembresia = a.IdMembresiaNavigation != null ? a.IdMembresiaNavigation.Nombre : null, // Nombre de la membresía
-                     
+                        ImagenUrl = a.IdUsuarioNavigation != null ? a.IdUsuarioNavigation.ImagenUrl : null,
                         FechaVencimiento = a.FechaVencimiento.HasValue ? a.FechaVencimiento.Value.ToString("dd/MM/yyyy hh:mm tt") : null,
                         Estado = a.Estado
                     })
@@ -358,6 +358,7 @@ namespace Gym.API.Controllers
                     AsignacionId = a.AsignacionId,
                     IdUsuario = a.IdUsuario,
                     NombreUsuario = a.IdUsuarioNavigation != null ? a.IdUsuarioNavigation.NombreCompleto : null,
+                    ImagenUrl = a.IdUsuarioNavigation != null ? a.IdUsuarioNavigation.ImagenUrl : null,
                     IdMembresia = a.IdMembresia,
                     NombreMembresia = a.IdMembresiaNavigation != null ? a.IdMembresiaNavigation.Nombre : null,
                     FechaVencimiento = a.FechaVencimiento.HasValue ? a.FechaVencimiento.Value.ToString("dd/MM/yyyy hh:mm tt") : null,

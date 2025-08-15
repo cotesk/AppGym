@@ -21,7 +21,7 @@ namespace Gym.DTO
 
         public bool PagoRealizado { get; set; }
 
-
+        public string? ImagenUrl { get; set; }
 
     }
 }

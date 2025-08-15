@@ -24,7 +24,7 @@ namespace Gym.DTO
         public string? FechaVencimiento { get; set; }
 
         public string? Estado { get; set; }
-
+        public string? ImagenUrl { get; set; }
 
     }
 }
