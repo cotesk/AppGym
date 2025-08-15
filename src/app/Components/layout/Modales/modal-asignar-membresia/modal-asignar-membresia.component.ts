@@ -376,15 +376,16 @@ export class ModalAsignarMembresiaComponent {
 
   usuario() {
 
-    this._usuarioServicio.listaClientes().subscribe({
+    this._usuarioServicio.listaUsuario().subscribe({
 
       next: (data) => {
         if (data.status) {
 
-          this.listaClientes = data.value.sort((a: Usuario, b: Usuario) => a.nombreCompleto!.localeCompare(b.nombreCompleto!));
+           this.listaClientes = data.value.sort((a: Usuario, b: Usuario) => a.nombreCompleto!.localeCompare(b.nombreCompleto!));
 
           const lista = data.value as Usuario[];
-          this.listaClientes = lista.filter(p => p.esActivo == 1)
+          this.listaClientes = lista.filter(p => p.esActivo == 1 && p.rolDescripcion == "Clientes")
+
 
 
         }
@@ -539,8 +540,8 @@ export class ModalAsignarMembresiaComponent {
       console.log(idUsuario);
     this._usuarioServicio.obtenerImagenUsuario(idUsuario).subscribe(
       (response: any) => {
-        if (response && response.imageData) {
-          this.imagenSeleccionada = `data:image/png;base64,${response.imageData}`;
+        if (response && response.imagenUrl) {
+          this.imagenSeleccionada = `${response.imagenUrl}`;
         } else {
           console.error('Imagen no disponible');
           this.imagenSeleccionada = 'ruta/de/imagen/predeterminada.png'; // O deja nulo
@@ -555,7 +556,7 @@ export class ModalAsignarMembresiaComponent {
   verImagen(imageData: string) {
     this.dialog.open(VerImagenProductoModalComponent, {
       data: {
-        imageData: imageData
+        imagenes: [imageData]
       }
     });
   }

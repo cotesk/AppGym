@@ -143,17 +143,22 @@ export class ModalAsignarEntrenadoresComponent {
 
     })
 
-    this._usuarioServicio.listaClientes().subscribe({
+    this._usuarioServicio.listaUsuario().subscribe({
 
       next: (data) => {
         if (data.status) {
 
-          this.listaCliente = data.value.sort((a: Usuario, b: Usuario) => a.nombreCompleto!.localeCompare(b.nombreCompleto!));
+          // this.listaCliente = data.value.sort((a: Usuario, b: Usuario) => a.nombreCompleto!.localeCompare(b.nombreCompleto!));
+
+          // const lista = data.value as Usuario[];
+          // this.listaCliente = lista;
+
+             this.listaCliente = data.value.sort((a: Usuario, b: Usuario) => a.nombreCompleto!.localeCompare(b.nombreCompleto!));
 
           const lista = data.value as Usuario[];
-          this.listaCliente = lista;
+          this.listaCliente = lista.filter(p => p.esActivo == 1 && p.rolDescripcion == "Clientes")
 
-            console.log(this.listaCliente);
+            // console.log(this.listaCliente);
 
         }
       },
@@ -436,8 +441,8 @@ export class ModalAsignarEntrenadoresComponent {
      console.log(idUsuario);
     this._usuarioServicio.obtenerImagenUsuario(idUsuario).subscribe(
       (response: any) => {
-        if (response && response.imageData) {
-          this.imagenSeleccionada = `data:image/png;base64,${response.imageData}`;
+        if (response && response.imagenUrl) {
+          this.imagenSeleccionada = `${response.imagenUrl}`;
         } else {
           console.error('Imagen no disponible');
           this.imagenSeleccionada = 'ruta/de/imagen/predeterminada.png'; // O deja nulo
@@ -452,8 +457,8 @@ export class ModalAsignarEntrenadoresComponent {
   private cargarImagenEntrenador(idUsuario: number) {
     this._usuarioServicio.obtenerImagenUsuario(idUsuario).subscribe(
       (response: any) => {
-        if (response && response.imageData) {
-          this.imagenSeleccionadaEntrenador = `data:image/png;base64,${response.imageData}`;
+        if (response && response.imagenUrl) {
+          this.imagenSeleccionadaEntrenador = `${response.imagenUrl}`;
         } else {
           console.error('Imagen no disponible');
           this.imagenSeleccionadaEntrenador = 'ruta/de/imagen/predeterminada.png'; // O deja nulo
@@ -468,7 +473,7 @@ export class ModalAsignarEntrenadoresComponent {
   verImagen(imageData: string) {
     this.dialog.open(VerImagenProductoModalComponent, {
       data: {
-        imageData: imageData
+        imagenes: [imageData]
       }
     });
   }

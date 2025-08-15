@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { AsistenciaPersonalService } from '../../../../Services/asistencia.service';
 import { ModalAsistenciaComponent } from '../../Modales/modal-asistencia/modal-asistencia.component';
 import { CalendarioModalComponent } from '../../Modales/calendario-modal/calendario-modal.component';
+import { VerImagenProductoModalComponent } from '../../Modales/ver-imagen-producto-modal/ver-imagen-producto-modal.component';
 
 @Component({
   selector: 'app-asistencia',
@@ -21,7 +22,7 @@ export class AsistenciaComponent {
 
 
 
-  columnasTabla: string[] = ['asistenciaId','nombreUsuario','fechaAsistencia', 'pagoRealizado', 'acciones' ];
+  columnasTabla: string[] = ['asistenciaId', 'imagen','nombreUsuario','fechaAsistencia', 'pagoRealizado', 'acciones' ];
   dataInicio: AsitenciaPersonal[] = [];
   dataListaAsistencia = new MatTableDataSource(this.dataInicio);
   @ViewChild(MatPaginator) paginacionTabla!: MatPaginator;
@@ -163,7 +164,15 @@ export class AsistenciaComponent {
     this.page = 1;
     this.obtenerAsistencia();
   }
-
+  
+  verImagen(usuario: any): void {
+    // console.log(usuario);
+    this.dialog.open(VerImagenProductoModalComponent, {
+      data: {
+        imagenes: [usuario.imagenUrl]
+      }
+    });
+  }
 
   verCalendario(idUsuario: number): void {
 

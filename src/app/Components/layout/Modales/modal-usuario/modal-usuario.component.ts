@@ -41,6 +41,7 @@ export class ModalUsuarioComponent implements OnInit {
   passwordErrors: string[] = [];
   nuevoArchivo: File | null = null;
   nombreUsuario: string = "";
+  nombreImagen: string = '';
   rolUsuario: string = "";
   @ViewChild(MatTooltip) tooltip!: MatTooltip;
   @ViewChild('videoElement', { static: false }) videoElement!: ElementRef<HTMLVideoElement>;
@@ -60,7 +61,7 @@ export class ModalUsuarioComponent implements OnInit {
     this.formularioUsuario = this.fb.group({
 
       nombreCompleto: ['', [Validators.required, this.letrasSinNumerosValidator(), Validators.maxLength(25)]],
-      correo: ['', [ Validators.email, this.validateEmailDomain, Validators.maxLength(35)]],
+      correo: ['', [Validators.email, this.validateEmailDomain, Validators.maxLength(35)]],
       idRol: ['', Validators.required],
       clave: ['', [
         // Validators.required,
@@ -77,7 +78,7 @@ export class ModalUsuarioComponent implements OnInit {
       cedula: ['', [Validators.pattern('[0-9]*'), Validators.maxLength(10)]],
     });
 
-    
+
     if (datosUsuario != null) {
       this.tituloAccion = "Editar";
       this.botonAccion = "Actualizar";
@@ -85,58 +86,7 @@ export class ModalUsuarioComponent implements OnInit {
       this.modoEdicion2 = false;
     }
 
-    this._rolServicio.lista().subscribe({
-
-      next: (data) => {
-        if (data.status)
-          data.value.sort((a: Rol, b: Rol) => a.nombre.localeCompare(b.nombre));
-        this.listaRoles = data.value;
-        // this.listaRoles = data.value
-      },
-      error: (e) => {
-
-        let idUsuario: number = 0;
-
-
-        // Obtener el idUsuario del localStorage
-        const usuarioString = localStorage.getItem('usuario');
-        const bytes = CryptoJS.AES.decrypt(usuarioString!, this.CLAVE_SECRETA);
-        const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
-        if (datosDesencriptados !== null) {
-          const usuario = JSON.parse(datosDesencriptados);
-          idUsuario = usuario.idUsuario; // Obtener el idUsuario del objeto usuario
-
-          this._usuarioServicio.obtenerUsuarioPorId(idUsuario).subscribe(
-            (usuario: any) => {
-
-              console.log('Usuario obtenido:', usuario);
-              let refreshToken = usuario.refreshToken
-
-              // Manejar la renovación del token
-              this._usuarioServicio.renovarToken(refreshToken).subscribe(
-                (response: any) => {
-                  console.log('Token actualizado:', response.token);
-                  // Guardar el nuevo token de acceso en el almacenamiento local
-                  localStorage.setItem('authToken', response.token);
-                  this.lista();
-                },
-                (error: any) => {
-                  console.error('Error al actualizar el token:', error);
-                }
-              );
-
-
-
-            },
-            (error: any) => {
-              console.error('Error al obtener el usuario:', error);
-            }
-          );
-        }
-
-      }
-
-    })
+    this.lista();
 
   }
   lista() {
@@ -224,7 +174,7 @@ export class ModalUsuarioComponent implements OnInit {
       })
 
     }
-
+    console.log(this.datosUsuario);
   }
 
   DesactivarCamara() {
@@ -427,6 +377,12 @@ export class ModalUsuarioComponent implements OnInit {
 
       archivoBlob = new Blob([arrayBuffer], { type: 'image/png' });
       console.log('Usando imagen tomada');
+      // Genera un número aleatorio de 5 dígitos
+      const numerosAleatorios = Math.floor(10000 + Math.random() * 90000);
+
+      // Crea un nombre único para la imagen
+
+      this.nombreImagen = `PorFoto_${numerosAleatorios}.png`;
     }
     // Verifica si se seleccionó una foto
     else if (this.nuevoArchivo) {
@@ -446,17 +402,24 @@ export class ModalUsuarioComponent implements OnInit {
     else {
       const archivo = "assets/Images/defecto2.png";
       const obtenerBlobDesdeArchivo = (rutaArchivo: string): Promise<Blob> => {
-        return fetch(rutaArchivo).then(response => response.blob());
+        return fetch(rutaArchivo).then(response => {
+          return response.blob();
+        });
       };
-
-       obtenerBlobDesdeArchivo(archivo).then(blob => {
+      obtenerBlobDesdeArchivo(archivo).then(blob => {
         const lector = new FileReader();
         lector.onload = (e) => {
           if (typeof e.target?.result === 'string') {
-            // Crea una URL segura para la imagen
-            // this.previsualizacion = this.sanitizer.bypassSecurityTrustUrl(e.target?.result);
             this.imageData = e.target?.result as string;
-            this.imagenSeleccionada = true;
+
+            // Genera un número aleatorio de 5 dígitos
+            const numerosAleatorios = Math.floor(10000 + Math.random() * 90000);
+
+            // Crea un nombre único para la imagen
+
+            this.nombreImagen = `PorDefecto_${numerosAleatorios}.png`;
+
+            // this.imagenSeleccionada = true;
             // this.nuevoArchivo = archivo;
             archivoBlob = this.nuevoArchivo;
             this.procesarArchivo(archivoBlob!);
@@ -542,7 +505,8 @@ export class ModalUsuarioComponent implements OnInit {
       direccion: this.formularioUsuario.value.direccion,
       telefono: this.formularioUsuario.value.telefono,
       cedula: this.formularioUsuario.value.cedula,
-
+      nombreImagen: this.nombreImagen || null,
+      imagenUrl: "",
       // imageData: this.imageData,
     }
 
@@ -640,7 +604,7 @@ export class ModalUsuarioComponent implements OnInit {
 
       })
     } else {
-
+      console.log(_usuario);
       this._usuarioServicio.editar(_usuario).subscribe({
 
         next: (data) => {
@@ -741,6 +705,7 @@ export class ModalUsuarioComponent implements OnInit {
         },
         error: (e) => {
 
+          console.log(e);
 
           // Swal.fire({
           //   icon: 'error',

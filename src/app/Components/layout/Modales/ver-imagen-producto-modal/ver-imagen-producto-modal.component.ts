@@ -9,92 +9,99 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 })
 export class VerImagenProductoModalComponent {
-  imageData: SafeResourceUrl;
-  @ViewChild('imageContainer') imageContainer!: ElementRef;
+  imagenes: string[] = [];
+  imagenActual: SafeResourceUrl = '';
+  indiceActual: number = 0;
 
-  zoomLevel: number = 1;
-  isPanning: boolean = false;
-  startX: number = 0;
-  startY: number = 0;
-  offsetX: number = 0;
-  offsetY: number = 0;
+  @ViewChild('imageContainer') imageContainer!: ElementRef;
+  zoomLevel = 1;
+  offsetX = 0;
+  offsetY = 0;
+  isPanning = false;
+  startX = 0;
+  startY = 0;
 
   constructor(
     public dialogRef: MatDialogRef<VerImagenProductoModalComponent>,
     private sanitizer: DomSanitizer,
-    @Inject(MAT_DIALOG_DATA) public data: { imageData: string }) {
-    // this.imageData = this.sanitizer.bypassSecurityTrustUrl(data.imageData);
-    this.imageData = this.sanitizer.bypassSecurityTrustResourceUrl(data.imageData);
+    @Inject(MAT_DIALOG_DATA) public data: { imagenes: string[] }
+  ) {
+    console.log(data.imagenes);
+    this.imagenes = data.imagenes || [];
+    console.log(this.imagenes);
+    // if (this.imagenes.length > 0) {
+    //   this.imagenActual = this.sanitizer.bypassSecurityTrustResourceUrl(this.imagenes[0]);
+    // }
   }
+
 
   cerrarDialog() {
     this.dialogRef.close();
   }
 
-  zoomIn() {
-    this.zoomLevel += 0.1;
+  startPan(event: MouseEvent | TouchEvent): void {
+    event.preventDefault(); // Evita comportamientos predeterminados
+    this.isPanning = true;
+    const pos = this.getEventPosition(event);
+    this.startX = pos.x - this.offsetX;
+    this.startY = pos.y - this.offsetY;
   }
 
-  zoomOut() {
-    if (this.zoomLevel > 0.1) {
-      this.zoomLevel -= 0.1;
-    }
+  panImage(event: MouseEvent | TouchEvent): void {
+    if (!this.isPanning) return;
+    event.preventDefault(); // Evita comportamientos predeterminados
+    const pos = this.getEventPosition(event);
+    this.offsetX = pos.x - this.startX;
+    this.offsetY = pos.y - this.startY;
   }
 
-  resetZoom() {
+
+  endPan(): void {
+    this.isPanning = false;
+  }
+
+  zoomIn(): void {
+    this.zoomLevel = Math.min(this.zoomLevel + 0.1, 3); // Máximo 3x
+  }
+
+  zoomOut(): void {
+    this.zoomLevel = Math.max(this.zoomLevel - 0.1, 1); // Mínimo 1x
+  }
+
+  resetZoom(): void {
     this.zoomLevel = 1;
-    this.startX = 0;
-    this.startY = 0;
     this.offsetX = 0;
     this.offsetY = 0;
   }
 
-  // startPan(event: MouseEvent) {
-  //   this.isPanning = true;
-  //   this.startX = event.clientX;
-  //   this.startY = event.clientY;
-  // }
-  startPan(event: MouseEvent | TouchEvent) {
-    this.isPanning = true;
+  private getEventPosition(event: MouseEvent | TouchEvent): { x: number; y: number } {
     if (event instanceof MouseEvent) {
-      this.startX = event.clientX;
-      this.startY = event.clientY;
-    } else if (event instanceof TouchEvent) {
-      this.startX = event.touches[0].clientX;
-      this.startY = event.touches[0].clientY;
+      return { x: event.clientX, y: event.clientY };
+    } else {
+      const touch = event.touches[0] || event.changedTouches[0];
+      return { x: touch.clientX, y: touch.clientY };
     }
   }
 
-  endPan() {
-    this.isPanning = false;
-  }
 
-  // panImage(event: MouseEvent) {
-  //   if (this.isPanning) {
-  //     const deltaX = event.clientX - this.startX;
-  //     const deltaY = event.clientY - this.startY;
-  //     this.offsetX += deltaX;
-  //     this.offsetY += deltaY;
-  //     this.startX = event.clientX;
-  //     this.startY = event.clientY;
-  //   }
-  // }
-  panImage(event: MouseEvent | TouchEvent) {
-    if (this.isPanning) {
-      let deltaX, deltaY;
-      if (event instanceof MouseEvent) {
-        deltaX = event.clientX - this.startX;
-        deltaY = event.clientY - this.startY;
-        this.startX = event.clientX;
-        this.startY = event.clientY;
-      } else if (event instanceof TouchEvent) {
-        deltaX = event.touches[0].clientX - this.startX;
-        deltaY = event.touches[0].clientY - this.startY;
-        this.startX = event.touches[0].clientX;
-        this.startY = event.touches[0].clientY;
-      }
-      this.offsetX += deltaX!;
-      this.offsetY += deltaY!;
+  siguienteImagen() {
+    if (this.indiceActual < this.imagenes.length - 1) {
+      this.indiceActual++;
+      this.cargarImagen();
     }
   }
+
+  anteriorImagen() {
+    if (this.indiceActual > 0) {
+      this.indiceActual--;
+      this.cargarImagen();
+    }
+  }
+
+  private cargarImagen() {
+    this.imagenActual = this.sanitizer.bypassSecurityTrustResourceUrl(this.imagenes[this.indiceActual]);
+    this.resetZoom();
+  }
+
+
 }

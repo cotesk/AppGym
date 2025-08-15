@@ -9,38 +9,30 @@ form {
   width: 520px;
 }
 
-.camera-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px; /* Espacio vertical entre los elementos */
-}
-
-
-
-.video-preview {
-  width: 100%;
-  max-width: 300px;
-  display: none;
-}
-
-
 /* Agrega estas reglas al final del archivo modal-producto.component.css */
 .preview-img {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
   position: relative;
-  /* Añade una posición relativa al contenedor */
+  max-width: 100%;
+  max-height: 300px; /* límite de alto */
+  overflow: auto; /* agrega scroll si la imagen es muy grande */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.preview-img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* evita deformar la imagen */
+  border-radius: 8px;
+}
+
 
 .clear-image {
   position: absolute;
-  top: 55px;
+  top: 5px;
   /* Ajusta la posición vertical del botón según tus preferencias */
-  right: 55px;
+  right: 5px;
   /* Ajusta la posición horizontal del botón según tus preferencias */
   /* color: #f44336; */
 }
@@ -114,9 +106,13 @@ form {
 /* button:hover {
   background-color: rgb(79, 96, 113);
 } */
+button[color="warn"] {
+    color: white;
+  background-color: #df2323; 
+}
 button[color="warn"]:hover {
-  background-color: #9e3434;
-  /* Cambia el color al pasar el ratón sobre el botón */
+    color: white;
+  background-color: #d16969; 
 }
 
 button[color="primary"]:hover {
@@ -130,10 +126,6 @@ button.agregar {
   color: #fff;
   /* Color del texto del botón Cancelar */
 }
-button.agregar:hover {
-  background-color: rgb(79, 96, 113);
-  /* Cambia el color de fondo al pasar el ratón sobre el botón */
-}
 
 button.precio {
   background-color: #ff4081;
@@ -142,7 +134,10 @@ button.precio {
   /* Color del texto del botón Cancelar */
 }
 
-
+button.agregar:hover {
+  background-color: rgb(79, 96, 113);
+  /* Cambia el color de fondo al pasar el ratón sobre el botón */
+}
 
 button.venta {
   /* background-color: #9b8f67;  */
@@ -260,6 +255,19 @@ button.eliminar:hover {
     width: 50%;
   }
 }
+.button-center {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+/* .row2 {
+  display: flex;
+  gap: 10px;
+
+  mat-form-field {
+    width: 100%;
+  }
+} */
 
 .mat-form-field .mat-error {
   white-space: normal; /* Permite que los errores se alineen en múltiples líneas sin expandir el input */

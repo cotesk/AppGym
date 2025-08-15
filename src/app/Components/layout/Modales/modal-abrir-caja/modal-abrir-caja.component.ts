@@ -234,8 +234,8 @@ export class ModalAbrirCajaComponent implements OnInit {
   private cargarImagenProducto(idUsuario: number) {
     this._usuarioServicio.obtenerImagenUsuario(idUsuario).subscribe(
       (response: any) => {
-        if (response && response.imageData) {
-          this.imagenSeleccionada = `data:image/png;base64,${response.imageData}`;
+        if (response && response.imagenUrl) {
+          this.imagenSeleccionada = `${response.imagenUrl}`;
         } else {
           console.error('Imagen no disponible');
           this.imagenSeleccionada = 'ruta/de/imagen/predeterminada.png'; // O deja nulo
@@ -250,7 +250,7 @@ export class ModalAbrirCajaComponent implements OnInit {
   verImagen(imageData: string) {
     this.dialog.open(VerImagenProductoModalComponent, {
       data: {
-        imageData: imageData
+        imagenes: [imageData]
       }
     });
   }

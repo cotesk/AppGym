@@ -10,6 +10,7 @@ import { UsuariosService } from '../../../../Services/usuarios.service';
 import { UtilidadService } from '../../../../Reutilizable/utilidad.service';
 import { ModalAsignarMembresiaComponent } from '../../Modales/modal-asignar-membresia/modal-asignar-membresia.component';
 import * as CryptoJS from 'crypto-js';
+import { VerImagenProductoModalComponent } from '../../Modales/ver-imagen-producto-modal/ver-imagen-producto-modal.component';
 
 
 @Component({
@@ -20,7 +21,7 @@ import * as CryptoJS from 'crypto-js';
 export class AsignarMembresiaComponent {
 
 
-  columnasTabla: string[] = ['nombreUsuario','nombreMembresia', 'fechaVencimiento','estado', 'acciones' ];
+  columnasTabla: string[] = ['imagen', 'nombreUsuario', 'nombreMembresia', 'fechaVencimiento', 'estado', 'acciones'];
   dataInicio: AsignacionMembresia[] = [];
   dataListaMembresia = new MatTableDataSource(this.dataInicio);
   @ViewChild(MatPaginator) paginacionTabla!: MatPaginator;
@@ -42,7 +43,7 @@ export class AsignarMembresiaComponent {
 
 
 
-   obtenerAsignaciones() {
+  obtenerAsignaciones() {
 
     this._mebresiaServicio.listarAsignaciones().subscribe({
 
@@ -121,6 +122,14 @@ export class AsignarMembresiaComponent {
 
   }
 
+  verImagen(usuario: any): void {
+    // console.log(usuario);
+    this.dialog.open(VerImagenProductoModalComponent, {
+      data: {
+        imagenes: [usuario.imagenUrl]
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     this.dataListaMembresia.paginator = this.paginacionTabla;
@@ -131,7 +140,7 @@ export class AsignarMembresiaComponent {
     this.dataListaMembresia.filter = filtreValue.trim().toLocaleLowerCase();
   }
 
-  editarAsignacion(asignar: AsignacionMembresia){
+  editarAsignacion(asignar: AsignacionMembresia) {
 
     this.dialog.open(ModalAsignarMembresiaComponent, {
       disableClose: true,

@@ -18,13 +18,16 @@ export class ActivarCuentaComponent {
   message: string | undefined;
   ocultarPassword: boolean = true;
   passwordErrors: string[] = [];
+  formActivacion: FormGroup;
   constructor(
     private fb: FormBuilder,
     private _usuario: UsuariosService,
     private route: ActivatedRoute,
     private router: Router
   ) {
-
+    this.formActivacion = this.fb.group({
+      codigo: ['', [Validators.required, Validators.maxLength(10)]]
+    });
   }
 
   ngOnInit() {
@@ -33,25 +36,50 @@ export class ActivarCuentaComponent {
   }
 
   activarCuenta() {
-    this._usuario.activacion(this.correo!,this.token!).subscribe(response => {
+
+    if (this.formActivacion.invalid) {
+      this.formActivacion.markAllAsTouched();
+      return;
+    }
+    const codigo = this.formActivacion.value.codigo;
+
+    console.log(this.token);
+    console.log(this.correo);
+    console.log(codigo);
+    this._usuario.activacion(this.correo!, this.token!, codigo).subscribe(response => {
       this.message = response.value;
-      Swal.fire({
-        icon: 'success',
-        title: 'Ok',
-        text: 'Se ha activado el usuario.'
-      });
-      if (response.status) {
+      console.log(response.value);
+
+      if (response.status == true) {
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Ok',
+          text: 'Se ha activado el usuario.'
+        });
+
         this.router.navigate(['/login']);
+      } else {
+        if (response.status == false) {
+
+          Swal.fire({
+            icon: 'error',
+            title: 'ERROR.',
+            text: 'Su Token a expirado vuelva a solicitar un nuevo codigo de activacion.'
+          });
+
+
+        }
       }
     },
-    error =>{
-      Swal.fire({
-        icon: 'error',
-        title: 'ERROR!',
-        text: 'Error al activar la cuenta.'
-      });
+      error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'ERROR!',
+          text: 'Error al activar la cuenta.'
+        });
 
-    }
+      }
 
 
     );

@@ -9,9 +9,9 @@ import { MatDialog } from '@angular/material/dialog';
 export class ImageDialogService {
   constructor(private dialog: MatDialog) {}
 
-  openImageDialog(imageData: string): void {
+  openImageDialog(imagenUrl: string): void {
     this.dialog.open(ImagenDialogComponent, {
-      data: imageData,
+      data: imagenUrl,
       maxWidth: '90vw',
       maxHeight: '90vh',
     });

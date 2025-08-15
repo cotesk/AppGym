@@ -23,7 +23,7 @@ export class NotificacionesDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { fechas: AsignacionMembresia[] }
   ) {
     this.fechas = data.fechas;
-    console.log('Tamaño de fechas con stock bajo:', this.fechas.length);
+    // console.log('datos ', this.data);
   }
 
   // Método para cerrar el diálogo y confirmar la notificación
@@ -59,6 +59,13 @@ export class NotificacionesDialogComponent {
     const inicio = (this.paginaActual - 1) * this.fechasPorPagina;
     return this.fechas.slice(inicio, inicio + this.fechasPorPagina);
   }
+
+abrirWhatsapp(numero: string, nombre?: string) {
+  if (!numero) return;
+  const mensaje = `Hola ${nombre || ''}, tu membresía del gym ha vencido. Te invitamos a renovarla para seguir entrenando con nosotros. 💪🏽`;
+  const url = `https://wa.me/57${numero}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+}
 
 
 

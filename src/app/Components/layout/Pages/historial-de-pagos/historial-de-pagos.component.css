@@ -16,6 +16,9 @@ width: 100%;
 .icon-green {
   color: #4caf50;
 }
+.icon-red {
+  color: red;
+}
 .icon-naraja {
   color: rgb(217, 125, 33);
 }
@@ -204,9 +207,13 @@ button.pasar:hover {
 }
 /* para que no se salgan las tabla del mat-card en vista movil */
 .table-container {
-  overflow-x: auto; /* Permite el desplazamiento horizontal */
-  -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en dispositivos táctiles */
+  border-radius: 6px;
+  overflow-x: auto;
+  /* Permite el desplazamiento horizontal */
+  -webkit-overflow-scrolling: touch;
+  /* Mejora el desplazamiento en dispositivos táctiles */
 }
+
 ::ng-deep .mat-mdc-paginator-icon {
 
   fill: #2196f3 !important;
@@ -222,6 +229,21 @@ button.pasar:hover {
   justify-content: center;
   /* justify-content: flex-end; */
   margin: 10px 0;
+}
+
+.circular-image {
+  width: 55px;
+  height: 55px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+
+.circular-image:hover {
+  transform: scale(1.2);
+  z-index: 10;
 }
 
 @media (max-width: 768px) {

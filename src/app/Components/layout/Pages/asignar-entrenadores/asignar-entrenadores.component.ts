@@ -10,6 +10,7 @@ import { UsuariosService } from '../../../../Services/usuarios.service';
 import Swal from 'sweetalert2';
 import * as CryptoJS from 'crypto-js';
 import { ModalAsignarEntrenadoresComponent } from '../../Modales/modal-asignar-entrenadores/modal-asignar-entrenadores.component';
+import { VerImagenProductoModalComponent } from '../../Modales/ver-imagen-producto-modal/ver-imagen-producto-modal.component';
 
 
 @Component({
@@ -21,7 +22,7 @@ export class AsignarEntrenadoresComponent {
 
 
 
-  columnasTabla: string[] = ['asignacionId','nombreEntrenador', 'nombreCliente','fechaAsignacion', 'acciones' ];
+  columnasTabla: string[] = ['asignacionId', 'imagenUrlEntrenador','nombreEntrenador', 'imagenUrlCliente','nombreCliente','fechaAsignacion', 'acciones' ];
   dataInicio: EntrenadorCliente[] = [];
   dataListaMembresia = new MatTableDataSource(this.dataInicio);
   @ViewChild(MatPaginator) paginacionTabla!: MatPaginator;
@@ -49,10 +50,10 @@ export class AsignarEntrenadoresComponent {
 
       next: (data) => {
         if (data?.length > 0) {
-
+          console.log(data);
           data.sort((a: EntrenadorCliente, b: EntrenadorCliente) => a.nombreEntrenador!.localeCompare(b.nombreEntrenador!));
           this.dataListaMembresia.data = data;
-
+ 
         } else {
 
           Swal.fire({
@@ -121,6 +122,23 @@ export class AsignarEntrenadoresComponent {
 
   }
 
+   verImagenEntrenador(usuario: any): void {
+      // console.log(usuario);
+      this.dialog.open(VerImagenProductoModalComponent, {
+        data: {
+          imagenes: [usuario.imagenUrlEntrenador]
+        }
+      });
+    }
+
+  verImagen(usuario: any): void {
+      // console.log(usuario);
+      this.dialog.open(VerImagenProductoModalComponent, {
+        data: {
+          imagenes: [usuario.imagenUrlCliente]
+        }
+      });
+    }
 
   eliminar(entrenador:EntrenadorCliente){
 

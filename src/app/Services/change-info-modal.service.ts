@@ -37,6 +37,7 @@ export class ChangeInfoModalService {
 
       dialogRef.afterClosed().subscribe(result => {
         console.log('El modal se cerró');
+        
         // Puedes realizar acciones adicionales después de que el modal se cierra
       });
 

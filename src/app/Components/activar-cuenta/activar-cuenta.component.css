@@ -1,5 +1,5 @@
 mat-card {
-  max-width: 400px;
+  max-width: 300px;
   margin: 20px auto;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -33,6 +33,7 @@ button {
   width: 100%;
 }
 
+
 div[ngIf] {
   margin-top: 20px;
   text-align: center;
@@ -59,9 +60,12 @@ button.submit-btn[disabled] {
 button.submit-btn[disabled]:hover {
   background-color: #ccc;
 }
+
 button.agregar {
-  background-color: #3351aa; /* Fondo del botón Cancelar */
-  color: #fff; /* Color del texto del botón Cancelar */
+  background-color: #3351aa;
+  /* Fondo del botón Cancelar */
+  color: #fff;
+  /* Color del texto del botón Cancelar */
 
   cursor: pointer;
   transition: color 0.3s ease;
@@ -69,24 +73,33 @@ button.agregar {
   border-radius: 5px;
 
 }
+
 button.agregar:hover {
-  background-color:  rgb(79, 96, 113); /* Cambia el color de fondo al pasar el ratón sobre el botón */
+  background-color: rgb(79, 96, 113);
+  /* Cambia el color de fondo al pasar el ratón sobre el botón */
 }
+
 button.agregar[disabled] {
-  background-color: #ccc; /* Fondo del botón en gris cuando está deshabilitado */
-  color: #666; /* Color del texto en gris cuando está deshabilitado */
+  background-color: #ccc;
+  /* Fondo del botón en gris cuando está deshabilitado */
+  color: #666;
+  /* Color del texto en gris cuando está deshabilitado */
 }
 
 button.agregar[disabled]:hover {
-  background-color: #ccc; /* Mantener el color de fondo en gris al pasar el ratón sobre el botón deshabilitado */
+  background-color: #ccc;
+  /* Mantener el color de fondo en gris al pasar el ratón sobre el botón deshabilitado */
 }
+
 @keyframes backgroundAnimation {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -114,27 +127,38 @@ button.agregar[disabled]:hover {
   0% {
     transform: translateX(0);
   }
+
   50% {
     transform: translateX(-50%);
   }
+
   100% {
     transform: translateX(0);
   }
 }
+
 .body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Ajusta la altura según sea necesario */
-  padding: 0 12em; /* Ajusta el relleno horizontal alrededor del contenedor principal */
+  height: 100vh;
+  /* Ajusta la altura según sea necesario */
+  padding: 0 12em;
+  /* Ajusta el relleno horizontal alrededor del contenedor principal */
   font-family: Arial, sans-serif;
   text-align: center;
   /* background-color: #522b41; */
-  flex-direction: row; /* Alineación horizontal por defecto */
-  gap: 2em; /* Espacio entre las tarjetas */
+  flex-direction: row;
+  /* Alineación horizontal por defecto */
+  gap: 2em;
+  /* Espacio entre las tarjetas */
   background-image: url('/assets/Images/fondo.jpeg');
-  background-size: cover; /* Ajusta la imagen para que cubra todo el fondo */
-  background-position: center; /* Centra la imagen */
-  background-repeat: no-repeat; /* Evita que la imagen se repita */
-  min-height: 100vh; /* Asegura que cubra toda la pantalla */
+  background-size: cover;
+  /* Ajusta la imagen para que cubra todo el fondo */
+  background-position: center;
+  /* Centra la imagen */
+  background-repeat: no-repeat;
+  /* Evita que la imagen se repita */
+  min-height: 100vh;
+  /* Asegura que cubra toda la pantalla */
 }

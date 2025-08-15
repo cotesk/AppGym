@@ -5,6 +5,6 @@ export interface AsitenciaPersonal {
   fechaAsistencia: string;
   pagoRealizado?: boolean;
   idUsuario: number;
-  nombreUsuario:string
-
+  nombreUsuario: string
+  imagenUrl?: string | null;
 }

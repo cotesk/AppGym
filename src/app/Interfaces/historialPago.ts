@@ -7,6 +7,6 @@ export interface HistorialPago {
   fechaPago: string,
   montoTexto: string;
   tipoPago?: string;
-
+ imagenUrl?: string | null;
 
 }

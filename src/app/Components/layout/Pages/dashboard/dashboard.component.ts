@@ -108,7 +108,7 @@ export class DashBoardComponent implements OnInit {
       next: (data) => {
 
         if (data.status) {
-
+          console.log(data);
           this.totalIngresos = data.value.totalIngresos;
           this.totalCliente = data.value.totalCliente;
           this.totalUsuarios = data.value.totalUsuarios;
@@ -725,11 +725,17 @@ export class DashBoardComponent implements OnInit {
     this.mostrarTabla = !this.mostrarTabla;
   }
 
-  abrirDialogImagen(imagenData: string): void {
-    console.log(imagenData); // Verifica que la URL sea correcta
-    const dialogRef = this.dialog.open(VerImagenProductoModalComponent, {
-      data: { imageData: imagenData }
-    });
+ abrirDialogImagen(imagenUrl: string): void {
+    console.log(imagenUrl); // Verifica que la URL sea correcta
+    // const dialogRef = this.dialog.open(VerImagenProductoModalComponent, {
+    //   data: { imagenUrl: imagenUrl }
+    // });
+       this.dialog.open(VerImagenProductoModalComponent, {
+          data: {
+            imagenes: [imagenUrl]
+          }
+        });
+    
   }
   onMouseEnter(producto: any, index: number): void {
     producto.estadoAnimacion = `highlighted-${index}`;

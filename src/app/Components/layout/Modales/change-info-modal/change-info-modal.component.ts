@@ -31,7 +31,7 @@ export class ChangeInfoModalComponent {
   isMobile: boolean = false;
 
   @HostListener('window:resize', ['$event'])
-  onResize(event : Event) {
+  onResize(event: Event) {
     this.isMobile = window.innerWidth <= 600;
   }
 
@@ -201,7 +201,7 @@ export class ChangeInfoModalComponent {
       // Ejemplo de confirmación de cambios utilizando SweetAlert
       Swal.fire({
         title: '¿Estás seguro?',
-        text: 'Se actualizará la página para aplicar los cambios.',
+        text: 'Se actualizará el usuario aplicar los cambios.',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -231,14 +231,15 @@ export class ChangeInfoModalComponent {
               }
 
               else {
-                 // Ejemplo de actualización de datos en el localStorage
-                 if (idUsuarioLocalStorage !== this.datosUsuario?.idUsuario) {
+                // Ejemplo de actualización de datos en el localStorage
+                if (idUsuarioLocalStorage !== this.datosUsuario?.idUsuario) {
                   // Manejo especial si los IDs son diferentes
                   Swal.fire({
                     icon: 'success',
                     title: 'El usuario fue editado',
                     text: `El usuario fue editado`
                   });
+
                 } else {
 
                   Swal.fire({
@@ -261,9 +262,14 @@ export class ChangeInfoModalComponent {
                       const updatedUserEncrypted = CryptoJS.AES.encrypt(JSON.stringify(usuarioLocalStorage), this.CLAVE_SECRETA).toString();
                       localStorage.setItem('usuario', updatedUserEncrypted);
                     }
+                     console.log(usuarioLocalStorage);
+                    // Actualizar en el servicio (esto también actualiza localStorage y notifica a otros componentes)
+                    this.authService.actualizarUsuarioLocal(usuarioLocalStorage);
+
                     // Cerrar el modal y recargar la página
-                    this.dialogRef.close();
-                    window.location.reload();
+                    this.dialogRef.close("true");
+
+                    // window.location.reload();
                   } catch (error) {
 
                   }
@@ -428,8 +434,8 @@ export class ChangeInfoModalComponent {
         }
 
         else {
-           // Ejemplo de actualización de datos en el localStorage
-           if (idUsuarioLocalStorage !== this.datosUsuario?.idUsuario) {
+          // Ejemplo de actualización de datos en el localStorage
+          if (idUsuarioLocalStorage !== this.datosUsuario?.idUsuario) {
             // Manejo especial si los IDs son diferentes
             Swal.fire({
               icon: 'success',

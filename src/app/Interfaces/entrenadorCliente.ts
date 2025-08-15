@@ -6,4 +6,6 @@ export interface EntrenadorCliente {
   nombreEntrenador: string;
   fechaAsignacion: string;
   fechaFinAsignacion: string;
+  imagenUrlEntrenador: string;
+  imagenUrlCliente: string;
 }

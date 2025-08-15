@@ -149,9 +149,9 @@
           (mouseenter)="onMouseEnter(cliente, i + 1)" (mouseleave)="onMouseLeave(cliente)">
 
           <!-- Foto del cliente (si existe) -->
-          <img *ngIf="cliente.imagenData" class="img-hover-zoom" [src]="'data:image/png;base64,' + cliente.imagenData"
+          <img *ngIf="cliente.imagenUrl" class="img-hover-zoom" [src]="cliente.imagenUrl"
             alt="Imagen del cliente" width="100" height="100" style="object-fit: contain;"
-            (click)="abrirDialogImagen('data:image/png;base64,' + cliente.imagenData)">
+            (click)="abrirDialogImagen(cliente.imagenUrl)">
 
           <!-- Nombre del cliente -->
           <p class="nombre-cliente">
@@ -190,17 +190,17 @@
               <th>Imagen</th>
               <th>Producto</th>
 
-              <th>Cantidad Vendida</th>
+              <th>Cantidad Asistencia</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let producto of productosPaginados">
               <td>
 
-                <img *ngIf="producto.imagenData" class="img-hover-zoom"
-                  [src]="'data:image/png;base64,' + producto.imagenData" alt="Imagen del producto" width="80"
+                <img *ngIf="producto.imagenUrl" class="img-hover-zoom"
+                  [src]="producto.imagenUrl" alt="Imagen del producto" width="80"
                   height="80" style="object-fit: contain;"
-                  (click)="abrirDialogImagen('data:image/png;base64,' + producto.imagenData)">
+                  (click)="abrirDialogImagen(producto.imagenUrl)">
               </td>
               <td>{{ producto.nombre.length > 40 ? producto.nombre.slice(0, 40) + '...' : producto.nombre }}</td>
 

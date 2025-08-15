@@ -246,8 +246,8 @@ export class UsuariosService {
     return this.http.post(`${this.urlApi}RestablecerContrasena`, { correo, token, nuevaContrasena });
   }
 
-  activacion(correo: string, token: string): Observable<any> {
-    return this.http.post(`${this.urlApi}Activacion`, { correo, token });
+  activacion(correo: string, token: string, codigo: string): Observable<any> {
+    return this.http.post(`${this.urlApi}Activacion`, { correo, token, codigo });
   }
   //  actualizarImagenProducto(idUsuario: number, nuevaImagen: File): Observable<ReponseApi> {
   //   console.log('ID del Usuario en actualizarImagenUsuario:', idUsuario);

@@ -26,7 +26,7 @@
     </div>
 
 
-    <div class="row">
+   <div class="row">
 
       <!-- Sección para tomar foto -->
       <div class="camera-section" *ngIf="accionSeleccionada === 'tomarFoto'">
@@ -34,8 +34,13 @@
         <video
         #videoElement
         autoplay
-        style="width: 100%; max-width: 300px; transform: scaleX(-1);"></video>
-        <button mat-raised-button color="accent" (click)="tomarFoto()" [disabled]="!camaraActiva">Tomar Foto</button>
+        style="width: 100%; max-width: 600px; transform: scaleX(-1);"></video>
+        <br>
+        <div class="button-center">
+          <button mat-raised-button color="accent" (click)="tomarFoto()"  *ngIf="camaraActiva" [disabled]="!camaraActiva">
+            <mat-icon>photo_camera</mat-icon> Tomar Foto
+          </button>
+        </div>
       </div>
 
       <!-- Sección para elegir foto -->

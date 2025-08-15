@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Usuario } from '../Interfaces/usuario';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Menu } from '../Interfaces/menu';
 import { ToastrService } from 'ngx-toastr';
@@ -21,12 +21,16 @@ export class AuthService {
   // private apiUrl = 'http://localhost:5226/api/';
   //private apiUrl = 'https://www.sofemprethy.somee.com/api/';
   //private apiUrl = "https://sofeemprethy-001-site1.jtempurl.com/api/";
-  private apiUrl: string =  environment.endpoint ;
+  private apiUrl: string = environment.endpoint;
   private usuario: Usuario = {}; // Agrega esta línea con una inicialización vacía
   private userRole: string | undefined; // Propiedad para almacenar el rol del usuario
   private readonly CLAVE_SECRETA = '9P#5a^6s@Lb!DfG2@17#Co-Tes#07';
   redirectUrl: string | null = null;
   usuarios: any;
+
+  private usuarioSubject = new BehaviorSubject<Usuario | null>(null);
+  usuario$ = this.usuarioSubject.asObservable();
+  
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -108,8 +112,8 @@ export class AuthService {
                 console.log('Token actualizado:', response.token);
                 // Guardar el nuevo token de acceso en el almacenamiento local
                 localStorage.setItem('authToken', response.token)
-                 // Redirigir de nuevo a la URL original después de la renovación del token
-                 const redirectUrl = this.redirectUrl || localStorage.getItem('redirectUrl') || '/pages';
+                // Redirigir de nuevo a la URL original después de la renovación del token
+                const redirectUrl = this.redirectUrl || localStorage.getItem('redirectUrl') || '/pages';
                 localStorage.removeItem('redirectUrl');
                 this.router.navigateByUrl(redirectUrl);
               },
@@ -207,7 +211,7 @@ export class AuthService {
             this.resetInactivityTimer();
           }
         });
-      }, 15 *60 * 1000); //10 * 1000 = 10 segundos , 2 * 60 * 1000 = 2 minutos
+      }, 15 * 60 * 1000); //10 * 1000 = 10 segundos , 2 * 60 * 1000 = 2 minutos
     }
   }
 
@@ -299,12 +303,36 @@ export class AuthService {
       return null;
     }
   }
-  actualizarUsuarioLocal(usuario: Usuario): void {
-    // Actualizamos el objeto 'usuario' localmente en el servicio
-    this.usuario = { ...usuario };
-    // También podrías almacenar esto en el local storage si es necesario
-    localStorage.setItem('usuario', JSON.stringify(usuario));
+  // actualizarUsuarioLocal(usuario: Usuario): void {
+  //   // Actualizamos el objeto 'usuario' localmente en el servicio
+  //   this.usuario = { ...usuario };
+  //   // También podrías almacenar esto en el local storage si es necesario
+  //   localStorage.setItem('usuario', JSON.stringify(usuario));
+  // }
+
+  // ===== USUARIO =====
+  private cargarUsuarioDeLocalStorage(): void {
+    const usuarioEncriptado = localStorage.getItem('usuario');
+    if (usuarioEncriptado) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(usuarioEncriptado, this.CLAVE_SECRETA);
+        const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
+        if (datosDesencriptados) {
+          const usuario = JSON.parse(datosDesencriptados) as Usuario;
+          this.usuarioSubject.next(usuario);
+        }
+      } catch (e) {
+        console.error('Error al desencriptar usuario:', e);
+      }
+    }
   }
+
+  actualizarUsuarioLocal(usuario: Usuario): void {
+    const usuarioEncriptado = CryptoJS.AES.encrypt(JSON.stringify(usuario), this.CLAVE_SECRETA).toString();
+    localStorage.setItem('usuario', usuarioEncriptado);
+    this.usuarioSubject.next(usuario);
+  }
+  
   obtenerUsuarioLocalStorage(): Usuario | null {
     const usuarioEncriptado = localStorage.getItem('usuario');
 
@@ -359,3 +387,4 @@ export class AuthService {
 
 
 }
+

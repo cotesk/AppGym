@@ -126,7 +126,7 @@ export class LayoutComponent implements OnInit {
     this.cdr.markForCheck();
   }
   //se puede borrar
-  actualizarImagenUsuario(): void {
+   actualizarImagenUsuario(): void {
     const usuarioEncriptado = localStorage.getItem('usuario');
     if (usuarioEncriptado) {
       try {
@@ -139,8 +139,8 @@ export class LayoutComponent implements OnInit {
           this.nombreUsuario = usuario.nombreCompleto || '';
           this.rolUsuario = usuario.rolDescripcion || '';
 
-          if (usuario.imageData) {
-            this.cargarImagenDesdeDatos(usuario.imageData);
+          if (usuario.imagenUrl) {
+            this.cargarImagenDesdeDatos(usuario.imagenUrl);
           } else {
             console.error('No se encontraron datos de imagen en el usuario desencriptado');
           }
@@ -155,9 +155,9 @@ export class LayoutComponent implements OnInit {
     }
   }
 
-  cargarImagenDesdeDatos(imageData: string): void {
-    if (typeof imageData === 'string') {
-      this.imageData = `data:image/jpeg;base64,${imageData}`;
+ cargarImagenDesdeDatos(imagenUrl: string): void {
+    if (typeof imagenUrl === 'string') {
+      this.imagenUrl = `${imagenUrl}`;
       this.cdr.markForCheck();
     } else {
       console.error('El tipo de datos de la imagen no es válido.');
@@ -284,6 +284,7 @@ export class LayoutComponent implements OnInit {
 
     // this.actualizarDatosUsuario();
     this.imageUpdatedService.imageUpdated$.subscribe(() => {
+      console.log("aqui");
       this.actualizarImagenUsuario();
     });
 
@@ -306,7 +307,10 @@ export class LayoutComponent implements OnInit {
 
     this.notificacionService.iniciarActualizacionAutomatica();
 
-
+    this.authService.usuario$.subscribe(usuario => {
+      this.actualizarNombreUsuario();
+      // console.log('Usuario actualizado en tiempo real:', usuario);
+    });
 
     // Inicializa el nombre de usuario al cargar el componente
     this.actualizarNombreUsuario();
@@ -338,21 +342,10 @@ export class LayoutComponent implements OnInit {
       this.correoUsuario = usuario.correo;
       this.nombreUsuario = usuario.nombreCompleto;
       this.rolUsuario = usuario.rolDescripcion;
-      if (this.isUint8Array(usuario.imageData)) {
+      if ((usuario.imagenUrl)) {
         // Si ya es un Uint8Array
-        this.imageData = usuario.imageData;
-      } else {
-        // Si es una cadena, convertir a Uint8Array
-        const binaryString = atob(usuario.imageData);
-        const uint8Array = new Uint8Array(binaryString.length);
-
-        for (let i = 0; i < binaryString.length; i++) {
-          uint8Array[i] = binaryString.charCodeAt(i);
-        }
-
-        this.imageData = uint8Array;
+        this.imagenUrl = usuario.imagenUrl;
       }
-
 
       console.log('Ruta de la imagen del usuario:', this.imageData);
       // Llamada al servicio para obtener los menús
@@ -603,7 +596,7 @@ export class LayoutComponent implements OnInit {
       case 'toolbar-white':
         return 'icon-black';
       case 'toolbar-red':
-         return 'icon-white';
+        return 'icon-white';
       case 'toolbar-green':
         return 'icon-white';
       case 'toolbar-morado':
@@ -622,7 +615,7 @@ export class LayoutComponent implements OnInit {
       case 'toolbar-white':
         return 'text-black';
       case 'toolbar-red':
-         return 'text-white';
+        return 'text-white';
       case 'toolbar-green':
         return 'text-white';
       case 'toolbar-morado':
@@ -942,11 +935,18 @@ export class LayoutComponent implements OnInit {
   }
 
 
+  // verImagen() {
+  //   this.imageDialogService.openImageDialog(
+  //     this.isUint8Array(this.imageData) ? this.convertirBytesAURL(this.imageData, this.mimeType) : this.imageData
+  //   );
+  // }
+
   verImagen() {
     this.imageDialogService.openImageDialog(
-      this.isUint8Array(this.imageData) ? this.convertirBytesAURL(this.imageData, this.mimeType) : this.imageData
+      this.isUint8Array(this.imagenUrl) ? this.convertirBytesAURL(this.imagenUrl, this.mimeType) : this.imagenUrl
     );
   }
+
 
   cambiarNombre() {
     // Lógica para abrir el modal con la información del usuario
@@ -957,7 +957,7 @@ export class LayoutComponent implements OnInit {
     // Tu lógica para manejar el cambio en el select
     this.selectCambiado = true;
   }
-  openCambiarImagenModal() {
+ openCambiarImagenModal() {
     const usuario = this._utilidadServicio.obtenerSesionUsuario();
 
     if (usuario) {
@@ -968,11 +968,12 @@ export class LayoutComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         console.log('El diálogo se cerró con el resultado:', result);
 
+        
         // Refrescar la página solo si el cambio provino del select
-        if (this.selectCambiado) {
-          window.location.reload();
-          location.reload();
-        }
+        // if (this.selectCambiado) {
+        //   window.location.reload();
+        //   location.reload();
+        // }
 
       });
     } else {

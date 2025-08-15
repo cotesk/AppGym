@@ -121,19 +121,19 @@ export class ModalCambioImagenUsuarioComponent {
 
     Swal.fire({
       title: '¿Estás seguro?',
-      text: 'Se actualizara la pagina para aplicar el cambio de la imagen.',
+      text: 'Se actualizara la imagen del usuario.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, actualizar pagina y aplicar cambios'
+      confirmButtonText: 'Sí, actualizar  y aplicar cambios'
     }).then((result) => {
       if (result.isConfirmed) {
         if (this.nuevoArchivo && this.data && this.data.usuario) {
-          console.log('ID del producto en guardarNuevaImagen:', this.data.usuario.idUsuario);
+          // console.log('ID del producto en guardarNuevaImagen:', this.data.usuario.idUsuario);
 
           // Asegúrate de que la información del producto sea correcta
-          console.log('Producto en guardarNuevaImagen:', this.data.usuario);
+          // console.log('Producto en guardarNuevaImagen:', this.data.usuario);
           // const idUsuario = this.data.idUsuario;
           // Swal.fire({
           //   icon: 'success',
@@ -147,7 +147,7 @@ export class ModalCambioImagenUsuarioComponent {
           // formData.append('imagen', this.nuevoArchivo);
           this._usuarioServicio.actualizarImagenProducto(idUsuario, this.nuevoArchivo)
             .subscribe(response => {
-              console.log('Respuesta del servicio:', response);
+              // console.log('Respuesta del servicio:', response);
 
               if (response.status) {
                 // this.dialogRef.close(true); // Cierra el diálogo indicando éxito
@@ -159,53 +159,47 @@ export class ModalCambioImagenUsuarioComponent {
                   // Si los IDs son diferentes, mostrar un mensaje o tomar alguna acción necesaria
                   Swal.fire({
                     icon: 'success',
-                    title: 'El usuario fue editado',
-                    text: `El usuario fue editado`,
+                    title: 'Imagen editada',
+                    text: `La Imagen fue editada.`,
                   });
-
+                  return
 
                 } else {
 
                   Swal.fire({
                     icon: 'success',
-                    title: 'El usuario fue editado',
-                    text: `El usuario fue editado`,
+                    title: 'Imagen editada',
+                    text: `La Imagen fue editada.`,
                   });
 
-                  const reader = new FileReader();
-                  reader.onload = (e: any) => {
-                    // Obtén solo los datos base64 sin el prefijo 'data:image/jpeg;base64,'
-                    const base64Data = e.target.result.split(',')[1];
+                  const usuarioString = localStorage.getItem('usuario');
+                  const bytes = CryptoJS.AES.decrypt(usuarioString!, this.CLAVE_SECRETA);
+                  const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
+                  const usuarioEnLocalStorage = JSON.parse(datosDesencriptados);
+                  // console.log(usuarioEnLocalStorage.imagenUrl);
+                  usuarioEnLocalStorage.imagenUrl = response.value;
+                  // const usuarioEnLocalStorage = JSON.parse(localStorage.getItem('usuario') || '{}');
+                  // usuarioEnLocalStorage.imagenUrl = base64Data; // Almacenar los datos base64 en el local storage
+                  // localStorage.setItem('usuario', JSON.stringify(usuarioEnLocalStorage));
+                  const updatedUserEncrypted = CryptoJS.AES.encrypt(JSON.stringify(usuarioEnLocalStorage), this.CLAVE_SECRETA).toString();
+                  localStorage.setItem('usuario', updatedUserEncrypted);
 
-                    const usuarioString = localStorage.getItem('usuario');
-                    const bytes = CryptoJS.AES.decrypt(usuarioString!, this.CLAVE_SECRETA);
-                    const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
-                    const usuarioEnLocalStorage = JSON.parse(datosDesencriptados);
+                  // reader.onerror = (e) => {
+                  //   console.error('Error al leer el archivo', e);
+                  // };
 
-                    // const usuarioEnLocalStorage = JSON.parse(localStorage.getItem('usuario') || '{}');
-                    usuarioEnLocalStorage.imageData = base64Data; // Almacenar los datos base64 en el local storage
-                    // localStorage.setItem('usuario', JSON.stringify(usuarioEnLocalStorage));
-                    const updatedUserEncrypted = CryptoJS.AES.encrypt(JSON.stringify(usuarioEnLocalStorage), this.CLAVE_SECRETA).toString();
-                    localStorage.setItem('usuario', updatedUserEncrypted);
+                  // reader.onloadstart = () => {
+                  //   console.log('Inicio de lectura del archivo');
+                  // };
 
-
-                  };
-                  reader.onerror = (e) => {
-                    console.error('Error al leer el archivo', e);
-                  };
-
-                  reader.onloadstart = () => {
-                    console.log('Inicio de lectura del archivo');
-                  };
-
-                  reader.onloadend = () => {
-                    console.log('Fin de lectura del archivo');
-                  };
-                  reader.readAsDataURL(this.nuevoArchivo!);
+                  // reader.onloadend = () => {
+                  //   console.log('Fin de lectura del archivo');
+                  // };
+                  // reader.readAsDataURL(this.nuevoArchivo!);
 
                   this.imageUpdatedService.updateImage();
-
-                   window.location.reload();
+                  this.dialogRef.close("true");
+                  //  window.location.reload();
 
                 }
 
@@ -231,7 +225,7 @@ export class ModalCambioImagenUsuarioComponent {
                 Swal.fire({
                   icon: 'error',
                   title: 'ERROR',
-                  text: `No se pudo registrar la imagen`,
+                  text: `No se pudo editar la imagen`,
                 });
                 // this._utilidadServicio.mostrarAlerta("No se pudo registrar la imagen", "Error");
                 console.error('Error al actualizar la imagen:', response.msg);
@@ -511,3 +505,4 @@ export class ModalCambioImagenUsuarioComponent {
     this.dialogRef.close(false);
   }
 }
+

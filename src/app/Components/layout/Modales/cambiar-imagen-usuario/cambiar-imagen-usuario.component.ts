@@ -24,7 +24,7 @@ import { LayoutComponent } from '../../layout.component';
   }
 `]
 })
-export class CambiarImagenUsuarioComponent  implements OnInit   {
+export class CambiarImagenUsuarioComponent implements OnInit {
 
 
   nuevoArchivo: File | null = null; // Variable para almacenar el nuevo archivo de imagen
@@ -162,8 +162,9 @@ export class CambiarImagenUsuarioComponent  implements OnInit   {
                   title: 'Imagen actualizada',
                   text: `Imagen actualizada`,
                 });
-                window.location.reload();
-
+                // window.location.reload();
+                this.imageUpdatedService.updateImage();
+                this.dialogRef.close("true");
               } else {
 
                 Swal.fire({
@@ -171,28 +172,33 @@ export class CambiarImagenUsuarioComponent  implements OnInit   {
                   title: 'Imagen actualizada',
                   text: `Imagen actualizada`,
                 });
-                // Convertir el nuevo archivo de imagen a una cadena base64
-                const reader = new FileReader();
-                reader.onload = (e: any) => {
-                  // Obtén solo los datos base64 sin el prefijo 'data:image/jpeg;base64,'
-                  const base64Data = e.target.result.split(',')[1];
+                const usuarioString = localStorage.getItem('usuario');
+                const bytes = CryptoJS.AES.decrypt(usuarioString!, this.CLAVE_SECRETA);
+                const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
+                const usuarioEnLocalStorage = JSON.parse(datosDesencriptados);
+                // console.log(usuarioEnLocalStorage.imagenUrl);
+                usuarioEnLocalStorage.imagenUrl = response.value;
+                // const usuarioEnLocalStorage = JSON.parse(localStorage.getItem('usuario') || '{}');
+                // usuarioEnLocalStorage.imagenUrl = base64Data; // Almacenar los datos base64 en el local storage
+                // localStorage.setItem('usuario', JSON.stringify(usuarioEnLocalStorage));
+                const updatedUserEncrypted = CryptoJS.AES.encrypt(JSON.stringify(usuarioEnLocalStorage), this.CLAVE_SECRETA).toString();
+                localStorage.setItem('usuario', updatedUserEncrypted);
 
-                  const usuarioString = localStorage.getItem('usuario');
-                  const bytes = CryptoJS.AES.decrypt(usuarioString!, this.CLAVE_SECRETA);
-                  const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
-                  const usuarioEnLocalStorage = JSON.parse(datosDesencriptados);
+                // reader.onerror = (e) => {
+                //   console.error('Error al leer el archivo', e);
+                // };
 
-                  // const usuarioEnLocalStorage = JSON.parse(localStorage.getItem('usuario') || '{}');
-                  usuarioEnLocalStorage.imageData = base64Data; // Almacenar los datos base64 en el local storage
-                  // localStorage.setItem('usuario', JSON.stringify(usuarioEnLocalStorage));
-                  const updatedUserEncrypted = CryptoJS.AES.encrypt(JSON.stringify(usuarioEnLocalStorage), this.CLAVE_SECRETA).toString();
-                  localStorage.setItem('usuario', updatedUserEncrypted);
-                };
-                reader.readAsDataURL(this.nuevoArchivo!);
+                // reader.onloadstart = () => {
+                //   console.log('Inicio de lectura del archivo');
+                // };
 
-                // this.imageUpdatedService.actualizarImagenUsuario();
-                 window.location.reload();
-              //  this.layoutComponent.actualizarImagenUsuario();
+                // reader.onloadend = () => {
+                //   console.log('Fin de lectura del archivo');
+                // };
+                // reader.readAsDataURL(this.nuevoArchivo!);
+
+                this.imageUpdatedService.updateImage();
+                this.dialogRef.close("true");
               }
 
 

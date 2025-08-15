@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import { CambiarImagenUsuarioComponent } from '../../Modales/cambiar-imagen-usuario/cambiar-imagen-usuario.component';
 import { VerImagenProductoModalComponent } from '../../Modales/ver-imagen-producto-modal/ver-imagen-producto-modal.component';
 import * as CryptoJS from 'crypto-js';
+import { ImageUpdatedService } from '../../../../Services/image-updated.service';
 
 @Component({
   selector: 'app-modal-lista-clientes',
@@ -33,12 +34,91 @@ export class ModalListaClientesComponent implements OnInit, AfterViewInit {
   constructor(
     private dialog: MatDialog,
     private _usuarioServicio: UsuariosService,
-    private _utilidadServicio: UtilidadService
+    private _utilidadServicio: UtilidadService,
+    private imageUpdatedService: ImageUpdatedService,
 
   ) { }
 
+  // obtenerUsuario() {
+
+  //   this._usuarioServicio.lista().subscribe({
+
+  //     next: (data) => {
+  //       if (data.status) {
+  //         const usuariosClientes = data.value.filter((usuario: Usuario) => usuario.rolDescripcion === 'Clientes');
+
+  //         usuariosClientes.forEach((usuario: Usuario) => {
+  //           if (usuario.imageData) {
+  //             usuario.imageData = this._usuarioServicio.decodeBase64ToImageUrl(usuario.imageData);
+  //           }
+  //         });
+  //         usuariosClientes.sort((a: Usuario, b: Usuario) => a.nombreCompleto!.localeCompare(b.nombreCompleto!));
+  //         this.dataListaUsuarios.data = usuariosClientes;
+
+
+  //       } else {
+  //         Swal.fire({
+  //           icon: 'error',
+  //           title: 'ERROR',
+  //           text: `no se encontraron datos`,
+  //         })
+  //         // this._utilidadServicio.mostrarAlerta("no se encontraron datos", "Oops!");
+
+  //       }
+  //     },
+  //     error: (e) => {
+  //       let idUsuario: number = 0;
+
+
+  //       // Obtener el idUsuario del localStorage
+  //       const usuarioString = localStorage.getItem('usuario');
+  //       const bytes = CryptoJS.AES.decrypt(usuarioString!, this.CLAVE_SECRETA);
+  //       const datosDesencriptados = bytes.toString(CryptoJS.enc.Utf8);
+  //       if (datosDesencriptados !== null) {
+  //         const usuario = JSON.parse(datosDesencriptados);
+  //         idUsuario = usuario.idUsuario; // Obtener el idUsuario del objeto usuario
+
+  //         this._usuarioServicio.obtenerUsuarioPorId(idUsuario).subscribe(
+  //           (usuario: any) => {
+
+  //             console.log('Usuario obtenido:', usuario);
+  //             let refreshToken = usuario.refreshToken
+
+  //             // Manejar la renovación del token
+  //             this._usuarioServicio.renovarToken(refreshToken).subscribe(
+  //               (response: any) => {
+  //                 console.log('Token actualizado:', response.token);
+  //                 // Guardar el nuevo token de acceso en el almacenamiento local
+  //                 localStorage.setItem('authToken', response.token);
+  //                 this.obtenerUsuario();
+  //               },
+  //               (error: any) => {
+  //                 console.error('Error al actualizar el token:', error);
+  //               }
+  //             );
+
+
+
+  //           },
+  //           (error: any) => {
+  //             console.error('Error al obtener el usuario:', error);
+  //           }
+  //         );
+  //       }
+
+
+
+  //     }
+
+  //   })
+  // }
 
   ngOnInit(): void {
+  this.imageUpdatedService.imageUpdated$.subscribe(() => {
+        this.obtenerUsuario();
+      // console.log('Aquiiii');
+    });
+
     this.obtenerUsuario();
   }
 
@@ -49,7 +129,7 @@ export class ModalListaClientesComponent implements OnInit, AfterViewInit {
       next: (data) => {
         if (data && data.data && data.data.length > 0) {
           const usuariosClientes = data.data.filter((usuario: Usuario) => usuario.rolDescripcion === 'Clientes');
-
+            console.log(usuariosClientes);
           usuariosClientes.forEach((usuario: Usuario) => {
             if (usuario.imageData) {
               usuario.imageData = this._usuarioServicio.decodeBase64ToImageUrl(usuario.imageData);
@@ -191,7 +271,8 @@ export class ModalListaClientesComponent implements OnInit, AfterViewInit {
   verImagen(usuario: Usuario): void {
     this.dialog.open(VerImagenProductoModalComponent, {
       data: {
-        imageData: usuario.imageData
+        // imageData: usuario.imageData
+        imagenes: [usuario.imagenUrl]
       }
     });
   }
@@ -199,7 +280,7 @@ export class ModalListaClientesComponent implements OnInit, AfterViewInit {
 
     Swal.fire({
 
-      title: "¿ desea eliminar el usuario ?",
+      title: "¿Desea eliminar el usuario?",
       text: usuario.nombreCompleto,
       icon: "warning",
       confirmButtonColor: '#3085d6',

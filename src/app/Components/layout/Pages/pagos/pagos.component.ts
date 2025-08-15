@@ -153,7 +153,7 @@ export class PagosComponent {
 
   usuario() {
 
-    this._usuarioServicio.listaClientes().subscribe({
+    this._usuarioServicio.listaUsuario().subscribe({
 
       next: (data) => {
         if (data.status) {
@@ -161,7 +161,8 @@ export class PagosComponent {
           this.listaClientes = data.value.sort((a: Usuario, b: Usuario) => a.nombreCompleto!.localeCompare(b.nombreCompleto!));
 
           const lista = data.value as Usuario[];
-          this.listaClientes = lista.filter(p => p.esActivo == 1)
+          this.listaClientes = lista.filter(p => p.esActivo == 1 && p.rolDescripcion == "Clientes")
+
 
 
         }
@@ -341,7 +342,7 @@ export class PagosComponent {
     // Actualizar el valor del campo de búsqueda por código con el código del producto seleccionado
     this.formularioPago.get('usuario')?.setValue(selectedProduct.nombreCompleto);
 
-    console.log("Datos recibidos:",  this.idUsuarioSeleccionado);
+    console.log("Datos recibidos:", this.idUsuarioSeleccionado);
 
     this._membresiaServicio.getMembresiaByUsuario(selectedProduct.idUsuario!).subscribe({
 
@@ -449,8 +450,8 @@ export class PagosComponent {
   private cargarImagenUsuario(idProducto: number) {
     this._usuarioServicio.obtenerImagenUsuario(idProducto).subscribe(
       (response: any) => {
-        if (response && response.imageData) {
-          this.imagenSeleccionada = `data:image/png;base64,${response.imageData}`;
+        if (response && response.imagenUrl) {
+          this.imagenSeleccionada = `${response.imagenUrl}`;
         } else {
           console.error('Imagen no disponible');
           this.imagenSeleccionada = 'ruta/de/imagen/predeterminada.png'; // O deja nulo
@@ -466,7 +467,7 @@ export class PagosComponent {
   verImagen(usuario: any): void {
     this.dialog.open(VerImagenProductoModalComponent, {
       data: {
-        imageData: usuario
+        imagenes: [usuario]
       }
     });
   }

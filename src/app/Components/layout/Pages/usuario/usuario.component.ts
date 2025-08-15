@@ -13,6 +13,8 @@ import { VerImagenProductoModalComponent } from '../../Modales/ver-imagen-produc
 import * as CryptoJS from 'crypto-js';
 import { ModalListaClientesComponent } from '../../Modales/modal-lista-clientes/modal-lista-clientes.component';
 import { MatSort } from '@angular/material/sort';
+import { AuthService } from '../../../../Services/auth.service';
+import { ImageUpdatedService } from '../../../../Services/image-updated.service';
 
 @Component({
   selector: 'app-usuario',
@@ -41,7 +43,9 @@ export class UsuarioComponent implements OnInit, AfterViewInit {
   constructor(
     private dialog: MatDialog,
     private _usuarioServicio: UsuariosService,
-    private _utilidadServicio: UtilidadService
+    private _utilidadServicio: UtilidadService,
+      private authService: AuthService,
+    private imageUpdatedService: ImageUpdatedService,
 
   ) { }
 
@@ -63,6 +67,18 @@ export class UsuarioComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // this.obtenerClaveSecreta();
     this.obtenerUsuario();
+
+
+     this.authService.usuario$.subscribe(usuario => {
+      this.obtenerUsuario();
+      console.log('Usuario actualizado en tiempo real:', usuario);
+    });
+
+    this.imageUpdatedService.imageUpdated$.subscribe(() => {
+        this.obtenerUsuario();
+      console.log('Aquiiii');
+    });
+
   }
 
 
@@ -82,11 +98,11 @@ export class UsuarioComponent implements OnInit, AfterViewInit {
         if (data && data.data && data.data.length > 0) {
           const usuariosClientes = data.data.filter((usuario: Usuario) => usuario.rolDescripcion !== 'Clientes');
           console.log('data :'+data.data)
-          usuariosClientes.forEach((usuario: Usuario) => {
-            if (usuario.imageData) {
-              usuario.imageData = this._usuarioServicio.decodeBase64ToImageUrl(usuario.imageData);
-            }
-          });
+          // usuariosClientes.forEach((usuario: Usuario) => {
+          //   if (usuario.imageData) {
+          //     usuario.imageData = this._usuarioServicio.decodeBase64ToImageUrl(usuario.imageData);
+          //   }
+          // });
           this.totalUsuario = data.total;
           this.totalPages = data.totalPages;
           // this.dataListaUsuarios.data = data.data;
@@ -221,13 +237,16 @@ export class UsuarioComponent implements OnInit, AfterViewInit {
 
     });
   }
-  verImagen(usuario: Usuario): void {
+  
+  verImagen(usuario: any): void {
+    // console.log(usuario);
     this.dialog.open(VerImagenProductoModalComponent, {
       data: {
-        imageData: usuario.imageData
+        imagenes: [usuario.imagenUrl]
       }
     });
   }
+
   eliminarUsuario(usuario: Usuario) {
 
     Swal.fire({
