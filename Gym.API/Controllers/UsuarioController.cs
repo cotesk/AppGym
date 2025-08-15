@@ -318,6 +318,7 @@ namespace Gym.Api.Controllers
             };
         }
 
+
         [HttpPost]
         [Route("IniciarSesion")]
         public async Task<IActionResult> IniciarSesion([FromBody] LoginDTO login)
