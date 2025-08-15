@@ -210,9 +210,9 @@ namespace Gym.Utility
 
             #endregion historialPago
 
-            #region Entrenadores
-            CreateMap<Entrenadores, EntrenadoresDTO>().ReverseMap();
-            #endregion Entrenadores
+            //#region Entrenadores
+            //CreateMap<Entrenadores, EntrenadoresDTO>().ReverseMap();
+            //#endregion Entrenadores
 
             #region EntrenadoresCliente
             CreateMap<EntrenadorCliente, EntrenadorClienteDTO>().ReverseMap();

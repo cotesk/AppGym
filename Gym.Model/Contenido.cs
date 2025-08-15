@@ -14,4 +14,8 @@ public partial class Contenido
     public string? TipoContenido { get; set; }
 
     public byte[]? Imagenes { get; set; }
+
+    public string? NombreImagen { get; set; }
+
+    public string? ImagenUrl { get; set; }
 }

@@ -35,6 +35,9 @@ namespace Gym.DTO
         public DateTime? RefreshTokenExpiry { get; set; }
 
 
+        public string? NombreImagen { get; set; }
+
+        public string? ImagenUrl { get; set; }
 
 
 

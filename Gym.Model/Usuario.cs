@@ -31,6 +31,10 @@ public partial class Usuario
 
     public DateTime? RefreshTokenExpiry { get; set; }
 
+    public string? NombreImagen { get; set; }
+
+    public string? ImagenUrl { get; set; }
+
     public virtual ICollection<AsignacionesMembresia> AsignacionesMembresia { get; set; } = new List<AsignacionesMembresia>();
 
     public virtual ICollection<AsignacionesPlanEntrenamiento> AsignacionesPlanEntrenamientos { get; set; } = new List<AsignacionesPlanEntrenamiento>();
@@ -42,10 +46,6 @@ public partial class Usuario
     public virtual ICollection<EntrenadorCliente> EntrenadorClienteClientes { get; set; } = new List<EntrenadorCliente>();
 
     public virtual ICollection<EntrenadorCliente> EntrenadorClienteEntrenadors { get; set; } = new List<EntrenadorCliente>();
-
-    public virtual ICollection<Entrenadores> Entrenadores { get; set; } = new List<Entrenadores>();
-
-    public virtual ICollection<HistorialAsistencia> HistorialAsistencia { get; set; } = new List<HistorialAsistencia>();
 
     public virtual ICollection<HistorialPago> HistorialPagos { get; set; } = new List<HistorialPago>();
 

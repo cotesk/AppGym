@@ -1,30 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
+﻿using Firebase.Auth;
+using Firebase.Storage;
+using Gym.Api.Utilidad;
+using Gym.BLL.Servicios;
 using Gym.BLL.Servicios.Contrato;
 using Gym.DTO;
-using Gym.Api.Utilidad;
-using Microsoft.EntityFrameworkCore;
 using Gym.Model;
-using System;
-using Newtonsoft.Json;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.Extensions.Configuration;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
-using Gym.BLL.Servicios;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.Server;
-
+using Newtonsoft.Json;
 using OfficeOpenXml;
+using System;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Security.Claims;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Gym.Api.Controllers
@@ -40,6 +41,7 @@ namespace Gym.Api.Controllers
         private readonly DbgymContext _context;
         private readonly IConfiguration _configuration;
 
+
         public UsuarioController(IUsuarioService usuarioServicio, IEmailService emailServicio, DbgymContext context, IConfiguration configuration)
         {
             _usuarioServicio = usuarioServicio;
@@ -47,8 +49,10 @@ namespace Gym.Api.Controllers
             _emailServicio = emailServicio;
             _context = context;
             _configuration = configuration;
+
         }
-        //[Authorize]
+
+        [Authorize]
         [HttpGet]
         [Route("Lista")]
         public async Task<IActionResult> Lista()
@@ -72,7 +76,7 @@ namespace Gym.Api.Controllers
 
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         [Route("ListaUsuarios")]
         public async Task<IActionResult> ListaUsuarios()
@@ -91,54 +95,13 @@ namespace Gym.Api.Controllers
                     NombreCompleto = u.NombreCompleto,
                     Correo = u.Correo,
                     IdRol = u.IdRol,
-                    Telefono = u.Telefono,
-                    Direccion = u.Direccion,
-                    Cedula = u.Cedula,
                     RolDescripcion = u.RolDescripcion,
                     EsActivo = u.EsActivo,
                     Clave = u.Clave,
                     RefreshToken = u.RefreshToken,
-                    RefreshTokenExpiry = u.RefreshTokenExpiry
-                }).ToList();
-            }
-            catch (Exception ex)
-            {
-                rsp.status = false;
-                rsp.msg = ex.Message;
-            }
-
-            return Ok(rsp);
-        }
-
-        [HttpGet]
-        [Route("ListaClientes")]
-        public async Task<IActionResult> ListaClientes()
-        {
-            var rsp = new Response<List<UsuarioDTO>>();
-
-            try
-            {
-                rsp.status = true;
-                var listaUsuarios = await _usuarioServicio.Lista();
-
-                // Mapear la lista de usuarios a UsuarioDTO excluyendo el campo ImageData
-                rsp.value = listaUsuarios
-                     .Where(u => u.RolDescripcion == "Clientes")
-                    .Select(u => new UsuarioDTO
-                {
-                    IdUsuario = u.IdUsuario,
-                    NombreCompleto = u.NombreCompleto,
-                    Correo = u.Correo,
-                    IdRol = u.IdRol,
-                    Telefono = u.Telefono,
-                    Direccion = u.Direccion,
-                    Cedula = u.Cedula,
-                    //ImageData= u.ImageData,
-                    RolDescripcion = u.RolDescripcion,
-                    EsActivo = u.EsActivo,
-                    Clave = u.Clave,
-                    RefreshToken = u.RefreshToken,
-                    RefreshTokenExpiry = u.RefreshTokenExpiry
+                    RefreshTokenExpiry = u.RefreshTokenExpiry,
+                    ImagenUrl = u.ImagenUrl,
+                    NombreImagen = u.NombreImagen
                 }).ToList();
             }
             catch (Exception ex)
@@ -157,7 +120,7 @@ namespace Gym.Api.Controllers
         {
             var producto = _context.Usuarios.Find(id);
             if (producto == null) return NotFound();
-            return Ok(new { imageData = producto.ImageData });
+            return Ok(new { ImagenUrl = producto.ImagenUrl });
         }
 
         [Authorize]
@@ -177,37 +140,32 @@ namespace Gym.Api.Controllers
         }
 
 
-        //[Authorize]
+        [Authorize]
         [Route("ListaPaginada")]
         [HttpGet]
         public ActionResult<IEnumerable<UsuarioDTO>> GetUsuarios(int page = 1, int pageSize = 5, string searchTerm = null)
         {
             IQueryable<UsuarioDTO> query = _context.Usuarios
-                .Where(u => u.IdRol != 3) // Excluir usuarios con IdRol igual a 3 que son clientes
+                .Where(u => u.IdRol != 4) // Excluir usuarios con IdRol igual a 4
                 .Select(u => new UsuarioDTO
                 {
                     IdUsuario = u.IdUsuario,
                     NombreCompleto = u.NombreCompleto,
                     Correo = u.Correo,
                     IdRol = u.IdRol,
-                    Telefono = u.Telefono,
-                    Direccion = u.Direccion,
-                    Cedula = u.Cedula,
                     RolDescripcion = u.IdRolNavigation.Nombre, // Obtener la descripción del rol desde la navegación
                     Clave = u.Clave,
                     EsActivo = u.EsActivo.HasValue ? (u.EsActivo.Value ? 1 : 0) : (int?)null,
-                    ImageData = u.ImageData,
+                    //ImageData = u.ImageData,
+                    ImagenUrl = u.ImagenUrl,
+                    NombreImagen = u.NombreImagen,
                     RefreshToken = u.RefreshToken,
                     RefreshTokenExpiry = u.RefreshTokenExpiry
                 });
 
             if (int.TryParse(searchTerm, out int isActive))
             {
-                query = query.Where(c =>
-                c.Cedula.Contains(searchTerm) ||
-                c.EsActivo == isActive
-                
-                );
+                query = query.Where(c => c.EsActivo == isActive);
             }
             else if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -230,66 +188,14 @@ namespace Gym.Api.Controllers
             return Ok(new { data = usuariosPaginados, total = totalUsuarios, totalPages });
         }
 
+
         [Authorize]
-        [HttpPost]
-        [Route("ActualizarImagen/{id:int}")]
-       
-        public async Task<IActionResult> ActualizarImagen(int id, [FromForm] IFormFile imagen)
-        {
-            try
-            {
-                Console.WriteLine($"ID del usuario en ActualizarImagen: {id}");
-
-                // Verifica si la imagen se está recibiendo correctamente
-                if (imagen == null || imagen.Length == 0)
-                {
-                    return BadRequest(new { Mensaje = "La imagen no se recibió correctamente." });
-                }
-
-                var usuario = await _context.Usuarios.FirstOrDefaultAsync(p => p.IdUsuario == id);
-
-                if (usuario == null)
-                {
-                    return NotFound(new { Mensaje = "Usuario no encontrado" });
-                }
-
-                // Convierte la imagen a un arreglo de bytes
-                using (var memoryStream = new MemoryStream())
-                {
-                    await imagen.CopyToAsync(memoryStream);
-                    usuario.ImageData = memoryStream.ToArray();
-                }
-
-                // Guarda los cambios en la base de datos
-                await _context.SaveChangesAsync();
-
-                var rsp = new Response<string>
-                {
-                    status = true,
-                    value = "Imagen actualizada correctamente"
-                };
-
-                return Ok(rsp);
-            }
-            catch (Exception ex)
-            {
-                var rsp = new Response<string>
-                {
-                    status = false,
-                    msg = ex.Message
-                };
-
-                return StatusCode(StatusCodes.Status500InternalServerError, rsp);
-            }
-        }
-
-        //[Authorize]
         [Route("ListaPaginadaCliente")]
         [HttpGet]
         public ActionResult<IEnumerable<UsuarioDTO>> GetClientes(int page = 1, int pageSize = 5, string searchTerm = null)
         {
             IQueryable<UsuarioDTO> query = _context.Usuarios
-                .Where(u => u.IdRol != 1 && u.IdRol != 2)
+                .Where(u => u.IdRol == 4) // Excluir usuarios con IdRol igual a 4
                 .Select(u => new UsuarioDTO
                 {
                     IdUsuario = u.IdUsuario,
@@ -298,11 +204,10 @@ namespace Gym.Api.Controllers
                     IdRol = u.IdRol,
                     RolDescripcion = u.IdRolNavigation.Nombre, // Obtener la descripción del rol desde la navegación
                     Clave = u.Clave,
-                    Telefono = u.Telefono,
-                    Direccion = u.Direccion,
-                    Cedula = u.Cedula,
                     EsActivo = u.EsActivo.HasValue ? (u.EsActivo.Value ? 1 : 0) : (int?)null,
-                    ImageData = u.ImageData,
+                    //ImageData = u.ImageData,
+                    ImagenUrl = u.ImagenUrl,
+                    NombreImagen = u.NombreImagen,
                     RefreshToken = u.RefreshToken,
                     RefreshTokenExpiry = u.RefreshTokenExpiry
                 });
@@ -310,11 +215,7 @@ namespace Gym.Api.Controllers
             // Convertir searchTerm a bool si es posible
             if (int.TryParse(searchTerm, out int isActive))
             {
-                query = query.Where(c =>
-                c.Cedula.Contains(searchTerm) ||
-                c.EsActivo == isActive
-                
-                );
+                query = query.Where(c => c.EsActivo == isActive);
             }
 
 
@@ -323,7 +224,6 @@ namespace Gym.Api.Controllers
                 query = query.Where(c =>
                     c.NombreCompleto.Contains(searchTerm) ||
                     c.RolDescripcion.Contains(searchTerm) ||
-                     c.Cedula.Contains(searchTerm) ||
                     c.Correo.Contains(searchTerm)
                 );
             }
@@ -345,19 +245,6 @@ namespace Gym.Api.Controllers
         public async Task<IActionResult> ObtenerUsuarioPorId(int idUsuario)
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.IdUsuario == idUsuario);
-
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(usuario);
-        }
-        [HttpGet]
-        [Route("ObtenerUsuarioPoCedula/{cedula}")]
-        public async Task<IActionResult> ObtenerUsuarioPorCedula(string cedula)
-        {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Cedula == cedula);
 
             if (usuario == null)
             {
@@ -392,7 +279,29 @@ namespace Gym.Api.Controllers
             return Ok(usuario);
         }
 
-    
+        //[HttpPost]
+        //[Route("IniciarSesion")]
+        //public async Task<IActionResult> IniciarSesion([FromBody] LoginDTO login)
+        //{
+
+        //    var rsp = new Response<SesionDTO>();
+
+        //    try
+        //    {
+        //        rsp.status = true;
+        //        rsp.value = await _usuarioServicio.ValidadarCredenciales(login.Correo,login.Clave);
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        rsp.status = false;
+        //        rsp.msg = ex.Message;
+        //    }
+        //    return Ok(rsp);
+
+
+        //}
         private UsuarioDTO ConvertirSesionAUsuario(SesionDTO sesion)
         {
             return new UsuarioDTO
@@ -401,7 +310,9 @@ namespace Gym.Api.Controllers
                 NombreCompleto = sesion.NombreCompleto,
                 Correo = sesion.Correo,
                 RolDescripcion = sesion.RolDescripcion,
-                ImageData = sesion.ImageData,
+                ImagenUrl = sesion.ImagenUrl,
+                NombreImagen = sesion.NombreImagen,
+                //ImageData = sesion.ImageData,
                 Clave = sesion.Clave,
 
             };
@@ -568,6 +479,30 @@ namespace Gym.Api.Controllers
 
             try
             {
+
+                var nombreExistente = await _context.Usuarios.AnyAsync(p => p.NombreCompleto == usuario.NombreCompleto);
+
+                if (nombreExistente)
+                {
+                    rsp.status = false;
+                    rsp.msg = "Ya existe un producto con el mismo nombre";
+                    return Ok(rsp);
+                }
+
+
+                // Convertir el arreglo de bytes a un stream de imagen
+                using (var stream = new MemoryStream(usuario.ImageData))
+                {
+                    var guid = Guid.NewGuid().ToString();
+                    usuario.NombreImagen = $"{guid}-{usuario.NombreImagen}";
+                    // Subir la imagen a Firebase Storage
+                    var imagenUrl = await SubirStorage(stream, usuario.NombreImagen);
+                    usuario.ImagenUrl = imagenUrl;  // Asignar la URL de la imagen al DTO
+                    usuario.ImageData = null;
+                }
+
+
+
                 rsp.status = true;
                 rsp.value = await _usuarioServicio.Crear(usuario);
 
@@ -592,21 +527,35 @@ namespace Gym.Api.Controllers
 
             try
             {
+
+
+                // Convertir el arreglo de bytes a un stream de imagen
+                using (var stream = new MemoryStream(usuarioCreateDTO.ImageData))
+                {
+                    var guid = Guid.NewGuid().ToString();
+                    usuarioCreateDTO.NombreImagen = $"{guid}-{usuarioCreateDTO.NombreImagen}";
+                    // Subir la imagen a Firebase Storage
+                    var imagenUrl = await SubirStorage(stream, usuarioCreateDTO.NombreImagen);
+                    usuarioCreateDTO.ImagenUrl = imagenUrl;  // Asignar la URL de la imagen al DTO
+                    usuarioCreateDTO.ImageData = null;
+                }
+
                 // Map UsuarioCreateDTO to UsuarioDTO
                 var usuarioDTO = new UsuarioDTO
                 {
                     NombreCompleto = usuarioCreateDTO.NombreCompleto,
                     Correo = usuarioCreateDTO.Correo,
                     IdRol = 4,
-                    Telefono = usuarioCreateDTO.Telefono,
-                    Cedula = usuarioCreateDTO.Cedula,
-                    Direccion = usuarioCreateDTO.Direccion,
                     Clave = usuarioCreateDTO.Clave,
                     EsActivo = 0,
                     RolDescripcion = "Clientes",
-                    ImageData = usuarioCreateDTO.ImageData,
-
+                    //ImageData = usuarioCreateDTO.ImageData,
+                    ImagenUrl = usuarioCreateDTO.ImagenUrl,
+                    NombreImagen = usuarioCreateDTO.NombreImagen,
                 };
+
+
+
 
                 // Call service method to create user
                 var usuarioCreado = await _usuarioServicio.Crear(usuarioDTO);
@@ -667,9 +616,6 @@ namespace Gym.Api.Controllers
                 usuarioExistente.NombreCompleto = usuario.NombreCompleto;
                 usuarioExistente.Correo = usuario.Correo;
                 usuarioExistente.Clave = usuario.Clave;
-                //usuarioExistente.Telefono = usuario.Telefono;
-                //usuarioExistente.Direccion = usuario.Direccion;
-                //usuarioExistente.Cedula = usuario.Cedula;
                 //usuarioExistente.ImageData = usuario.ImageData;
                 // Otras propiedades según sea necesario
 
@@ -685,10 +631,10 @@ namespace Gym.Api.Controllers
             }
 
         }
-        //[Authorize]
+        [Authorize]
         [HttpPut]
         [Route("Editar")]
-        public async Task<IActionResult> Editar([FromBody] UsuarioDTO usuario)
+        public async Task<IActionResult> Editar([FromBody] UsuarioDTO usuario, int id)
         {
             Console.WriteLine($"Usuario antes de actualizar: {JsonConvert.SerializeObject(usuario)}");
 
@@ -722,6 +668,14 @@ namespace Gym.Api.Controllers
 
             try
             {
+
+
+                var usuario = await _context.Usuarios.FindAsync(id);
+                // Eliminar la imagen asociada en Firebase Storage
+                if (!string.IsNullOrEmpty(usuario.NombreImagen))
+                    await EliminarDeStorage(usuario.NombreImagen);
+
+
                 rsp.status = true;
                 rsp.value = await _usuarioServicio.Eliminar(id);
 
@@ -737,8 +691,7 @@ namespace Gym.Api.Controllers
 
         }
 
-     
-
+    
         private async Task<byte[]> DownloadImage(string imageUrl)
         {
             using var httpClient = new HttpClient();
@@ -777,7 +730,154 @@ namespace Gym.Api.Controllers
 
 
 
-   
+        //[HttpPost]
+        //[Route("ActualizarImagen/{id:int}")]
+        //public async Task<IActionResult> ActualizarImagen(int id, [FromForm] IFormFile imagen)
+        //{
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        await imagen.CopyToAsync(memoryStream);
+        //        var imageData = memoryStream.ToArray();
+
+        //        var rsp = new Response<string>();
+
+        //    try
+        //    {
+        //        Console.WriteLine($"ID del producto en ActualizarImagen: {id}");
+
+        //        // Verifica si la imagen se está recibiendo correctamente
+        //        if (imagen == null)
+        //        {
+        //            return BadRequest(new { Mensaje = "La imagen no se recibió correctamente." });
+        //        }
+
+        //        var usuario = await _context.Usuarios.FirstOrDefaultAsync(p => p.IdUsuario == id);
+
+        //        if (usuario == null)
+        //        {
+        //            return NotFound(new { Mensaje = "Producto no encontrado" });
+        //        }
+
+        //        // Convierte la imagen a un arreglo de bytes
+        //        using (var stream = new MemoryStream())
+        //        {
+        //            await imagen.CopyToAsync(stream);
+        //            usuario.ImageData = stream.ToArray();
+        //        }
+
+        //        // Guarda los cambios en la base de datos
+        //        await _context.SaveChangesAsync();
+
+        //        rsp.status = true;
+        //        rsp.value = "Imagen actualizada correctamente";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        rsp.status = false;
+        //        rsp.msg = ex.Message;
+        //    }
+
+
+        //    return Ok(rsp);
+
+
+        //    }
+        //    return Ok();
+        //}
+        [Authorize]
+        [HttpPost]
+        [Route("ActualizarImagen/{id:int}")]
+        public async Task<IActionResult> ActualizarImagen(int id, [FromForm] IFormFile imagen)
+        {
+            var rsp = new Response<string>();
+
+            try
+            {
+                Console.WriteLine($"ID del producto en ActualizarImagen: {id}");
+
+                // Verifica si la imagen se está recibiendo correctamente
+                if (imagen == null)
+                {
+                    return BadRequest(new { Mensaje = "La imagen no se recibió correctamente." });
+                }
+
+                var contenido = await _context.Usuarios.FirstOrDefaultAsync(p => p.IdUsuario == id);
+
+                if (contenido == null)
+                {
+                    return NotFound(new { Mensaje = "Producto no encontrado" });
+                }
+
+                // Intentar eliminar la imagen anterior si existe
+                if (!string.IsNullOrEmpty(contenido.NombreImagen))
+                {
+                    try
+                    {
+                        // Eliminar imagen del almacenamiento
+                        await EliminarDeStorage(contenido.NombreImagen);
+                        Console.WriteLine("Imagen anterior eliminada del almacenamiento.");
+                    }
+                    catch (Exception ex)
+                    {
+                        // La imagen no existe en Firebase, proceder con el reemplazo
+                        Console.WriteLine($"La imagen no existe en el almacenamiento: {ex.Message}. Reemplazando con la nueva imagen.");
+                    }
+                }
+
+                // Extraer el nombre del archivo seleccionado
+                var nombreArchivo = Path.GetFileName(imagen.FileName); // Obtiene el nombre del archivo
+                // Generar un nombre único para el archivo
+                var nombreArchivoUnico = $"{Guid.NewGuid()}{nombreArchivo}";
+
+                // Convertir la imagen en byte[] y crear un archivo temporal
+                using (var stream = new MemoryStream())
+                {
+                    // Copia el archivo recibido en el MemoryStream
+                    await imagen.CopyToAsync(stream);
+
+
+
+                    // Crear un archivo temporal en el sistema
+                    var tempFilePath = Path.Combine(Path.GetTempPath(), nombreArchivoUnico);
+
+                    // Escribir los bytes de la imagen en el archivo temporal
+                    await System.IO.File.WriteAllBytesAsync(tempFilePath, stream.ToArray());
+
+                    // Abrir el archivo temporal como un FileStream
+                    using (var fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        // Subir el archivo temporal a Firebase
+                        var urlImagen = await SubirStorage(fileStream, nombreArchivoUnico);
+                        contenido.ImagenUrl = urlImagen;  // Asignar la URL de la imagen al DTO
+                        contenido.NombreImagen = nombreArchivoUnico;
+
+                        // Eliminar el archivo temporal después de subirlo
+                        if (System.IO.File.Exists(tempFilePath))
+                        {
+                            fileStream.Close();  // Asegúrate de cerrar el FileStream antes de eliminar el archivo
+                            System.IO.File.Delete(tempFilePath); // Eliminar el archivo temporal
+                        }
+                    }
+                }
+
+               
+
+                // Guarda los cambios en la base de datos
+                await _context.SaveChangesAsync();
+
+                rsp.status = true;
+                rsp.value = contenido.ImagenUrl;
+                //rsp.value = "Imagen actualizada correctamente";
+            }
+            catch (Exception ex)
+            {
+                rsp.status = false;
+                rsp.msg = ex.Message;
+            }
+
+            return Ok(rsp);
+        }
+
 
         //[Authorize]
         [HttpPost("RecuperarContraseña")]
@@ -797,6 +897,38 @@ namespace Gym.Api.Controllers
                     return Ok(rsp);
                 }
 
+                // Obtén la información de la empresa
+                var empresa = _context.Empresas.FirstOrDefault();
+
+                string nombre, direccion, correoEmoresa, nit, telefono, propietario;
+                string logoUrl;
+
+                var url = empresa != null ? await ObtenerUrlDeStorage(empresa.LogoNombre) : "Sin imagen";
+
+                if (empresa != null)
+                {
+                    // Obtén los datos de la empresa
+                    nombre = empresa.NombreEmpresa;
+                    direccion = empresa.Direccion;
+                    correoEmoresa = empresa.Correo;
+                    nit = empresa.Nit;
+                    telefono = empresa.Telefono;
+                    propietario = empresa.Propietario;
+                    logoUrl = url;
+
+                }
+                else
+                {
+                    // Datos por defecto
+                    nombre = "Tu Empresa";
+                    direccion = "Sin Dirección";
+                    correoEmoresa = "Sin Correo";
+                    logoUrl = url;
+                    nit = "Sin NIT";
+                    telefono = "Sin Teléfono";
+                    propietario = "Sin Propietario";
+                }
+
                 // URL del GIF de alivio
                 string gifUrl = "https://media.giphy.com/media/uWqiZM2vzncysGBon5/giphy.gif";
 
@@ -804,18 +936,39 @@ namespace Gym.Api.Controllers
                 foreach (var usuario in usuarios)
                 {
                     var mensajeHtml = $@"
-            <html>
-                <body style='font-family: Arial, sans-serif; background-color: #f4f4f9; color: #333; text-align: center; padding: 20px;'>
-                    <div style='max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);'>
-                        <h2 style='color: #333;'>Recuperación de Contraseña</h2>
-                        <p>Hola, <strong>{usuario.NombreCompleto}</strong></p>
-                        <p>Tu contraseña es:</p>
-                        <p style='font-size: 24px; font-weight: bold; color: #e63946;'>{usuario.Clave}</p>
-                        <img src='{gifUrl}' alt='Aliviado' style='width: 100%; max-width: 300px; margin-top: 20px;'/>
-                        <p style='margin-top: 20px;'>Si no solicitaste este correo, por favor ignóralo.</p>
-                    </div>
-                </body>
-            </html>";
+<!DOCTYPE html>
+<html lang='es'>
+  <body style='font-family: Segoe UI, Roboto, Arial, sans-serif; background-color: #f4f4f9; color: #2f3640; text-align: center; padding: 40px 20px;'>
+    <div style='max-width: 520px; margin: auto; background-color: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);'>
+
+   
+      <div style='margin-bottom: 20px;'>
+        <img src='{logoUrl}' alt='Logo de {nombre}' style='max-width: 160px; height: auto; border-radius: 8px;' />
+      </div>
+
+   
+      <h2 style='font-size: 20px; font-weight: 600; margin-bottom: 12px;'>Recuperación de Contraseña</h2>
+
+    
+      <p style='margin: 0 0 12px;'>Hola, <strong>{usuario.NombreCompleto}</strong>,</p>
+      <p style='margin: 0 0 24px;'>Tu contraseña es:</p>
+      <p style='font-size: 24px; font-weight: bold; color: #e63946; margin: 0;'>{usuario.Clave}</p>
+
+     
+      <img src='{gifUrl}' alt='GIF de alivio' style='max-width: 280px; margin: 24px auto; display: block;' />
+
+    
+      <p style='font-size: 13px; color: #888; margin-top: 24px;'>Si no solicitaste este correo, simplemente ignóralo.</p>
+
+    
+      <div style='margin-top: 30px; font-size: 11px; color: #aaa;'>
+        <p>{nombre} · {direccion}</p>
+        <p>Tel: {telefono} · Correo: {correoEmoresa}</p>
+        <p>NIT: {nit}</p>
+      </div>
+    </div>
+  </body>
+</html>";
 
                     await _emailServicio.EnviarCorreoElectronico(
                         usuario.Correo,
@@ -871,21 +1024,73 @@ namespace Gym.Api.Controllers
                 //cuando suba esto a un servidor, cambiar la direcion ejemplo $"http://www.ejemplo.com/restablecer-contrasena?correo={correo}&token={resetToken}"
                 // Crear URL de restablecimiento de contraseña
                 //var resetUrl = $"http://localhost:4200/restablecer-contrasena?correo={correo}&token={resetToken}";
-                var resetUrl = $"https://appsistemaventa2024.web.app/restablecer-contrasena?correo={correo}&token={resetToken}";
+                var resetUrl = $"https://appgym-c350c.web.app/restablecer-contrasena?correo={correo}&token={resetToken}";
 
+                // Obtén la información de la empresa
+                var empresa = _context.Empresas.FirstOrDefault();
+
+                string nombre, direccion, correoEmoresa, nit, telefono, propietario;
+                string logoUrl;
+
+                var url = empresa != null ? await ObtenerUrlDeStorage(empresa.LogoNombre) : "Sin imagen";
+
+                if (empresa != null)
+                {
+                    // Obtén los datos de la empresa
+                    nombre = empresa.NombreEmpresa;
+                    direccion = empresa.Direccion;
+                    correoEmoresa = empresa.Correo;
+                    nit = empresa.Nit;
+                    telefono = empresa.Telefono;
+                    propietario = empresa.Propietario;
+                    logoUrl = url;
+
+                }
+                else
+                {
+                    // Datos por defecto
+                    nombre = "Tu Empresa";
+                    direccion = "Sin Dirección";
+                    correoEmoresa = "Sin Correo";
+                    logoUrl = url;
+                    nit = "Sin NIT";
+                    telefono = "Sin Teléfono";
+                    propietario = "Sin Propietario";
+                }
 
                 var mensajeHtml = $@"
-    <html>
-        <body style='font-family: Arial, sans-serif; background-color: #f4f4f9; color: #333; text-align: center; padding: 20px;'>
-            <div style='max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);'>
-                <h2 style='color: #333;'>Restablecer Contraseña</h2>
-                <p>Hola, <strong>{usuario.NombreCompleto}</strong></p>
-                <p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>
-                <a href='{resetUrl}' style='display: inline-block; padding: 10px 20px; margin: 20px 0; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;'>Restablecer Contraseña</a>
-                <p>Si no solicitaste este cambio, por favor ignora este correo.</p>
-            </div>
-        </body>
-    </html>";
+<!DOCTYPE html>
+<html lang='es'>
+  <body style='font-family: Segoe UI, Roboto, Arial, sans-serif; background-color: #f4f4f9; color: #2f3640; text-align: center; padding: 40px 20px;'>
+    <div style='max-width: 520px; margin: auto; background-color: #fff; padding: 24px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);'>
+
+    
+      <div style='margin-bottom: 20px;'>
+        <img src='{logoUrl}' alt='Logo de {nombre}' style='max-width: 160px; height: auto; border-radius: 8px;' />
+      </div>
+
+   
+      <h2 style='font-size: 20px; font-weight: 600; margin-bottom: 12px;'>Restablecer Contraseña</h2>
+
+    
+      <p style='margin: 0 0 12px;'>Hola, <strong>{usuario.NombreCompleto}</strong>,</p>
+      <p style='margin: 0 0 24px;'>Haz clic en el siguiente botón para restablecer tu contraseña:</p>
+
+     
+      <a href='{resetUrl}' style='display: inline-block; padding: 12px 24px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 500;'>Restablecer Contraseña</a>
+
+    
+      <p style='font-size: 13px; color: #888; margin-top: 24px;'>Si no solicitaste este cambio, simplemente ignora este mensaje.</p>
+
+     
+      <div style='margin-top: 30px; font-size: 11px; color: #aaa;'>
+        <p>{nombre} · {direccion}</p>
+        <p>Tel: {telefono} · Correo: {correoEmoresa}</p>
+        <p>NIT: {nit}</p>
+      </div>
+    </div>
+  </body>
+</html>";
 
                 await _emailServicio.EnviarCorreoElectronico(
                     usuario.Correo,
@@ -969,6 +1174,14 @@ namespace Gym.Api.Controllers
 
             try
             {
+
+                // Obtener la zona horaria de Colombia
+                TimeZoneInfo zonaColombia = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+
+                // Obtener la hora actual en Colombia
+                DateTime horaColombia = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, zonaColombia);
+
+
                 // Buscar usuarios por correo electrónico
                 var usuarios = await _context.Usuarios.Where(u => u.Correo == solicitud.Correo).ToListAsync();
                 var usuarioz = await _context.Usuarios.FirstOrDefaultAsync(u => u.Correo == solicitud.Correo);
@@ -982,6 +1195,45 @@ namespace Gym.Api.Controllers
                     return Ok(rsp);
                 }
 
+                if (usuarioz.EsActivo == true)
+                {
+                    rsp.status = false;
+                    rsp.msg = "El usuario ya está activado.";
+                    return Ok(rsp);
+                }
+
+
+                // 1. Generar un código único que no esté en uso
+                string codigo;
+                bool existe;
+
+                do
+                {
+                    codigo = new Random().Next(1000, 9999).ToString();
+
+                    existe = await _context.CodigoActivacions.AnyAsync(c =>
+                      c.Codigo == codigo &&
+                      c.Usado == false &&
+                      c.FechaExpiracion > horaColombia);
+                }
+                while (existe);
+
+
+                // 2. Crear y guardar el código
+                var codigoActivacion = new CodigoActivacion
+                {
+                    IdUsuario = usuarioz.IdUsuario,
+                    Codigo = codigo,
+                    FechaGeneracion = horaColombia,
+                    FechaExpiracion = horaColombia.AddMinutes(2),
+                    Usado = false
+                };
+
+                _context.CodigoActivacions.Add(codigoActivacion);
+                await _context.SaveChangesAsync();
+
+
+
                 // URL del GIF de alivio
                 string gifUrl = "https://media.giphy.com/media/uWqiZM2vzncysGBon5/giphy.gif";
 
@@ -992,7 +1244,7 @@ namespace Gym.Api.Controllers
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new[] { new Claim("idUsuario", usuarioz.IdUsuario.ToString()) }),
-                    Expires = DateTime.UtcNow.AddMinutes(10),
+                    Expires = horaColombia.AddMinutes(2),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 };
                 var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -1003,23 +1255,82 @@ namespace Gym.Api.Controllers
                 //cuando suba esto a un servidor, cambiar la direcion ejemplo $"http://www.ejemplo.com/restablecer-contrasena?correo={correo}&token={resetToken}"
                 // Crear URL de restablecimiento de contraseña
                 //var resetUrl = $"http://localhost:4200/activar-cuenta?correo={correo}&token={resetToken}";
-                var resetUrl = $"https://appsistemaventa2024.web.app/activar-cuenta?correo={correo}&token={resetToken}";
+                var resetUrl = $"https://appgym-c350c.web.app/activar-cuenta?correo={correo}&token={resetToken}";
+
+
+                // Obtén la información de la empresa
+                var empresa = _context.Empresas.FirstOrDefault();
+
+                string nombre, direccion, correoEmoresa, nit, telefono, propietario;
+                string logoUrl;
+
+                var url = empresa != null ? await ObtenerUrlDeStorage(empresa.LogoNombre) : "Sin imagen";
+
+                if (empresa != null)
+                {
+                    // Obtén los datos de la empresa
+                    nombre = empresa.NombreEmpresa;
+                    direccion = empresa.Direccion;
+                    correoEmoresa = empresa.Correo;
+                    nit = empresa.Nit;
+                    telefono = empresa.Telefono;
+                    propietario = empresa.Propietario;
+                    logoUrl = url;
+
+                }
+                else
+                {
+                    // Datos por defecto
+                    nombre = "Tu Empresa";
+                    direccion = "Sin Dirección";
+                    correoEmoresa = "Sin Correo";
+                    logoUrl = url;
+                    nit = "Sin NIT";
+                    telefono = "Sin Teléfono";
+                    propietario = "Sin Propietario";
+                }
 
                 // Envía un correo electrónico con la contraseña a cada usuario encontrado
                 foreach (var usuario in usuarios)
                 {
                     var mensajeHtml = $@"
-           <html>
-        <body style='font-family: Arial, sans-serif; background-color: #f4f4f9; color: #333; text-align: center; padding: 20px;'>
-            <div style='max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);'>
-                <h2 style='color: #333;'>Activar Usuario</h2>
-                <p>Hola, <strong>{usuario.NombreCompleto}</strong></p>
-                <p>Para activar el usuario, haz clic en el siguiente enlace:</p>
-                <a href='{resetUrl}' style='display: inline-block; padding: 10px 20px; margin: 20px 0; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;'>Activar Cuenta</a>
-                <p>Si no solicitaste esta activacion, por favor ignora este correo.</p>
-            </div>
-        </body>
-    </html>";
+<!DOCTYPE html>
+<html lang='es'>
+  <body style='font-family: Segoe UI, Roboto, Arial, sans-serif; background-color: #f5f6fa; color: #2f3640; text-align: center; padding: 40px 20px;'>
+    <div style='max-width: 480px; margin: auto; background-color: #ffffff; padding: 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);'>
+
+     
+      <div style='margin-bottom: 24px;'>
+        <img src='{logoUrl}' alt='Logo de {nombre}' style='max-width: 160px; height: auto; border-radius: 8px;' />
+      </div>
+
+    
+      <h2 style='font-size: 20px; font-weight: 600; margin-bottom: 8px;'>Activación de Cuenta</h2>
+      <p style='margin: 0 0 16px;'>Hola, <strong>{usuario.NombreCompleto}</strong></p>
+
+   
+      <p style='margin-bottom: 4px;'>Tu código de activación es:</p>
+      <p style='font-size: 36px; font-weight: bold; color: #0056d2; margin: 0 0 20px;'>{codigo}</p>
+
+     
+      <a href='{resetUrl}' style='display: inline-block; padding: 10px 20px; background-color: #0056d2; color: #fff; text-decoration: none; border-radius: 4px; font-size: 14px;'>Ingresar Código</a>
+
+    
+      <p style='font-size: 12px; color: #888; margin-top: 24px;'>Este código expirará en 2 minutos.</p>
+      <p style='font-size: 12px; color: #aaa;'>Si no solicitaste esta activación, puedes ignorar este mensaje.</p>
+
+    
+      <div style='margin-top: 30px; font-size: 11px; color: #bbb;'>
+        <p>{nombre} · {direccion}</p>
+        <p>NIT: {nit} · Tel: {telefono}</p>
+        <p>Correo: {correoEmoresa}</p>
+      </div>
+    </div>
+  </body>
+</html>";
+
+
+
 
                     await _emailServicio.EnviarCorreoElectronico(
                         usuario.Correo,
@@ -1030,7 +1341,7 @@ namespace Gym.Api.Controllers
                 }
 
                 rsp.status = true;
-                rsp.value = "Se ha enviado la contraseña a tu correo electrónico.";
+                rsp.value = "Se ha enviado el codigo de activacion a tu correo electrónico.";
             }
             catch (Exception ex)
             {
@@ -1051,6 +1362,14 @@ namespace Gym.Api.Controllers
 
             try
             {
+
+                // Obtener la zona horaria de Colombia
+                TimeZoneInfo zonaColombia = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+
+                // Obtener la hora actual en Colombia
+                DateTime horaColombia = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, zonaColombia);
+
+
                 //esto es para el token si decodificacion 
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:Key"]);
@@ -1081,6 +1400,17 @@ namespace Gym.Api.Controllers
                     return Ok(rsp);
                 }
 
+                var codigoValido = await _context.CodigoActivacions
+                .Where(c => c.IdUsuario == userId && c.Codigo == model.Codigo && c.Usado == false)
+                .OrderByDescending(c => c.FechaGeneracion)
+                .FirstOrDefaultAsync();
+
+                if (codigoValido == null || codigoValido.FechaExpiracion < horaColombia)
+                    return BadRequest("Código inválido o expirado");
+
+                // Marcar como usado
+                codigoValido.Usado = true;
+
                 // Actualizar la contraseña del usuario
                 usuario.EsActivo = true; // Asegúrate de hashear la contraseña antes de guardarla
                 await _context.SaveChangesAsync();
@@ -1096,8 +1426,6 @@ namespace Gym.Api.Controllers
 
             return Ok(rsp);
         }
-
-
 
 
         [Authorize]
@@ -1120,12 +1448,10 @@ namespace Gym.Api.Controllers
                 worksheet.Cells[1, 4].Value = "Clave";
                 worksheet.Cells[1, 5].Value = "Es Activo";
                 worksheet.Cells[1, 6].Value = "Fecha Registro";
-                worksheet.Cells[1, 7].Value = "Image Data"; // Aquí podrías usar una representación más legible si es necesario
-                worksheet.Cells[1, 8].Value = "Refresh Token";
-                worksheet.Cells[1, 9].Value = "Refresh Token Expiry";
-                worksheet.Cells[1, 10].Value = "Telefono";
-                worksheet.Cells[1, 11].Value = "Direccion";
-                worksheet.Cells[1, 12].Value = "Cedula";
+                worksheet.Cells[1, 7].Value = "Refresh Token";
+                worksheet.Cells[1, 8].Value = "Refresh Token Expiry";
+                worksheet.Cells[1, 9].Value = "Imagen Nombre";
+                worksheet.Cells[1, 10].Value = "Url Imagen";
 
                 // Rellenar los datos de los usuarios
                 int row = 2;
@@ -1137,12 +1463,10 @@ namespace Gym.Api.Controllers
                     worksheet.Cells[row, 4].Value = usuario.Clave; // Ten cuidado con esto si deseas proteger las contraseñas
                     worksheet.Cells[row, 5].Value = usuario.EsActivo;
                     worksheet.Cells[row, 6].Value = usuario.FechaRegistro?.ToString("yyyy-MM-dd");
-                    worksheet.Cells[row, 7].Value = Convert.ToBase64String(usuario.ImageData ?? Array.Empty<byte>());
-                    worksheet.Cells[row, 8].Value = usuario.RefreshToken;
-                    worksheet.Cells[row, 9].Value = usuario.RefreshTokenExpiry?.ToString("yyyy-MM-dd");
-                    worksheet.Cells[row, 10].Value = usuario.Telefono;
-                    worksheet.Cells[row, 11].Value = usuario.Direccion;
-                    worksheet.Cells[row, 12].Value = usuario.Cedula;
+                    worksheet.Cells[row, 7].Value = usuario.RefreshToken;
+                    worksheet.Cells[row, 8].Value = usuario.RefreshTokenExpiry?.ToString("yyyy-MM-dd");
+                    worksheet.Cells[row, 9].Value = usuario.NombreImagen;
+                    worksheet.Cells[row, 10].Value = usuario.ImagenUrl;
                     row++;
                 }
 
@@ -1184,12 +1508,11 @@ namespace Gym.Api.Controllers
                             Clave = worksheet.Cells[row, 4].Value?.ToString(),
                             EsActivo = Convert.ToBoolean(worksheet.Cells[row, 5].Value),
                             FechaRegistro = DateTime.TryParse(worksheet.Cells[row, 6].Value?.ToString(), out DateTime fecha) ? (DateTime?)fecha : null,
-                            ImageData = DecodeBase64Image(worksheet.Cells[row, 7].Value?.ToString()),
-                            RefreshToken = worksheet.Cells[row, 8].Value?.ToString(),
-                            RefreshTokenExpiry = DateTime.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out DateTime expiry) ? (DateTime?)expiry : null,
-                            Telefono = worksheet.Cells[row,10].Value?.ToString(),
-                            Direccion = worksheet.Cells[row,11].Value?.ToString(),
-                            Cedula = worksheet.Cells[row,12].Value?.ToString(),  
+                            //ImageData = DecodeBase64Image(worksheet.Cells[row, 7].Value?.ToString()),
+                            RefreshToken = worksheet.Cells[row, 7].Value?.ToString(),
+                            RefreshTokenExpiry = DateTime.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out DateTime expiry) ? (DateTime?)expiry : null,
+                            NombreImagen = worksheet.Cells[row, 9].Value?.ToString(),
+                            ImagenUrl = worksheet.Cells[row, 10].Value?.ToString(),
                         };
 
                         // Verifica si el usuario ya existe por su Correo
@@ -1202,12 +1525,11 @@ namespace Gym.Api.Controllers
                             existingUsuario.Clave = usuario.Clave; // Aquí podrías agregar lógica para no sobrescribir la clave si no lo deseas
                             existingUsuario.EsActivo = usuario.EsActivo;
                             existingUsuario.FechaRegistro = usuario.FechaRegistro;
-                            existingUsuario.ImageData = usuario.ImageData;
+                            //existingUsuario.ImageData = usuario.ImageData;
                             existingUsuario.RefreshToken = usuario.RefreshToken;
                             existingUsuario.RefreshTokenExpiry = usuario.RefreshTokenExpiry;
-                            existingUsuario.Telefono = usuario.Telefono;
-                            existingUsuario.Direccion = usuario.Direccion;
-                            existingUsuario.Cedula = usuario.Cedula;
+                            existingUsuario.NombreImagen = usuario.NombreImagen;
+                            existingUsuario.ImagenUrl = usuario.ImagenUrl;
                         }
                         else
                         {
@@ -1226,6 +1548,104 @@ namespace Gym.Api.Controllers
             }
 
             return Ok("Usuarios importados correctamente.");
+        }
+
+        private async Task<string> SubirStorage(Stream archivo, string nombre)
+        {
+            try
+            {
+                string email = "sofemprethy@gmail.com";
+                string clave = "123456";
+                string ruta = "appsistemaventa2024.appspot.com";
+                string api_key = "AIzaSyD2_V_dDjLBCU6K1zsPJTHxddgNmaBK7SI";
+
+                var auth = new FirebaseAuthProvider(new FirebaseConfig(api_key));
+                var a = await auth.SignInWithEmailAndPasswordAsync(email, clave);
+
+                var cancellation = new CancellationTokenSource();
+
+                var task = new FirebaseStorage(
+                    ruta,
+                    new FirebaseStorageOptions
+                    {
+                        AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                        ThrowOnCancel = true
+                    })
+                    .Child("Imagen_Usuario_Gym")
+                    .Child(nombre)
+                    .PutAsync(archivo, cancellation.Token);
+
+                // Esperar a que termine la subida y obtener la URL de la imagen
+                var downloadUrl = await task;
+                return downloadUrl; // Retorna la URL de descarga de la imagen
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error subiendo imagen a Firebase: {ex.Message}");
+                throw;
+            }
+        }
+
+
+
+        private async Task EliminarDeStorage(string nombre)
+        {
+            // INGRESA AQUÍ TUS PROPIAS CREDENCIALES
+            //string email = "carloscotes48@gmail.com";
+            //string clave = "goten170797";
+            //string ruta = "appsistemaventa.appspot.com";
+            //string api_key = "AIzaSyBecbs4061LHECO9sPQru2jgkvYppceSQc";
+            string email = "sofemprethy@gmail.com";
+            string clave = "123456";
+            string ruta = "appsistemaventa2024.appspot.com";
+            string api_key = "AIzaSyD2_V_dDjLBCU6K1zsPJTHxddgNmaBK7SI";
+
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(api_key));
+            var a = await auth.SignInWithEmailAndPasswordAsync(email, clave);
+
+            var task = new FirebaseStorage(
+                ruta,
+                new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                    ThrowOnCancel = true
+                })
+                .Child("Imagen_Usuario_Gym")
+                .Child(nombre);
+
+            await task.DeleteAsync();
+        }
+
+        private async Task<string> ObtenerUrlDeStorage(string nombre)
+        {
+            // INGRESA AQUÍ TUS PROPIAS CREDENCIALES
+            //string email = "carloscotes48@gmail.com";
+            //string clave = "goten170797";
+            //string ruta = "appsistemaventa.appspot.com";
+            //string api_key = "AIzaSyBecbs4061LHECO9sPQru2jgkvYppceSQc";
+            string email = "sofemprethy@gmail.com";
+            string clave = "123456";
+            string ruta = "appsistemaventa2024.appspot.com";
+            string api_key = "AIzaSyD2_V_dDjLBCU6K1zsPJTHxddgNmaBK7SI";
+
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(api_key));
+            var a = await auth.SignInWithEmailAndPasswordAsync(email, clave);
+
+            var task = new FirebaseStorage(
+                ruta,
+                new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                    ThrowOnCancel = true
+                })
+                .Child("Imagen_Empresa_Gym")
+                .Child(nombre);
+
+            // Obtener la URL de descarga sin el token de cancelación
+            var downloadURL = await task.GetDownloadUrlAsync();
+
+            return downloadURL;
         }
 
 

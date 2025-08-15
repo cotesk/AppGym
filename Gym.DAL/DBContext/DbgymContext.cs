@@ -23,15 +23,13 @@ public partial class DbgymContext : DbContext
 
     public virtual DbSet<Caja> Cajas { get; set; }
 
+    public virtual DbSet<CodigoActivacion> CodigoActivacions { get; set; }
+
     public virtual DbSet<Contenido> Contenidos { get; set; }
 
     public virtual DbSet<Empresa> Empresas { get; set; }
 
     public virtual DbSet<EntrenadorCliente> EntrenadorClientes { get; set; }
-
-    public virtual DbSet<Entrenadores> Entrenadores { get; set; }
-
-    public virtual DbSet<HistorialAsistencia> HistorialAsistencias { get; set; }
 
     public virtual DbSet<HistorialPago> HistorialPagos { get; set; }
 
@@ -56,7 +54,7 @@ public partial class DbgymContext : DbContext
     {
         modelBuilder.Entity<AsignacionesMembresia>(entity =>
         {
-            entity.HasKey(e => e.AsignacionId).HasName("PK__Asignaci__D82B5BB75E2FEDD8");
+            entity.HasKey(e => e.AsignacionId).HasName("PK__Asignaci__D82B5BB7032CDAC2");
 
             entity.Property(e => e.AsignacionId).HasColumnName("AsignacionID");
             entity.Property(e => e.Estado)
@@ -71,16 +69,16 @@ public partial class DbgymContext : DbContext
 
             entity.HasOne(d => d.IdMembresiaNavigation).WithMany(p => p.AsignacionesMembresia)
                 .HasForeignKey(d => d.IdMembresia)
-                .HasConstraintName("FK__Asignacio__idMem__37A5467C");
+                .HasConstraintName("FK__Asignacio__idMem__4AB81AF0");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.AsignacionesMembresia)
                 .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("FK__Asignacio__idUsu__36B12243");
+                .HasConstraintName("FK__Asignacio__idUsu__49C3F6B7");
         });
 
         modelBuilder.Entity<AsignacionesPlanEntrenamiento>(entity =>
         {
-            entity.HasKey(e => e.AsignacionId).HasName("PK__Asignaci__D82B5BB76B973CAD");
+            entity.HasKey(e => e.AsignacionId).HasName("PK__Asignaci__D82B5BB7C0A4B4E6");
 
             entity.ToTable("AsignacionesPlanEntrenamiento");
 
@@ -94,16 +92,16 @@ public partial class DbgymContext : DbContext
 
             entity.HasOne(d => d.Cliente).WithMany(p => p.AsignacionesPlanEntrenamientos)
                 .HasForeignKey(d => d.ClienteId)
-                .HasConstraintName("FK__Asignacio__Clien__5441852A");
+                .HasConstraintName("FK__Asignacio__Clien__619B8048");
 
             entity.HasOne(d => d.Plan).WithMany(p => p.AsignacionesPlanEntrenamientos)
                 .HasForeignKey(d => d.PlanId)
-                .HasConstraintName("FK__Asignacio__PlanI__5535A963");
+                .HasConstraintName("FK__Asignacio__PlanI__628FA481");
         });
 
         modelBuilder.Entity<AsistenciaPersonal>(entity =>
         {
-            entity.HasKey(e => e.AsistenciaId).HasName("PK__Asistenc__72710F45A602A51F");
+            entity.HasKey(e => e.AsistenciaId).HasName("PK__Asistenc__72710F45D1262C1D");
 
             entity.ToTable("AsistenciaPersonal");
 
@@ -115,12 +113,12 @@ public partial class DbgymContext : DbContext
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.AsistenciaPersonals)
                 .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("FK__Asistenci__idUsu__3A81B327");
+                .HasConstraintName("FK__Asistenci__idUsu__4D94879B");
         });
 
         modelBuilder.Entity<Caja>(entity =>
         {
-            entity.HasKey(e => e.IdCaja).HasName("PK__Caja__8BC79B34453FC576");
+            entity.HasKey(e => e.IdCaja).HasName("PK__Caja__8BC79B34EECE731E");
 
             entity.ToTable("Caja");
 
@@ -185,12 +183,25 @@ public partial class DbgymContext : DbContext
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Cajas)
                 .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("FK__Caja__idUsuario__59FA5E80");
+                .HasConstraintName("FK__Caja__idUsuario__6754599E");
+        });
+
+        modelBuilder.Entity<CodigoActivacion>(entity =>
+        {
+            entity.HasKey(e => e.IdCodigoActivacion).HasName("PK__CodigoAc__C105F9E97D261E9B");
+
+            entity.ToTable("CodigoActivacion");
+
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
+            entity.Property(e => e.FechaGeneracion).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Contenido>(entity =>
         {
-            entity.HasKey(e => e.IdContenido).HasName("PK__Contenid__7FB5C29EE2506790");
+            entity.HasKey(e => e.IdContenido).HasName("PK__Contenid__7FB5C29E66C4E033");
 
             entity.ToTable("Contenido");
 
@@ -198,7 +209,14 @@ public partial class DbgymContext : DbContext
             entity.Property(e => e.Comentarios)
                 .IsUnicode(false)
                 .HasColumnName("comentarios");
+            entity.Property(e => e.ImagenUrl)
+                .IsUnicode(false)
+                .HasColumnName("imagenUrl");
             entity.Property(e => e.Imagenes).HasColumnName("imagenes");
+            entity.Property(e => e.NombreImagen)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasColumnName("nombreImagen");
             entity.Property(e => e.TipoComentarios)
                 .HasMaxLength(30)
                 .IsUnicode(false)
@@ -211,7 +229,7 @@ public partial class DbgymContext : DbContext
 
         modelBuilder.Entity<Empresa>(entity =>
         {
-            entity.HasKey(e => e.IdEmpresa).HasName("PK__Empresa__F4BB6039C4704124");
+            entity.HasKey(e => e.IdEmpresa).HasName("PK__Empresa__F4BB6039BD12BB11");
 
             entity.ToTable("Empresa");
 
@@ -263,7 +281,7 @@ public partial class DbgymContext : DbContext
 
         modelBuilder.Entity<EntrenadorCliente>(entity =>
         {
-            entity.HasKey(e => e.AsignacionId).HasName("PK__Entrenad__D82B5BB7421435D1");
+            entity.HasKey(e => e.AsignacionId).HasName("PK__Entrenad__D82B5BB713DFC2F6");
 
             entity.ToTable("EntrenadorCliente");
 
@@ -277,47 +295,16 @@ public partial class DbgymContext : DbContext
 
             entity.HasOne(d => d.Cliente).WithMany(p => p.EntrenadorClienteClientes)
                 .HasForeignKey(d => d.ClienteId)
-                .HasConstraintName("FK__Entrenado__Clien__49C3F6B7");
+                .HasConstraintName("FK__Entrenado__Clien__571DF1D5");
 
             entity.HasOne(d => d.Entrenador).WithMany(p => p.EntrenadorClienteEntrenadors)
                 .HasForeignKey(d => d.EntrenadorId)
-                .HasConstraintName("FK__Entrenado__Entre__4AB81AF0");
-        });
-
-        modelBuilder.Entity<Entrenadores>(entity =>
-        {
-            entity.HasKey(e => e.EntrenadorId).HasName("PK__Entrenad__D0EE85454237122D");
-
-            entity.Property(e => e.EntrenadorId).HasColumnName("EntrenadorID");
-            entity.Property(e => e.Especialidad).IsUnicode(false);
-            entity.Property(e => e.IdUsuario).HasColumnName("idUsuario");
-
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Entrenadores)
-                .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("FK__Entrenado__idUsu__4222D4EF");
-        });
-
-        modelBuilder.Entity<HistorialAsistencia>(entity =>
-        {
-            entity.HasKey(e => e.HistorialId).HasName("PK__Historia__975206EF3414AE62");
-
-            entity.Property(e => e.HistorialId).HasColumnName("HistorialID");
-            entity.Property(e => e.Estado)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.FechaAsistencia)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.IdUsuario).HasColumnName("idUsuario");
-
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.HistorialAsistencia)
-                .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("FK__Historial__idUsu__45F365D3");
+                .HasConstraintName("FK__Entrenado__Entre__5812160E");
         });
 
         modelBuilder.Entity<HistorialPago>(entity =>
         {
-            entity.HasKey(e => e.HistorialPagoId).HasName("PK__Historia__1EEFBB82C43BB456");
+            entity.HasKey(e => e.HistorialPagoId).HasName("PK__Historia__1EEFBB8239C8C036");
 
             entity.Property(e => e.HistorialPagoId).HasColumnName("HistorialPagoID");
             entity.Property(e => e.FechaPago).HasColumnType("datetime");
@@ -328,16 +315,16 @@ public partial class DbgymContext : DbContext
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.HistorialPagos)
                 .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("FK__Historial__idUsu__4E88ABD4");
+                .HasConstraintName("FK__Historial__idUsu__5BE2A6F2");
 
             entity.HasOne(d => d.Pago).WithMany(p => p.HistorialPagos)
                 .HasForeignKey(d => d.PagoId)
-                .HasConstraintName("FK__Historial__PagoI__4D94879B");
+                .HasConstraintName("FK__Historial__PagoI__5AEE82B9");
         });
 
         modelBuilder.Entity<Membresia>(entity =>
         {
-            entity.HasKey(e => e.IdMembresia).HasName("PK__Membresi__BDDB80E9B2CCF76C");
+            entity.HasKey(e => e.IdMembresia).HasName("PK__Membresi__BDDB80E914198B6C");
 
             entity.Property(e => e.IdMembresia).HasColumnName("idMembresia");
             entity.Property(e => e.Descripcion)
@@ -362,7 +349,7 @@ public partial class DbgymContext : DbContext
 
         modelBuilder.Entity<Menu>(entity =>
         {
-            entity.HasKey(e => e.IdMenu).HasName("PK__Menu__C26AF4835E07CBB8");
+            entity.HasKey(e => e.IdMenu).HasName("PK__Menu__C26AF483F697A9BD");
 
             entity.ToTable("Menu");
 
@@ -384,7 +371,7 @@ public partial class DbgymContext : DbContext
 
         modelBuilder.Entity<MenuRol>(entity =>
         {
-            entity.HasKey(e => e.IdMenuRol).HasName("PK__MenuRol__9D6D61A45831DD4E");
+            entity.HasKey(e => e.IdMenuRol).HasName("PK__MenuRol__9D6D61A46506C50F");
 
             entity.ToTable("MenuRol");
 
@@ -394,16 +381,16 @@ public partial class DbgymContext : DbContext
 
             entity.HasOne(d => d.IdMenuNavigation).WithMany(p => p.MenuRols)
                 .HasForeignKey(d => d.IdMenu)
-                .HasConstraintName("FK__MenuRol__idMenu__29572725");
+                .HasConstraintName("FK__MenuRol__idMenu__3C69FB99");
 
             entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.MenuRols)
                 .HasForeignKey(d => d.IdRol)
-                .HasConstraintName("FK__MenuRol__idRol__2A4B4B5E");
+                .HasConstraintName("FK__MenuRol__idRol__3D5E1FD2");
         });
 
         modelBuilder.Entity<Pago>(entity =>
         {
-            entity.HasKey(e => e.PagoId).HasName("PK__Pagos__F00B6158BE1D97C6");
+            entity.HasKey(e => e.PagoId).HasName("PK__Pagos__F00B6158713D5936");
 
             entity.Property(e => e.PagoId).HasColumnName("PagoID");
             entity.Property(e => e.FechaPago)
@@ -422,12 +409,12 @@ public partial class DbgymContext : DbContext
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Pagos)
                 .HasForeignKey(d => d.IdUsuario)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Pagos__idUsuario__3E52440B");
+                .HasConstraintName("FK__Pagos__idUsuario__52593CB8");
         });
 
         modelBuilder.Entity<PlanesDeEntrenamiento>(entity =>
         {
-            entity.HasKey(e => e.PlanId).HasName("PK__PlanesDe__755C22D70660CAA6");
+            entity.HasKey(e => e.PlanId).HasName("PK__PlanesDe__755C22D756BF5B54");
 
             entity.ToTable("PlanesDeEntrenamiento");
 
@@ -445,7 +432,7 @@ public partial class DbgymContext : DbContext
 
         modelBuilder.Entity<Rol>(entity =>
         {
-            entity.HasKey(e => e.IdRol).HasName("PK__Rol__3C872F7672B2E593");
+            entity.HasKey(e => e.IdRol).HasName("PK__Rol__3C872F76033D9416");
 
             entity.ToTable("Rol");
 
@@ -462,7 +449,7 @@ public partial class DbgymContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__645723A6713CD8B3");
+            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__645723A6D086E044");
 
             entity.ToTable("Usuario");
 
@@ -491,10 +478,17 @@ public partial class DbgymContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("fechaRegistro");
             entity.Property(e => e.IdRol).HasColumnName("idRol");
+            entity.Property(e => e.ImagenUrl)
+                .IsUnicode(false)
+                .HasColumnName("imagenUrl");
             entity.Property(e => e.NombreCompleto)
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("nombreCompleto");
+            entity.Property(e => e.NombreImagen)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasColumnName("nombreImagen");
             entity.Property(e => e.RefreshToken)
                 .IsUnicode(false)
                 .HasColumnName("refreshToken");
@@ -508,7 +502,7 @@ public partial class DbgymContext : DbContext
 
             entity.HasOne(d => d.IdRolNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdRol)
-                .HasConstraintName("FK__Usuario__idRol__2D27B809");
+                .HasConstraintName("FK__Usuario__idRol__403A8C7D");
         });
 
         OnModelCreatingPartial(modelBuilder);

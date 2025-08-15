@@ -21,8 +21,11 @@ namespace Gym.DTO
 
         public string? Clave { get; set; }
 
-        public string ErrorMessage { get; set; }
+        public string? NombreImagen { get; set; }
 
+        public string? ImagenUrl { get; set; }
+
+        public string ErrorMessage { get; set; }
 
 
     }

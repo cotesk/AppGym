@@ -19,6 +19,10 @@ namespace Gym.DTO
 
         public byte[]? Imagenes { get; set; }
 
+        public string? ImagenUrl { get; set; }
+
+
+        public string? NombreImagen { get; set; }
 
     }
 }
