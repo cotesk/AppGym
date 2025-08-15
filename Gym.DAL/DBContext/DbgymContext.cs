@@ -52,6 +52,7 @@ public partial class DbgymContext : DbContext
      
 
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AsignacionesMembresia>(entity =>
