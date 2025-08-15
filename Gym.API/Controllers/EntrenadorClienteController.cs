@@ -192,6 +192,8 @@ namespace Gym.API.Controllers
                 EntrenadorId = asignacion.EntrenadorId,
                 NombreCliente = asignacion.Cliente.NombreCompleto,
                 NombreEntrenador = asignacion.Entrenador.NombreCompleto,
+                ImagenUrlCliente = asignacion.Cliente.ImagenUrl,
+                ImagenUrlEntrenador = asignacion.Entrenador.ImagenUrl,
                 FechaAsignacion = asignacion.FechaAsignacion?.ToString("dd/MM/yyyy h:mm tt"),
                 FechaFinAsignacion = asignacion.FechaFinAsignacion?.ToString("dd/MM/yyyy h:mm tt")
             };

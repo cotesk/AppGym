@@ -195,7 +195,7 @@ namespace Gym.Api.Controllers
         public ActionResult<IEnumerable<UsuarioDTO>> GetClientes(int page = 1, int pageSize = 5, string searchTerm = null)
         {
             IQueryable<UsuarioDTO> query = _context.Usuarios
-                .Where(u => u.IdRol == 4) // Excluir usuarios con IdRol igual a 4
+                .Where(u => u.IdRol == 3) 
                 .Select(u => new UsuarioDTO
                 {
                     IdUsuario = u.IdUsuario,

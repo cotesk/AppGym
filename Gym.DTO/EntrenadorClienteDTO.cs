@@ -20,6 +20,10 @@ namespace Gym.DTO
 
         public string? NombreCliente { get; set; }
 
+        public string? ImagenUrlEntrenador { get; set; }
+
+        public string? ImagenUrlCliente { get; set; }
+
         public string? FechaAsignacion { get; set; }
 
         public string? FechaFinAsignacion { get; set; }
