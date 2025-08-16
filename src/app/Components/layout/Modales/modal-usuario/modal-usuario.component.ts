@@ -73,7 +73,7 @@ export class ModalUsuarioComponent implements OnInit {
       esActivo: ['1',],
       Urlimagen: [''],
       imageData: [''],
-      // direccion: ['', Validators.required],
+      direccion: ['',],
       telefono: ['', [Validators.pattern('[0-9]*'), Validators.maxLength(10)]],
       cedula: ['', [Validators.pattern('[0-9]*'), Validators.maxLength(10)]],
     });
@@ -684,6 +684,20 @@ export class ModalUsuarioComponent implements OnInit {
                 icon: 'error',
                 title: 'ERROR',
                 text: `El nombre del usuario ya existe.`,
+              });
+            }
+            else if (data.msg == "Esta cedula ya existe.") {
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: `Esta cedula ya existe.`,
+              });
+            }
+            else if (data.msg == "Este telefono ya existe.") {
+              Swal.fire({
+                icon: 'error',
+                title: 'ERROR',
+                text: `Este telefono ya existe.`,
               });
             }
 

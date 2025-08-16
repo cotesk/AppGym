@@ -9,7 +9,7 @@ import { EntrenadorClienteService } from '../../Services/entrenador.service';
 import { VerImagenProductoModalComponent } from '../layout/Modales/ver-imagen-producto-modal/ver-imagen-producto-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { switchMap, map, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 
 
 @Component({
@@ -26,6 +26,7 @@ export class ConsularMembresiaComponent {
   clienteSeleccionado!: any | null;
   nombreMembresiaSeleccionado!: any | null;
   diasMembresiaSeleccionado!: any | null;
+  diasRestantesMembresia !: any | null;
   precioMembresiaSeleccionado!: any | null;
   precioCopiaMembresiaSeleccionado!: any | null;
   activoMembresiaSeleccionado!: any | null;
@@ -48,16 +49,35 @@ export class ConsularMembresiaComponent {
 
     this.formularioUsuario = this.fb.group({
 
-
-      cedula: ['', [Validators.required, Validators.pattern('[0-9]*'), Validators.maxLength(10)]]
+      tipoBusqueda: ['cedula', Validators.required],
+      telefono: ['', [Validators.pattern('[0-9]*'), Validators.maxLength(10)]],
+      cedula: ['', [Validators.pattern('[0-9]*'), Validators.maxLength(10)]],
+      correo: ['', Validators.email]
     });
 
 
+    // Ajustar validaciones dinámicamente según tipo de búsqueda
+    this.formularioUsuario.get('tipoBusqueda')?.valueChanges.subscribe(tipo => {
+      this.formularioUsuario.get('cedula')?.clearValidators();
+      this.formularioUsuario.get('telefono')?.clearValidators();
+      this.formularioUsuario.get('correo')?.clearValidators();
 
+      if (tipo === 'cedula') {
+        this.formularioUsuario.get('cedula')?.setValidators([Validators.required, Validators.pattern(/^[0-9]*$/), Validators.maxLength(12)]);
+      } else if (tipo === 'telefono') {
+        this.formularioUsuario.get('telefono')?.setValidators([Validators.required, Validators.pattern(/^[0-9]*$/), Validators.maxLength(10)]);
+      } else if (tipo === 'correo') {
+        this.formularioUsuario.get('correo')?.setValidators([Validators.required, Validators.email]);
+      }
 
-   }
+      this.formularioUsuario.get('cedula')?.updateValueAndValidity();
+      this.formularioUsuario.get('telefono')?.updateValueAndValidity();
+      this.formularioUsuario.get('correo')?.updateValueAndValidity();
+    });
 
-   ngOnInit(): void {
+  }
+
+  ngOnInit(): void {
 
 
   }
@@ -66,7 +86,7 @@ export class ConsularMembresiaComponent {
   verImagen(usuario: any): void {
     this.dialog.open(VerImagenProductoModalComponent, {
       data: {
-        imageData: usuario
+        imagenes: [usuario]
       }
     });
   }
@@ -107,9 +127,26 @@ export class ConsularMembresiaComponent {
   // }
 
 
-  BuscarUsuario(){
-    this.obtenerUsuarioPorCedula();
+  BuscarUsuario() {
+    const tipo = this.formularioUsuario.get('tipoBusqueda')?.value;
+
+    if (tipo === 'cedula') {
+      const cedula = this.formularioUsuario.get('cedula')?.value;
+      this.obtenerUsuarioPorCedula(cedula);
+    }
+    if (tipo === 'correo') {
+      const cedula = this.formularioUsuario.get('correo')?.value;
+      this.obtenerUsuarioPorCorreo(cedula);
+    }
+    if (tipo === 'telefono') {
+      const telefono = this.formularioUsuario.get('telefono')?.value;
+      this.obtenerUsuarioPorTelefono(telefono);
+    }
+    else {
+
+    }
   }
+
 
   formatearNumero(numero: any): string {
     // Convierte la cadena a número
@@ -135,93 +172,108 @@ export class ConsularMembresiaComponent {
     };
     return fechaObjeto.toLocaleString('es-CO', opciones);
   }
-  obtenerUsuarioPorCedula() {
-    const cedula = this.formularioUsuario.value.cedula;
+  obtenerUsuarioPorCedula(cedula: any) {
+    // const cedula = this.formularioUsuario.value.cedula;
 
     this._usuarioServicio.obtenerUsuarioPorCedula(cedula).pipe(
       switchMap((usuario: any) => {
         this.limpiarCampos();
         this.clienteSeleccionado = usuario.nombreCompleto;
-        this.cargarImagenUsuario(usuario.idUsuario);
+
+        console.log(usuario);
 
         return this._mebresiaServicio.getMembresiaByUsuario2(usuario.idUsuario).pipe(
           catchError(() => {
             Swal.fire({
               icon: 'error',
               title: 'ERROR',
-              text: 'No se encontró una membresía para el usuario.',
+              text: 'Este usuario aún no tiene asignada una membresía.',
             });
-            this.mostrarImagenEntrenador = false; // Oculta la imagen del entrenador
+            this.mostrarImagenEntrenador = false;
+            this.imagenSeleccionadaCliente = null;
             this.limpiarCampos();
-            throw new Error('No se encontró una membresía.');
+            return of(null); // evita lanzar error y cortar el flujo feo
           }),
           map((data: any) => ({ usuario, membresia: data }))
         );
       }),
       switchMap(({ usuario, membresia }) => {
+        if (!membresia) {
+          return EMPTY; // Detiene la ejecución si no hay membresía
+        }
+
+        console.log(membresia);
         if (membresia?.status) {
+          // ✅ Ahora sí cargamos la imagen porque sabemos que tiene membresía
+          this.cargarImagenUsuario(usuario.idUsuario);
+
           const detalles = membresia.value[0].membresia;
+          const fechaVencimiento = new Date(membresia.value[0].fechaVencimiento);
+          const hoy = new Date();
+
+          // Calcular diferencia en días
+          let diasRestantes = 0; // Valor por defecto
+          if (membresia.value[0].estado !== 'Pendiente') {
+            const diffTime = fechaVencimiento.getTime() - hoy.getTime();
+            diasRestantes = Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 0);
+          }
+
           this.diasMembresiaSeleccionado = detalles.duracionDias;
           this.nombreMembresiaSeleccionado = detalles.nombre;
           this.precioMembresiaSeleccionado = this.formatearNumero(detalles.precio);
           this.activoMembresiaSeleccionado = detalles.esActivo;
-          this.fechaVencimientoSeleccionado =  this.formatearFecha(membresia.value[0].fechaVencimiento);
+          this.fechaVencimientoSeleccionado = this.formatearFecha(membresia.value[0].fechaVencimiento);
           this.estadoMembresiaSeleccionado = membresia.value[0].estado;
-          this.mostrarImagenEntrenador = true; // Muestra la imagen del entrenador
+          this.diasRestantesMembresia = diasRestantes; // 👈 Nuevo campo con días restantes
+          this.mostrarImagenEntrenador = true;
         } else {
           Swal.fire({
             icon: 'info',
             title: 'Información',
             text: 'No se encontró una asignación para el usuario especificado.',
           });
-          this.mostrarImagenEntrenador = false; // Oculta la imagen del entrenador
+          this.mostrarImagenEntrenador = false;
           this.limpiarCampos();
+          return EMPTY;
         }
 
         return this._entrenadorServicio.getAsignacionesPorCliente(usuario.idUsuario);
       })
     ).subscribe({
       next: (asignaciones: any) => {
-        if (asignaciones) {
+        if (asignaciones && asignaciones.length > 0) {
           const entrenador = asignaciones[0];
           this.NombreEntrenadorSeleccionado = entrenador.nombreEntrenador;
-          this.mostrarImagenEntrenador = true; // Muestra la imagen del entrenador
+          this.mostrarImagenEntrenador = true;
           this.cargarImagenUsuarioEntrenador(entrenador.entrenadorId);
         } else {
-          Swal.fire({
-            icon: 'info',
-            title: 'Información',
-            text: 'No se encontró una asignación de entrenador para el usuario.',
-          });
-          this.mostrarImagenEntrenador = false; // Oculta la imagen del entrenador
+          // Swal.fire({
+          //   icon: 'info',
+          //   title: 'Información',
+          //   text: 'Este usuario no tiene asignado un entrenador.',
+          // });
+          this.mostrarImagenEntrenador = false;
         }
       },
       error: (error: any) => {
         console.error(error);
-        if(error.status == 401){
-
-
-
-        }else if(error =="Ocurrió un error en la solicitud. Por favor, inténtelo de nuevo más tarde."){
+        if (error.status === 401) {
+          // Manejo de error 401 si es necesario
+        } else if (error === "Ocurrió un error en la solicitud. Por favor, inténtelo de nuevo más tarde.") {
           Swal.fire({
             icon: 'error',
             title: 'ERROR',
-            text: 'Este numero de cedula no existe.',
+            text: 'Este número de cédula no existe.',
           });
           this.limpiarCampos();
+        } else {
+          // Swal.fire({
+          //   icon: 'info',
+          //   title: 'Informativo',
+          //   text: 'Este usuario no tiene asignado un entrenador.',
+          // });
+          this.mostrarImagenEntrenador = false;
         }
-        else{
-
-          Swal.fire({
-            icon: 'info',
-            title: 'Informativo',
-            text: 'Este Usuario no se le a asignado un entrenador.',
-          });
-          this.mostrarImagenEntrenador = false; // Oculta la imagen del entrenador
-          // this.limpiarCampos();
-
-        }
-
       },
       complete: () => {
         console.log('Operación completada.');
@@ -230,6 +282,223 @@ export class ConsularMembresiaComponent {
   }
 
 
+  obtenerUsuarioPorTelefono(telefono: any) {
+    // const cedula = this.formularioUsuario.value.cedula;
+
+    this._usuarioServicio.obtenerUsuarioPorTelefono(telefono).pipe(
+      switchMap((usuario: any) => {
+        this.limpiarCampos();
+        this.clienteSeleccionado = usuario.nombreCompleto;
+
+        console.log(usuario);
+
+        return this._mebresiaServicio.getMembresiaByUsuario2(usuario.idUsuario).pipe(
+          catchError(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'ERROR',
+              text: 'Este usuario aún no tiene asignada una membresía.',
+            });
+            this.mostrarImagenEntrenador = false;
+            this.imagenSeleccionadaCliente = null;
+            this.limpiarCampos();
+            return of(null); // evita lanzar error y cortar el flujo feo
+          }),
+          map((data: any) => ({ usuario, membresia: data }))
+        );
+      }),
+      switchMap(({ usuario, membresia }) => {
+        if (!membresia) {
+          return EMPTY; // Detiene la ejecución si no hay membresía
+        }
+
+        console.log(membresia);
+        if (membresia?.status) {
+          // ✅ Ahora sí cargamos la imagen porque sabemos que tiene membresía
+          this.cargarImagenUsuario(usuario.idUsuario);
+
+          const detalles = membresia.value[0].membresia;
+          const fechaVencimiento = new Date(membresia.value[0].fechaVencimiento);
+          const hoy = new Date();
+
+          // Calcular diferencia en días
+          let diasRestantes = 0; // Valor por defecto
+          if (membresia.value[0].estado !== 'Pendiente') {
+            const diffTime = fechaVencimiento.getTime() - hoy.getTime();
+            diasRestantes = Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 0);
+          }
+
+          this.diasMembresiaSeleccionado = detalles.duracionDias;
+          this.nombreMembresiaSeleccionado = detalles.nombre;
+          this.precioMembresiaSeleccionado = this.formatearNumero(detalles.precio);
+          this.activoMembresiaSeleccionado = detalles.esActivo;
+          this.fechaVencimientoSeleccionado = this.formatearFecha(membresia.value[0].fechaVencimiento);
+          this.estadoMembresiaSeleccionado = membresia.value[0].estado;
+          this.diasRestantesMembresia = diasRestantes; // 👈 Nuevo campo con días restantes
+          this.mostrarImagenEntrenador = true;
+        } else {
+          Swal.fire({
+            icon: 'info',
+            title: 'Información',
+            text: 'No se encontró una asignación para el usuario especificado.',
+          });
+          this.mostrarImagenEntrenador = false;
+          this.limpiarCampos();
+          return EMPTY;
+        }
+
+        return this._entrenadorServicio.getAsignacionesPorCliente(usuario.idUsuario);
+      })
+    ).subscribe({
+      next: (asignaciones: any) => {
+        if (asignaciones && asignaciones.length > 0) {
+          const entrenador = asignaciones[0];
+          this.NombreEntrenadorSeleccionado = entrenador.nombreEntrenador;
+          this.mostrarImagenEntrenador = true;
+          this.cargarImagenUsuarioEntrenador(entrenador.entrenadorId);
+        } else {
+          // Swal.fire({
+          //   icon: 'info',
+          //   title: 'Información',
+          //   text: 'Este usuario no tiene asignado un entrenador.',
+          // });
+          this.mostrarImagenEntrenador = false;
+        }
+      },
+      error: (error: any) => {
+        console.error(error);
+        if (error.status === 401) {
+          // Manejo de error 401 si es necesario
+        } else if (error === "Ocurrió un error en la solicitud. Por favor, inténtelo de nuevo más tarde.") {
+          Swal.fire({
+            icon: 'error',
+            title: 'ERROR',
+            text: 'Este número de telefono no existe.',
+          });
+          this.limpiarCampos();
+        } else {
+          // Swal.fire({
+          //   icon: 'info',
+          //   title: 'Informativo',
+          //   text: 'Este usuario no tiene asignado un entrenador.',
+          // });
+          this.mostrarImagenEntrenador = false;
+        }
+      },
+      complete: () => {
+        console.log('Operación completada.');
+      },
+    });
+  }
+
+  obtenerUsuarioPorCorreo(telefono: any) {
+    // const cedula = this.formularioUsuario.value.cedula;
+
+    this._usuarioServicio.obtenerUsuarioPorcorreo(telefono).pipe(
+      switchMap((usuario: any) => {
+        this.limpiarCampos();
+        this.clienteSeleccionado = usuario.nombreCompleto;
+
+        console.log(usuario);
+
+        return this._mebresiaServicio.getMembresiaByUsuario2(usuario.idUsuario).pipe(
+          catchError(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'ERROR',
+              text: 'Este usuario aún no tiene asignada una membresía.',
+            });
+            this.mostrarImagenEntrenador = false;
+            this.imagenSeleccionadaCliente = null;
+            this.limpiarCampos();
+            return of(null); // evita lanzar error y cortar el flujo feo
+          }),
+          map((data: any) => ({ usuario, membresia: data }))
+        );
+      }),
+      switchMap(({ usuario, membresia }) => {
+        if (!membresia) {
+          return EMPTY; // Detiene la ejecución si no hay membresía
+        }
+
+        console.log(membresia);
+        if (membresia?.status) {
+          // ✅ Ahora sí cargamos la imagen porque sabemos que tiene membresía
+          this.cargarImagenUsuario(usuario.idUsuario);
+
+          const detalles = membresia.value[0].membresia;
+          const fechaVencimiento = new Date(membresia.value[0].fechaVencimiento);
+          const hoy = new Date();
+
+          // Calcular diferencia en días
+          let diasRestantes = 0; // Valor por defecto
+          if (membresia.value[0].estado !== 'Pendiente') {
+            const diffTime = fechaVencimiento.getTime() - hoy.getTime();
+            diasRestantes = Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 0);
+          }
+
+          this.diasMembresiaSeleccionado = detalles.duracionDias;
+          this.nombreMembresiaSeleccionado = detalles.nombre;
+          this.precioMembresiaSeleccionado = this.formatearNumero(detalles.precio);
+          this.activoMembresiaSeleccionado = detalles.esActivo;
+          this.fechaVencimientoSeleccionado = this.formatearFecha(membresia.value[0].fechaVencimiento);
+          this.estadoMembresiaSeleccionado = membresia.value[0].estado;
+          this.diasRestantesMembresia = diasRestantes; // 👈 Nuevo campo con días restantes
+          this.mostrarImagenEntrenador = true;
+        } else {
+          Swal.fire({
+            icon: 'info',
+            title: 'Información',
+            text: 'No se encontró una asignación para el usuario especificado.',
+          });
+          this.mostrarImagenEntrenador = false;
+          this.limpiarCampos();
+          return EMPTY;
+        }
+
+        return this._entrenadorServicio.getAsignacionesPorCliente(usuario.idUsuario);
+      })
+    ).subscribe({
+      next: (asignaciones: any) => {
+        if (asignaciones && asignaciones.length > 0) {
+          const entrenador = asignaciones[0];
+          this.NombreEntrenadorSeleccionado = entrenador.nombreEntrenador;
+          this.mostrarImagenEntrenador = true;
+          this.cargarImagenUsuarioEntrenador(entrenador.entrenadorId);
+        } else {
+          // Swal.fire({
+          //   icon: 'info',
+          //   title: 'Información',
+          //   text: 'Este usuario no tiene asignado un entrenador.',
+          // });
+          this.mostrarImagenEntrenador = false;
+        }
+      },
+      error: (error: any) => {
+        console.error(error);
+        if (error.status === 401) {
+          // Manejo de error 401 si es necesario
+        } else if (error === "Ocurrió un error en la solicitud. Por favor, inténtelo de nuevo más tarde.") {
+          Swal.fire({
+            icon: 'error',
+            title: 'ERROR',
+            text: 'Este correo no existe.',
+          });
+          this.limpiarCampos();
+        } else {
+          // Swal.fire({
+          //   icon: 'info',
+          //   title: 'Informativo',
+          //   text: 'Este usuario no tiene asignado un entrenador.',
+          // });
+          this.mostrarImagenEntrenador = false;
+        }
+      },
+      complete: () => {
+        console.log('Operación completada.');
+      },
+    });
+  }
 
   limpiarCampos() {
 
@@ -240,18 +509,20 @@ export class ConsularMembresiaComponent {
     this.activoMembresiaSeleccionado = null;
     this.estadoMembresiaSeleccionado = null;
     this.fechaVencimientoSeleccionado = null;
-    this.imagenSeleccionada =null;
+    this.diasMembresiaSeleccionado = null;
+    this.diasRestantesMembresia = null;
+    this.imagenSeleccionada = null;
     this.imagenSeleccionadaCliente = null;
     this.NombreEntrenadorSeleccionado = null;
-    this.clienteSeleccionado=null;
+    this.clienteSeleccionado = null;
   }
 
 
   private cargarImagenUsuario(idProducto: number) {
     this._usuarioServicio.obtenerImagenUsuario(idProducto).subscribe(
       (response: any) => {
-        if (response && response.imageData) {
-          this.imagenSeleccionadaCliente = `data:image/png;base64,${response.imageData}`;
+        if (response && response.imagenUrl) {
+          this.imagenSeleccionadaCliente = `${response.imagenUrl}`;
         } else {
           console.error('Imagen no disponible');
           this.imagenSeleccionadaCliente = 'ruta/de/imagen/predeterminada.png'; // O deja nulo
@@ -269,8 +540,8 @@ export class ConsularMembresiaComponent {
   private cargarImagenUsuarioEntrenador(idProducto: number) {
     this._usuarioServicio.obtenerImagenUsuario(idProducto).subscribe(
       (response: any) => {
-        if (response && response.imageData) {
-          this.imagenSeleccionada = `data:image/png;base64,${response.imageData}`;
+        if (response && response.imagenUrl) {
+          this.imagenSeleccionada = `${response.imagenUrl}`;
         } else {
           console.error('Imagen no disponible');
           this.imagenSeleccionada = 'ruta/de/imagen/predeterminada.png'; // O deja nulo

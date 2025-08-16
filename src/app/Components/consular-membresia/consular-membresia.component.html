@@ -2,10 +2,32 @@
 
 <form [formGroup]="formularioUsuario" class="form-container">
 
-  <!-- Contenedor para los campos -->
   <div class="form-grid">
-    <!-- Campo Cédula -->
+
+    <!-- Select para elegir tipo de búsqueda -->
     <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Buscar por</mat-label>
+      <mat-select formControlName="tipoBusqueda">
+        <mat-option value="cedula">
+          <mat-icon>badge</mat-icon>
+          &nbsp; Cédula
+        </mat-option>
+        <mat-option value="telefono">
+          <mat-icon>call</mat-icon>
+          &nbsp; Teléfono
+        </mat-option>
+        <mat-option value="correo">
+          <mat-icon>email</mat-icon>
+          &nbsp; Correo
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+
+    <!-- Campo Cédula -->
+    <mat-form-field *ngIf="formularioUsuario.get('tipoBusqueda')?.value === 'cedula'" appearance="fill"
+      class="form-field">
       <mat-label>Cédula</mat-label>
       <input matInput autocomplete="off" formControlName="cedula" pattern="[0-9]*" maxlength="12">
       <mat-icon matSuffix>face</mat-icon>
@@ -14,6 +36,33 @@
       </mat-error>
       <mat-error *ngIf="formularioUsuario.get('cedula')?.hasError('maxlength')">
         La longitud debe ser de 10 dígitos.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Campo Teléfono -->
+    <mat-form-field *ngIf="formularioUsuario.get('tipoBusqueda')?.value === 'telefono'" appearance="fill"
+      class="form-field">
+      <mat-label>Teléfono</mat-label>
+      <input matInput autocomplete="off" formControlName="telefono" pattern="[0-9]*" maxlength="10">
+      <mat-icon matSuffix>call</mat-icon>
+      <mat-error *ngIf="formularioUsuario.get('cedula')?.hasError('pattern')">
+        Solo se permiten números.
+      </mat-error>
+      <mat-error *ngIf="formularioUsuario.get('cedula')?.hasError('maxlength')">
+        La longitud debe ser de 10 dígitos.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="formularioUsuario.get('tipoBusqueda')?.value === 'correo'" appearance="fill"
+      class="form-field">
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput autocomplete="off" formControlName="correo" type="email">
+      <mat-icon matSuffix>email</mat-icon>
+      <mat-error *ngIf="formularioUsuario.get('correo')?.hasError('email')">
+        Ingresa un correo válido.
+      </mat-error>
+      <mat-error *ngIf="formularioUsuario.get('correo')?.hasError('required')">
+        El correo es obligatorio.
       </mat-error>
     </mat-form-field>
 
@@ -30,6 +79,19 @@
       <input matInput autocomplete="off" [value]="nombreMembresiaSeleccionado" disabled />
       <mat-icon matSuffix>card_membership</mat-icon>
     </mat-form-field>
+    
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Duración de la membresía</mat-label>
+      <input matInput autocomplete="off" [value]="diasMembresiaSeleccionado" disabled />
+      <mat-icon matSuffix>calendar_today</mat-icon> <!-- 📅 Representa duración -->
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="form-field">
+      <mat-label>Días Restantes</mat-label>
+      <input matInput autocomplete="off" [value]="diasRestantesMembresia" disabled />
+      <mat-icon matSuffix>hourglass_bottom</mat-icon> <!-- ⏳ Representa cuenta regresiva -->
+    </mat-form-field>
+
 
     <!-- Estado de Membresía -->
     <mat-form-field appearance="fill" class="form-field">
@@ -60,45 +122,23 @@
     </mat-form-field>
   </div>
 
-  <!-- Funcional -->
-  <!-- <div class="imagenes-container">
-    <div class="imagen">
-      <img [src]="imagenSeleccionadaCliente" *ngIf="imagenSeleccionadaCliente" alt="Imagen Producto" (click)="verImagen(imagenSeleccionadaCliente)" />
-    </div>
-    <div class="imagen">
-      <img [src]="imagenSeleccionada" *ngIf="imagenSeleccionada" alt="Imagen Cliente" (click)="verImagen(imagenSeleccionada)" />
-    </div>
-  </div> -->
-
   <div class="imagenes-container">
     <div class="imagen">
       <div class="overlay" (click)="verImagen(imagenSeleccionadaCliente)">
         <span>Clientes</span>
       </div>
-      <img
-        [src]="imagenSeleccionadaCliente"
-        *ngIf="imagenSeleccionadaCliente"
-        alt="Imagen Cliente"
-
-      />
+      <img [src]="imagenSeleccionadaCliente" *ngIf="imagenSeleccionadaCliente" alt="Imagen Cliente" />
     </div>
     <div class="imagen" *ngIf="mostrarImagenEntrenador">
       <div class="overlay" (click)="verImagen(imagenSeleccionada)">
         <span>Entrenador</span>
       </div>
-      <img
-        [src]="imagenSeleccionada"
-        *ngIf="imagenSeleccionada"
-        alt="Imagen Entrenador"
-      />
+      <img [src]="imagenSeleccionada" *ngIf="imagenSeleccionada" alt="Imagen Entrenador" />
     </div>
-
   </div>
-
 
   <!-- Botón Buscar -->
   <button mat-raised-button class="agregar" [disabled]="!formularioUsuario.valid" (click)="BuscarUsuario()">
     <mat-icon>search</mat-icon> Buscar
   </button>
-
 </form>

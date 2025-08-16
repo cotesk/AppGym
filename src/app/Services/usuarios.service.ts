@@ -94,6 +94,13 @@ export class UsuariosService {
     );
   }
 
+    obtenerUsuarioPorTelefono(telefono: any): Observable<ReponseApi> {
+
+    return this.http.get<any>(`${this.urlApi}ObtenerUsuarioPorTelefono/${telefono}`,{}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   getClaveSecreta(): Observable<{ claveSecreta: string }> {
     const headers = this.getHeaders();
     return this.http.get<{ claveSecreta: string }>(`${this.contra}`, { headers: headers });
