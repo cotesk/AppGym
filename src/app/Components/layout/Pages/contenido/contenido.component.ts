@@ -358,7 +358,7 @@ export class ContenidoComponent implements OnInit, AfterViewInit{
 
 
   verImagen(contenido: Contenido): void {
-    if(contenido.imagenes ==""){
+    if(contenido.imagenUrl ==""){
       Swal.fire({
         icon: 'warning',
         title: 'Advertencia',
@@ -367,7 +367,7 @@ export class ContenidoComponent implements OnInit, AfterViewInit{
     }else{
       this.dialog.open(VerImagenProductoModalComponent, {
         data: {
-          imageData: contenido.imagenes
+          imagenes: [contenido.imagenUrl]
         }
       });
     }

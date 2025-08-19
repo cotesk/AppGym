@@ -187,7 +187,8 @@ export class AsistenciaComponent {
               fecha: fecha, // Mantener la fecha como cadena o convertirla a Moment según lo que necesites
               pagoRealizado: asistencia.pagoRealizado, // Añadir el estado de pago
               idUsuario: asistencia.idUsuario,
-              asistenciaId:asistencia.asistenciaId
+              asistenciaId: asistencia.asistenciaId,
+              imagenUrl: asistencia.imagenUrl
             };
           });
           // const fechasRegistradas = response.value.map((asistencia: any) => {

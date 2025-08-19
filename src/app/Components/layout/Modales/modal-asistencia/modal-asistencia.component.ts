@@ -230,8 +230,8 @@ export class ModalAsistenciaComponent {
   private cargarImagenProducto(idUsuario: number) {
     this._usuarioServicio.obtenerImagenUsuario(idUsuario).subscribe(
       (response: any) => {
-        if (response && response.imageData) {
-          this.imagenSeleccionada = `data:image/png;base64,${response.imageData}`;
+        if (response && response.imagenUrl) {
+          this.imagenSeleccionada = `${response.imagenUrl}`;
         } else {
           console.error('Imagen no disponible');
           this.imagenSeleccionada = 'ruta/de/imagen/predeterminada.png'; // O deja nulo
@@ -243,10 +243,10 @@ export class ModalAsistenciaComponent {
       }
     );
   }
-  verImagen(imageData: string) {
+  verImagen(imagenUrl: string) {
     this.dialog.open(VerImagenProductoModalComponent, {
       data: {
-        imageData: imageData
+        imagenes: [imagenUrl]
       }
     });
   }

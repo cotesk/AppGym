@@ -4,6 +4,20 @@
   <!-- Selectores para cambiar de mes y año -->
   <div class="calendario-header-alt">
     <button class="boton-cambio-alt" (click)="mesAnterior()">&#8249;</button>
+
+
+ <!-- Imagen arriba de los selectores -->
+  <div class="imagen-cliente-container">
+    <img 
+      *ngIf="imagenClienteSeleccionada" 
+      [src]="imagenClienteSeleccionada" 
+      alt="Foto Cliente" 
+      class="img-cliente"
+      (click)="verImagen()"
+    />
+  </div>
+
+
     <div class="selectores-container">
       <div class="selector">
         <select [(ngModel)]="mesSeleccionado" (change)="cambiarMes()" class="custom-select">
@@ -42,6 +56,8 @@
       [class.pago-no-realizado-alt]="esFechaRegistrada(dia) && !esPagoRealizado(dia)"
       (click)="onFechaClick(dia)">
       {{ dia }}
+
+  
     </div>
   </div>
 

@@ -1,12 +1,13 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import moment, { Moment } from 'moment';
 import Swal from 'sweetalert2';
 import { Pagos } from '../../../../Interfaces/pagos';
 import { UsuariosService } from '../../../../Services/usuarios.service';
 import { PagosService } from '../../../../Services/pagos.service';
 import { AsignacionMembresia } from '../../../../Interfaces/asignacionMembresia';
+import { VerImagenProductoModalComponent } from '../ver-imagen-producto-modal/ver-imagen-producto-modal.component';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -29,7 +30,7 @@ export const MY_DATE_FORMATS = {
   ],
 })
 export class CalendarioModalComponent {
-  fechasRegistradas: { fecha: moment.Moment, pagoRealizado: boolean, idUsuario: number, asistenciaId: number }[] = [];
+  fechasRegistradas: { fecha: moment.Moment, pagoRealizado: boolean, idUsuario: number, asistenciaId: number, imagenUrl: string }[] = [];
   selectedDate: Date | null = new Date();
   asignaciones: AsignacionMembresia[] | undefined;
   asignacionEncontrada?: AsignacionMembresia;
@@ -56,27 +57,39 @@ export class CalendarioModalComponent {
   anioSeleccionado = this.mesActual.year();
   error: boolean | undefined;
   private readonly CLAVE_SECRETA = '9P#5a^6s@Lb!DfG2@17#Co-Tes#07';
+  imagenClienteSeleccionada: string | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<CalendarioModalComponent>,
     private _usuarioServicio: UsuariosService,
     private _pagoServicio: PagosService,
-    @Inject(MAT_DIALOG_DATA) public data: { fechasRegistradas: { fecha: string, pagoRealizado: boolean, idUsuario: number, asistenciaId: number }[] },
+     private dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: { fechasRegistradas: { fecha: string, pagoRealizado: boolean, idUsuario: number, asistenciaId: number, imagenUrl: string }[] },
     private cdr: ChangeDetectorRef
   ) {
 
     this.generarCalendario();
     this.generarAnios();
-
+    console.log('Fechas iniciales:', data);
     console.log('Fechas iniciales:', data.fechasRegistradas);
-
+     this.imagenClienteSeleccionada = data.fechasRegistradas[0].imagenUrl;
     // Convierte las fechas y almacena el estado de pago
     this.fechasRegistradas = data.fechasRegistradas.map(fechaData => {
       const fechaMoment = moment(fechaData.fecha, 'DD/MM/YYYY');
-      return { fecha: fechaMoment, pagoRealizado: fechaData.pagoRealizado, idUsuario: fechaData.idUsuario, asistenciaId: fechaData.asistenciaId };
+      return { fecha: fechaMoment, pagoRealizado: fechaData.pagoRealizado, idUsuario: fechaData.idUsuario, asistenciaId: fechaData.asistenciaId, imagenUrl: fechaData.imagenUrl };
     });
 
     console.log('Fechas convertidas:', this.fechasRegistradas);
+  }
+
+
+  verImagen(): void {
+    //  console.log(usuario);
+    this.dialog.open(VerImagenProductoModalComponent, {
+      data: {
+        imagenes: [this.imagenClienteSeleccionada]
+      }
+    });
   }
 
   mesAnterior() {

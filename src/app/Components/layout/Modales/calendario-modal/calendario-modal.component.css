@@ -170,10 +170,33 @@
   pointer-events: none;
 }
 
+.imagen-cliente-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.img-cliente {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%; /* redonda */
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
 
 
 /* Diseño responsivo */
 @media (max-width: 768px) {
+
+.img-cliente {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* redonda */
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
   .calendario-container-alt {
     padding: 12px;
   }

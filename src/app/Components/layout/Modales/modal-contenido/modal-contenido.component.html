@@ -24,9 +24,9 @@
             <mat-icon class="icon-blue">image</mat-icon> Imagen
           </mat-option>
 
-          <mat-option *ngIf="!modoEdicion" value="Promociones">
+          <!-- <mat-option *ngIf="!modoEdicion" value="Promociones">
             <mat-icon class="icon-blue">local_offer</mat-icon> Promociones
-          </mat-option>
+          </mat-option> -->
 
         </mat-select>
         <mat-icon matSuffix  class="icon-orange">description</mat-icon>
@@ -53,9 +53,8 @@
         </button>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" *ngIf="formularioProducto.get('tipoContenido')?.value === 'Promociones' ">
-        <!-- <mat-label>Imagen</mat-label> -->
-        <!-- Reemplaza el código del input original con este código -->
+      <!-- <mat-form-field appearance="outline" *ngIf="formularioProducto.get('tipoContenido')?.value === 'Promociones' ">
+      
         <div class="custom-upload-container">
           <button mat-icon-button class="custom-upload-button" (click)="inputFileRef?.nativeElement.click()">
             <mat-icon>attach_file</mat-icon>
@@ -69,7 +68,7 @@
         <button mat-icon-button matSuffix color="warn" *ngIf="obtenerUrlSeguraDeImagen()" (click)="limpiarImagen()">
           <mat-icon>clear</mat-icon>
         </button>
-      </mat-form-field>
+      </mat-form-field> -->
 
 
 
@@ -84,7 +83,7 @@
 
       </div>
 
-
+<!-- 
       <div class="preview-img" *ngIf="previsualizacion && formularioProducto.get('tipoContenido')?.value === 'Promociones'">
         <button mat-icon-button matSuffix color="warn" class="clear-image" (click)="limpiarImagen()">
           <mat-icon>clear</mat-icon>
@@ -92,7 +91,7 @@
         <img class="preview-image" [src]="previsualizacion" alt="Previsualización de la imagen"
           style="max-width: 300px; max-height: 200px;">
 
-      </div>
+      </div> -->
 
       <mat-form-field class="full-width" appearance="fill"
         *ngIf="formularioProducto.get('tipoContenido')?.value === 'Texto'" style="width: 100%; margin-bottom: 1em;">
